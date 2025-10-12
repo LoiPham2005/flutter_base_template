@@ -1,0 +1,12 @@
+{
+    "appTitle": "Ứng dụng của tôi",
+    "hello": "Xin chào",
+    "welcome": "Chào mừng {name}",
+    "@welcome": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "appTitle": "My App",
+    "hello": "Hello",
+    "welcome": "Welcome {name}",
+    "@welcome": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    }
+}

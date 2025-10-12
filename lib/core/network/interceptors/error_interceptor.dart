@@ -1,0 +1,18 @@
+// lib/core/network/interceptors/error_interceptor.dart
+import 'package:dio/dio.dart';
+import '../../errors/error_handler.dart';
+
+class ErrorInterceptor extends Interceptor {
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) {
+    final exception = ErrorHandler.handleDioError(err);
+    handler.next(
+      DioException(
+        requestOptions: err.requestOptions,
+        response: err.response,
+        type: err.type,
+        error: exception,
+      ),
+    );
+  }
+}

@@ -1,0 +1,12 @@
+{
+    "appTitle": "私のアプリ",
+    "hello": "こんにちは",
+    "welcome": "ようこそ {name}さん",
+    "@welcome": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    }
+}

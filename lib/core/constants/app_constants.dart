@@ -1,0 +1,26 @@
+// ========================================
+// 1. CONSTANTS
+// ========================================
+
+// lib/core/constants/app_constants.dart
+class AppConstants {
+  AppConstants._();
+  
+  // App Info
+  static const String appName = 'My Flutter App';
+  static const String appVersion = '1.0.0';
+  
+  // Timeouts
+  static const Duration connectionTimeout = Duration(seconds: 30);
+  static const Duration receiveTimeout = Duration(seconds: 30);
+  
+  // Pagination
+  static const int defaultPageSize = 20;
+  static const int maxPageSize = 100;
+  
+  // Cache
+  static const Duration cacheExpiration = Duration(hours: 24);
+  
+  // Animation
+  static const Duration defaultAnimationDuration = Duration(milliseconds: 300);
+}

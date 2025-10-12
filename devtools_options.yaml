@@ -1,0 +1,18 @@
+# devtools_options.yaml
+# Cấu hình cho Flutter DevTools
+
+# Port mặc định khi mở DevTools
+port: 9100
+
+# Chạy DevTools theo theme nào: light / dark / system
+theme: dark
+
+# Plugin nào bật khi mở DevTools (Inspector, Timeline, Memory...)
+enabled_plugins:
+  - inspector
+  - cpu
+  - memory
+  - network
+
+# Nếu muốn bật logging chi tiết
+verbose: true
