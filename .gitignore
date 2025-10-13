@@ -43,3 +43,16 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+
+
+
+# Thêm vào cuối file .gitignore
+.env
+.env.development
+.env.staging
+.env.production
+.env.local
+
+# Giữ lại example
+!.env.example
