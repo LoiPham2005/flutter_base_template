@@ -1,47 +1,52 @@
-// lib/features/category/data/models/category_model.dart
-import '../../domain/entities/category.dart';
+import 'package:flutter_base_template/features/category/domain/entities/category.dart';
 
 class CategoryModel extends Category {
   const CategoryModel({
-    required super.id,
-    required super.name,
+    required super.categoryId,
+    required super.categoryName,
     super.description,
-    super.image,
-    required super.productCount,
+    super.iconUrl,
+    super.cloudinaryId,
+    required super.status,
+    required super.displayOrder,
     required super.createdAt,
   });
-  
+
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
-      id: json['id']?.toString() ?? '',
-      name: json['name'] ?? '',
-      description: json['description'],
-      image: json['image'],
-      productCount: json['product_count'] ?? 0,
-      createdAt: json['created_at'] != null 
-          ? DateTime.parse(json['created_at']) 
-          : DateTime.now(),
+      categoryId: json['categoryId'] as int,
+      categoryName: json['categoryName'] as String,
+      description: json['description'] as String?,
+      iconUrl: json['iconUrl'] as String?,
+      cloudinaryId: json['cloudinaryId'] as String?,
+      status: json['status'] as String,
+      displayOrder: json['displayOrder'] as int,
+      createdAt: DateTime.parse(json['createdAt']),
     );
   }
-  
+
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'name': name,
+      'categoryId': categoryId,
+      'categoryName': categoryName,
       'description': description,
-      'image': image,
-      'product_count': productCount,
-      'created_at': createdAt.toIso8601String(),
+      'iconUrl': iconUrl,
+      'cloudinaryId': cloudinaryId,
+      'status': status,
+      'displayOrder': displayOrder,
+      'createdAt': createdAt.toIso8601String(),
     };
   }
-  
+
   Category toEntity() {
     return Category(
-      id: id,
-      name: name,
+      categoryId: categoryId,
+      categoryName: categoryName,
       description: description,
-      image: image,
-      productCount: productCount,
+      iconUrl: iconUrl,
+      cloudinaryId: cloudinaryId,
+      status: status,
+      displayOrder: displayOrder,
       createdAt: createdAt,
     );
   }

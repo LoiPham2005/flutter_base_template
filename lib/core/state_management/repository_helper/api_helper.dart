@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_base_template/core/network/repository_helper/base_response.dart';
+import 'package:flutter_base_template/core/state_management/repository_helper/base_response.dart';
 
 class ApiHelper {
   /// Gọi API và xử lý kết quả trả về là **một đối tượng**

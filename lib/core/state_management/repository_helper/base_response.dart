@@ -176,6 +176,37 @@ class BaseResponse<T> {
     }
   }
 
+
+    /// ✅ Parse response KHÔNG có trường data
+  static BaseResponse<void> fromResponseNoData(Response response) {
+    try {
+      final map = response.data;
+
+      if (response.statusCode == 200 ||
+          response.statusCode == 201 ||
+          map['result'] == true ||
+          map['success'] == true ||
+          map['status'] == 200) {
+        return BaseResponse<void>(
+          result: map['result'] ?? true,
+          success: map['success'] ?? true,
+          status: response.statusCode,
+          message: map['message'] ?? 'Success',
+        );
+      } else {
+        return BaseResponse<void>(
+          result: false,
+          success: false,
+          status: response.statusCode,
+          message: map['message'] ?? 'Request failed',
+        );
+      }
+    } catch (e) {
+      return BaseResponse.handleError<void>(e);
+    }
+  }
+
+
   /// ✅ Chuyển lỗi DioException thành BaseResponse
   static BaseResponse<T> handleError<T>(dynamic error) {
     if (error is DioException) {

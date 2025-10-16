@@ -1,5 +1,5 @@
 
-import 'package:flutter_base_template/core/network/repository_helper/base_response.dart';
+import 'package:flutter_base_template/core/state_management/repository_helper/base_response.dart';
 import 'package:riverpod/riverpod.dart';
 
 extension AsyncNotifierUtils<T> on AsyncNotifier<T> {

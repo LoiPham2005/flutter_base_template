@@ -1,23 +1,35 @@
-// lib/features/category/domain/entities/category.dart
 import 'package:equatable/equatable.dart';
 
 class Category extends Equatable {
-  final String id;
-  final String name;
+  final int categoryId;
+  final String categoryName;
   final String? description;
-  final String? image;
-  final int productCount;
+  final String? iconUrl;
+  final String? cloudinaryId;
+  final String status;
+  final int displayOrder;
   final DateTime createdAt;
   
   const Category({
-    required this.id,
-    required this.name,
+    required this.categoryId,
+    required this.categoryName,
     this.description,
-    this.image,
-    required this.productCount,
+    this.iconUrl,
+    this.cloudinaryId,
+    required this.status,
+    required this.displayOrder,
     required this.createdAt,
   });
   
   @override
-  List<Object?> get props => [id, name, description, image, productCount, createdAt];
+  List<Object?> get props => [
+    categoryId, 
+    categoryName, 
+    description, 
+    iconUrl, 
+    cloudinaryId,
+    status,
+    displayOrder,
+    createdAt
+  ];
 }

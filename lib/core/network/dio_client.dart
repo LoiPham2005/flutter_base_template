@@ -10,8 +10,7 @@ import 'interceptors/logging_interceptor.dart';
 import 'interceptors/error_interceptor.dart';
 
 class DioClient {
-  late final Dio _dio;
-  
+
   DioClient({String? baseUrl}) {
     _dio = Dio(
       BaseOptions(
@@ -20,17 +19,21 @@ class DioClient {
         connectTimeout: AppConstants.connectionTimeout,
         receiveTimeout: AppConstants.receiveTimeout,
         headers: {
-          ApiConstants.headerContentType: 'application/json',
+          'Content-Type': 'application/json',
           'Accept': 'application/json',
 
-          'X-API-Key': EnvConfig.apiKey, // ✅ Từ .env
+          // 'X-API-Key': EnvConfig.apiKey, // ✅ Từ .env
         },
       ),
-    );
-    
-    _dio.interceptors.addAll([
-      AuthInterceptor(),
-      // LoggingInterceptor(),
+    )..interceptors.addAll([
+        AuthInterceptor(),
+        ErrorInterceptor(),
+        // if (EnvConfig.enableLogging)
+        //   PrettyDioLogger(
+        //     requestHeader: true,
+        //     requestBody: true,
+        //     responseBody: true,
+        //   ),
        PrettyDioLogger(
         requestHeader: true,
         requestBody: true,
@@ -40,34 +43,32 @@ class DioClient {
         compact: true,
         maxWidth: 200,
       ),
-      ErrorInterceptor(),
-    ]);
+      ]);
   }
-  
+  late final Dio _dio;
+
   Dio get dio => _dio;
-  
+
   // GET request
   Future<Response<T>> get<T>(
     String path, {
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
-    ProgressCallback? onReceiveProgress,
   }) async {
     try {
-      return await _dio.get<T>(
+      return await _dio.get(
         path,
         queryParameters: queryParameters,
         options: options,
         cancelToken: cancelToken,
-        onReceiveProgress: onReceiveProgress,
       );
     } on DioException catch (e) {
       Logger.error('GET Error: $path', error: e);
       rethrow;
     }
   }
-  
+
   // POST request
   Future<Response<T>> post<T>(
     String path, {
@@ -93,7 +94,7 @@ class DioClient {
       rethrow;
     }
   }
-  
+
   // PUT request
   Future<Response<T>> put<T>(
     String path, {
@@ -119,7 +120,7 @@ class DioClient {
       rethrow;
     }
   }
-  
+
   // PATCH request
   Future<Response<T>> patch<T>(
     String path, {
@@ -145,7 +146,7 @@ class DioClient {
       rethrow;
     }
   }
-  
+
   // DELETE request
   Future<Response<T>> delete<T>(
     String path, {
@@ -167,7 +168,7 @@ class DioClient {
       rethrow;
     }
   }
-  
+
   // Upload file
   Future<Response<T>> uploadFile<T>(
     String path,
@@ -181,7 +182,7 @@ class DioClient {
         fieldName: await MultipartFile.fromFile(filePath),
         ...?data,
       });
-      
+
       return await _dio.post<T>(
         path,
         data: formData,
@@ -192,7 +193,7 @@ class DioClient {
       rethrow;
     }
   }
-  
+
   // Download file
   Future<Response> downloadFile(
     String urlPath,

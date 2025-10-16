@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../network/repository_helper/base_response.dart';
+import '../repository_helper/base_response.dart';
 
 class BaseNotifier extends ChangeNotifier {
   bool _isLoading = false;

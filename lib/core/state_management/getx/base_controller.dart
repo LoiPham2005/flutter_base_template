@@ -1,4 +1,4 @@
-import 'package:flutter_base_template/core/network/repository_helper/base_response.dart';
+import 'package:flutter_base_template/core/state_management/repository_helper/base_response.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';

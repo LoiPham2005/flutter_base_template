@@ -20,7 +20,7 @@ class AppInitializer {
     await LocalStorage.getInstance();
 
     // 🔹 DI (Service Locator)
-    await registerServices();
+    // await registerServices();
 
     // 🔹 UI / Orientation
     await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
