@@ -2,7 +2,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_base_template/core/config/env_config.dart';
 import 'package:flutter_base_template/core/di/injection.dart';
 import 'package:flutter_base_template/core/di/register_services.dart';
 import 'package:flutter_base_template/core/storage/local_storage.dart';
@@ -19,9 +18,6 @@ class AppInitializer {
     // 🔹 Storage
     await LocalStorage.getInstance();
 
-    // 🔹 DI (Service Locator)
-    // await registerServices();
-
     // 🔹 UI / Orientation
     await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setSystemUIOverlayStyle(
@@ -33,15 +29,8 @@ class AppInitializer {
       ),
     );
 
-    // 3. Load environment
-    const envFile = kReleaseMode ? '.env.production' : '.env.development';
-    await EnvConfig.load(fileName: envFile);
-
-    Logger.info('Environment: ${EnvConfig.environment}');
-    Logger.info('API URL: ${EnvConfig.apiBaseUrl}');
-
     // 4. Setup DI
-    await setupDependencyInjection();
+    await configureDependencies();
 
     Logger.info('✅ App initialized successfully');
 

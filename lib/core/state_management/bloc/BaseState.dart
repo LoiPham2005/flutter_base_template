@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_base_template/core/enum/bloc_status.dart';
+import 'package:flutter_base_template/core/state_management/bloc_cubit/enum/bloc_status.dart';
 
 
 class BaseState<T> extends Equatable {

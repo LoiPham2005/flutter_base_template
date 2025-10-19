@@ -1,7 +1,6 @@
 // lib/core/utils/logger.dart
 import 'dart:developer' as developer;
 
-import 'package:flutter_base_template/core/config/env_config.dart';
 
 enum LogLevel { debug, info, warning, error }
 

@@ -82,7 +82,7 @@ dependencies:
   # --- Permissions & System ---
   permission_handler: ^12.0.1
   package_info_plus: ^8.3.0
-  url_launcher: ^6.3.1
+  url_launcher: ^6.3.2
   rename: ^3.1.0
 
   # --- Image & Media ---
@@ -142,9 +142,9 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     # ⬅️ ĐĂNG KÝ .ENV FILES
-    - .env.development
-    - .env.staging
-    - .env.production
+    # - .env.development
+    # - .env.staging
+    # - .env.production
 
     # Asset folders
     - assets/images/

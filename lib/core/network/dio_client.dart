@@ -1,6 +1,5 @@
 // lib/core/network/dio_client.dart
 import 'package:dio/dio.dart';
-import 'package:flutter_base_template/core/config/env_config.dart';
 import 'package:flutter_base_template/core/constants/api_constants.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import '../constants/app_constants.dart';
@@ -14,7 +13,7 @@ class DioClient {
   DioClient({String? baseUrl}) {
     _dio = Dio(
       BaseOptions(
-        baseUrl: baseUrl ?? ApiConstants.baseUrlDev,
+        baseUrl: baseUrl ?? ApiConstants.baseUrl,
         // baseUrl: baseUrl ?? EnvConfig.apiBaseUrl,  // ✅ Từ .env
         connectTimeout: AppConstants.connectionTimeout,
         receiveTimeout: AppConstants.receiveTimeout,

@@ -2,6 +2,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Helpers {
   Helpers._();
@@ -50,12 +51,12 @@ class Helpers {
   }
   
   // Open URL (requires url_launcher package)
-  // static Future<void> openUrl(String url) async {
-  //   final uri = Uri.parse(url);
-  //   if (await canLaunchUrl(uri)) {
-  //     await launchUrl(uri);
-  //   }
-  // }
+  static Future<void> openUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  }
   
   // Check if device is iOS
   static bool get isIOS => Platform.isIOS;

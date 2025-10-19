@@ -1,7 +1,17 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
-    id("kotlin-android")
+    id("org.jetbrains.kotlin.android")
     id("dev.flutter.flutter-gradle-plugin")
+}
+
+// Add these lines to read key.properties
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
 android {
@@ -16,16 +26,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
-    }
-
-    signingConfigs {
-        create("release") {
-            storeFile = file("../app/signing/release-keystore.jks")
-            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "your_password"
-            keyAlias = System.getenv("KEY_ALIAS") ?: "your_alias"
-            keyPassword = System.getenv("KEY_PASSWORD") ?: "your_key_password"
-        }
+        jvmTarget = "11"
     }
 
     defaultConfig {
@@ -34,52 +35,33 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        
-        // Enable multidex
         multiDexEnabled = true
     }
 
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["storePassword"] as String
+        }
+    }
+
     buildTypes {
-        release {
+        getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
             signingConfig = signingConfigs.getByName("release")
-            
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
-        
-        debug {
-            applicationIdSuffix = ".debug"
-            isDebuggable = true
-        }
-    }
-
-    flavorDimensions += "environment"
-    productFlavors {
-        create("development") {
-            dimension = "environment"
-            applicationIdSuffix = ".dev"
-            resValue("string", "app_name", "Flutter Base Dev")
-        }
-        
-        create("staging") {
-            dimension = "environment"
-            applicationIdSuffix = ".stg" 
-            resValue("string", "app_name", "Flutter Base Staging")
-        }
-        
-        create("production") {
-            dimension = "environment"
-            resValue("string", "app_name", "Flutter Base")
-        }
     }
 }
 
 dependencies {
-    add("coreLibraryDesugaring", "com.android.tools:desugar_jdk_libs:2.1.4")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }
 
 flutter {

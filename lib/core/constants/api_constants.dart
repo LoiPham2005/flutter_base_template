@@ -3,9 +3,11 @@ class ApiConstants {
   ApiConstants._();
 
   // Base URLs
-  static const String baseUrlDev = 'https://api-dev.example.com';
-  static const String baseUrlStaging = 'https://api-staging.example.com';
-  static const String baseUrlProd = 'https://api.example.com';
+  // static const String baseUrlDev = 'https://api-dev.example.com';
+  // static const String baseUrlStaging = 'https://api-staging.example.com';
+  // static const String baseUrlProd = 'https://api.example.com';
+
+    static const String baseUrl = 'https://api.example.com';
 
   // Headers
   static const String headerContentType = 'Content-Type';

@@ -42,12 +42,12 @@ import 'package:injectable/injectable.dart';
 final GetIt getIt = GetIt.instance;
 
 @InjectableInit()
-Future<void> setupDependencyInjection() async {
+Future<void> configureDependencies() async {
   getIt.init();
 }
 
 @module
 abstract class RegisterModule {
-
+   registerServices();
 }
 
