@@ -1,13 +1,17 @@
 // lib/core/network/api_client.dart
+import 'package:injectable/injectable.dart';
+
 import '../errors/exceptions.dart';
 import '../errors/result.dart';
 import '../errors/failures.dart';
 import 'dio_client.dart';
 
+@LazySingleton()
 class ApiClient {
-  final DioClient _dioClient;
   
   ApiClient(this._dioClient);
+  
+  final DioClient _dioClient;
   
   // Safe GET request with Result pattern
   Future<Result<T>> getResult<T>(

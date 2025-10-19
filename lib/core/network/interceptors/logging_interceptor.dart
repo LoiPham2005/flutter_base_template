@@ -1,8 +1,10 @@
 
 // lib/core/network/interceptors/logging_interceptor.dart
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 import '../../utils/logger.dart';
 
+@LazySingleton()
 class LoggingInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {

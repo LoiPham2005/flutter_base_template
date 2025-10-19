@@ -1,45 +1,46 @@
+import 'package:flutter_base_template/core/di/injection.dart';
 import 'package:flutter_base_template/core/network/dio_client.dart';
-import 'package:flutter_base_template/core/storage/shared_preferences/db_keys_local.dart';
-import 'package:flutter_base_template/core/storage/shared_preferences/share_pref.dart';
+import 'package:flutter_base_template/core/storage/storage_service.dart';
+import 'package:flutter_base_template/core/utils/logger.dart';
 import 'package:get/get.dart';
-import 'package:jwt_decoder/jwt_decoder.dart'; // Thêm package jwt_decoder
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:injectable/injectable.dart';
 
+@lazySingleton
 class CheckAuthService {
-  CheckAuthService._();
-  static final CheckAuthService instance = CheckAuthService._();
-  bool _isRefreshing = false; // Flag để tránh gọi refresh token đồng thời
+  CheckAuthService(this._storageService, this._dioClient);
+  final StorageService _storageService;
+  final DioClient _dioClient;
 
-  /// Kiểm tra accessToken, refreshToken
+  bool _isRefreshing = false;
+
   Future<void> checkAndRefreshToken() async {
-    // Nếu đang refresh thì bỏ qua
     if (_isRefreshing) return;
 
-    final accessToken = await SharedPrefs.getString(DbKeysLocal.accessToken);
-    final refreshToken = await SharedPrefs.getString(DbKeysLocal.refreshToken);
+    final accessToken = _storageService.getToken();
+    final refreshToken = _storageService
+        .getRefreshToken(); // Giả sử bạn có phương thức này
 
     if (accessToken == null || refreshToken == null) {
-      print("Tokens không tồn tại");
+      print('Tokens không tồn tại, không cần refresh.');
       return;
     }
 
     try {
-      // Kiểm tra access token có hết hạn chưa
-      bool isAccessTokenExpired = JwtDecoder.isExpired(accessToken);
-      bool isRefreshTokenExpired = JwtDecoder.isExpired(refreshToken);
+      final bool isAccessTokenExpired = JwtDecoder.isExpired(accessToken);
+      final bool isRefreshTokenExpired = JwtDecoder.isExpired(refreshToken);
 
       if (isRefreshTokenExpired) {
-        // Nếu refresh token hết hạn -> logout
-        print("Refresh token hết hạn");
-        _logout();
+        print('Refresh token đã hết hạn. Đăng xuất...');
+        await logout();
         return;
       }
 
       if (isAccessTokenExpired) {
-        // Nếu access token hết hạn -> gọi refresh
-        print("Access token hết hạn - đang refresh");
+        print('Access token đã hết hạn. Bắt đầu làm mới...');
         _isRefreshing = true;
 
-        final response = await DioClient().post(
+        final response = await _dioClient.post(
           '/auth/refresh-token',
           data: {'refreshToken': refreshToken},
         );
@@ -48,27 +49,28 @@ class CheckAuthService {
           final newAccessToken = response.data['data']['accessToken'];
           final newRefreshToken = response.data['data']['refreshToken'];
 
-          await SharedPrefs.setString(DbKeysLocal.accessToken, newAccessToken);
-          await SharedPrefs.setString(
-            DbKeysLocal.refreshToken,
+          await _storageService.saveToken(newAccessToken);
+          await _storageService.saveRefreshToken(
             newRefreshToken,
-          );
-          print("Refresh token thành công");
+          ); // Giả sử bạn có phương thức này
+          print('Refresh token thành công.');
         } else {
-          print("Refresh token thất bại");
-          _logout();
+          print('Refresh token thất bại. Đăng xuất...');
+          await logout();
         }
       }
     } catch (e) {
-      print("Lỗi khi refresh token: $e");
-      _logout();
+      print('Lỗi khi refresh token: $e. Đăng xuất...');
+      await logout();
     } finally {
       _isRefreshing = false;
     }
   }
 
-  void _logout() async {
-    await DbKeysLocal.clearAuthData();
-    // Get.offAll(() => LoginPage());
+  Future<void> logout() async {
+    await _storageService.clearAuthData();
+    // Cân nhắc điều hướng người dùng về trang đăng nhập
+    // Get.offAll(() => const LoginPage());
+    Logger.info('User logged out and auth data cleared.');
   }
 }

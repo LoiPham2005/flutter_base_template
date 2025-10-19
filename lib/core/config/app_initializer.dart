@@ -3,8 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_base_template/core/di/injection.dart';
-import 'package:flutter_base_template/core/di/register_services.dart';
-import 'package:flutter_base_template/core/storage/local_storage.dart';
 import 'package:flutter_base_template/core/utils/logger.dart';
 
 class AppInitializer {
@@ -14,9 +12,6 @@ class AppInitializer {
 
     // 🔹 Logger
     Logger.configure(enabled: true, minLevel: LogLevel.debug);
-
-    // 🔹 Storage
-    await LocalStorage.getInstance();
 
     // 🔹 UI / Orientation
     await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);

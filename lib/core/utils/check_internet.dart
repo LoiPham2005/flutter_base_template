@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:nb_utils/nb_utils.dart';
 
 class CheckInternet {
   static StreamSubscription? _subscription;
@@ -23,7 +22,7 @@ class CheckInternet {
       _isShown = true;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Row(
+          content: const Row(
             children: [
               Icon(Icons.wifi_off, color: Colors.white),
               SizedBox(width: 8),
@@ -31,7 +30,7 @@ class CheckInternet {
             ],
           ),
           backgroundColor: Colors.red,
-          duration: Duration(days: 1),
+          duration: const Duration(days: 1),
           behavior: SnackBarBehavior.floating,
           action: SnackBarAction(
             label: 'Thử lại',
@@ -43,7 +42,7 @@ class CheckInternet {
       if (onDisconnected != null) onDisconnected();
     }
 
-    _subscription?.cancel();
+    await _subscription?.cancel();
     _subscription = InternetConnectionChecker.instance.onStatusChange.listen((
       status,
     ) {
@@ -53,7 +52,7 @@ class CheckInternet {
             _isShown = false;
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
+              const SnackBar(
                 content: Row(
                   children: [
                     Icon(Icons.wifi, color: Colors.white),
@@ -75,7 +74,7 @@ class CheckInternet {
             _isShown = true;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Row(
+                content: const Row(
                   children: [
                     Icon(Icons.wifi_off, color: Colors.white),
                     SizedBox(width: 8),
@@ -83,7 +82,7 @@ class CheckInternet {
                   ],
                 ),
                 backgroundColor: Colors.red,
-                duration: Duration(days: 1),
+                duration: const Duration(days: 1),
                 behavior: SnackBarBehavior.floating,
                 action: SnackBarAction(
                   label: 'Thử lại',
@@ -98,9 +97,9 @@ class CheckInternet {
         case InternetConnectionStatus.slow:
           if (showMessage) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
+              const SnackBar(
                 content: Row(
-                  children: const [
+                  children: [
                     Icon(Icons.signal_wifi_bad, color: Colors.white),
                     SizedBox(width: 8),
                     Text('Kết nối mạng yếu'),

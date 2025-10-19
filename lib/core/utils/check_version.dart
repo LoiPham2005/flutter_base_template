@@ -12,9 +12,9 @@ class CheckVersion {
     required String iosBundleId,
   }) async {
     try {
-      PackageInfo packageInfo = await PackageInfo.fromPlatform();
-      String currentVersion = packageInfo.version;
-      String appName = packageInfo.appName;
+      final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      final String currentVersion = packageInfo.version;
+      final String appName = packageInfo.appName;
 
       ModelVersion? storeVersion;
 
@@ -69,8 +69,8 @@ class CheckVersion {
   }
 
   static bool _isNewer(String current, String remote) {
-    List<int> c = current.split('.').map(int.parse).toList();
-    List<int> r = remote.split('.').map(int.parse).toList();
+    final List<int> c = current.split('.').map(int.parse).toList();
+    final List<int> r = remote.split('.').map(int.parse).toList();
     for (int i = 0; i < r.length; i++) {
       if (i >= c.length || r[i] > c[i]) return true;
       if (r[i] < c[i]) return false;

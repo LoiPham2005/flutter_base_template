@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_base_template/core/storage/shared_preferences/app_preferences.dart';
+import 'package:flutter_base_template/core/storage/storage_service.dart';
 import 'package:flutter_base_template/core/utils/check_internet.dart';
 import 'package:flutter_base_template/core/utils/check_version.dart';
 import 'package:flutter_base_template/features/auth/presentation/pages/login_page.dart';
@@ -8,7 +8,7 @@ import 'package:flutter_base_template/features/welcome/presentation/pages/welcom
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:flutter_base_template/core/di/injection.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
@@ -31,7 +31,7 @@ class SplashPage extends StatelessWidget {
         await _continueInitialization(context);
       }
     } catch (e) {
-      print("Error initializing app: $e");
+      print('Error initializing app: $e');
       // Fallback nếu có lỗi
       await _continueInitialization(context);
     }
@@ -39,6 +39,9 @@ class SplashPage extends StatelessWidget {
 
   Future<void> _continueInitialization(BuildContext context) async {
     try {
+      // Lấy instance của StorageService từ DI
+      final storageService = getIt<StorageService>();
+
       // Check version
       await CheckVersion.check(
         context,
@@ -46,23 +49,25 @@ class SplashPage extends StatelessWidget {
         iosBundleId: 'com.example.dat_san_247_mobile',
       );
 
-      final firstRun = await AppPreferences.isFirstRun();
-      final loggedIn = await AppPreferences.isLogin();
+      final firstRun = storageService.isFirstRun();
+      final loggedIn = storageService.isLoggedIn();
 
-      print("isFirstRun: $firstRun");
-      print("isLogin: $loggedIn");
+      // Nếu là lần đầu chạy, set lại để lần sau không vào nữa
+      if (firstRun) {
+        await storageService.setFirstRun(false);
+      }
 
       if (firstRun) {
-        await Get.offAll(() => const WelcomPage());
+        Get.offAll(() => const WelcomPage());
       } else {
         if (loggedIn) {
-          await Get.offAll(() => const BottomMenu());
+          Get.offAll(() => const BottomMenu());
         } else {
-          await Get.offAll(() => const LoginPage());
+          Get.offAll(() => const LoginPage());
         }
       }
     } catch (e) {
-      print("Error in continuation: $e");
+      print('Error in continuation: $e');
       // Fallback về login page nếu có lỗi
       Get.offAll(() => const LoginPage());
     }
@@ -75,7 +80,7 @@ class SplashPage extends StatelessWidget {
       _initializeApp(context);
     });
 
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -86,7 +91,7 @@ class SplashPage extends StatelessWidget {
             //   height: 120,
             // ),
             // const SizedBox(height: 24),
-            const CircularProgressIndicator(),
+            CircularProgressIndicator(),
           ],
         ),
       ),

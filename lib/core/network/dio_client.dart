@@ -1,48 +1,48 @@
 // lib/core/network/dio_client.dart
 import 'package:dio/dio.dart';
 import 'package:flutter_base_template/core/constants/api_constants.dart';
+import 'package:flutter_base_template/core/constants/app_constants.dart';
+import 'package:flutter_base_template/core/utils/logger.dart';
+import 'package:injectable/injectable.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import '../constants/app_constants.dart';
-import '../utils/logger.dart';
 import 'interceptors/auth_interceptor.dart';
-import 'interceptors/logging_interceptor.dart';
 import 'interceptors/error_interceptor.dart';
+import 'interceptors/logging_interceptor.dart';
 
+@LazySingleton()
 class DioClient {
-
-  DioClient({String? baseUrl}) {
-    _dio = Dio(
-      BaseOptions(
-        baseUrl: baseUrl ?? ApiConstants.baseUrl,
-        // baseUrl: baseUrl ?? EnvConfig.apiBaseUrl,  // ✅ Từ .env
-        connectTimeout: AppConstants.connectionTimeout,
-        receiveTimeout: AppConstants.receiveTimeout,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-
-          // 'X-API-Key': EnvConfig.apiKey, // ✅ Từ .env
-        },
-      ),
-    )..interceptors.addAll([
-        AuthInterceptor(),
-        ErrorInterceptor(),
-        // if (EnvConfig.enableLogging)
-        //   PrettyDioLogger(
-        //     requestHeader: true,
-        //     requestBody: true,
-        //     responseBody: true,
-        //   ),
-       PrettyDioLogger(
-        requestHeader: true,
-        requestBody: true,
-        responseBody: true,
-        responseHeader: false,
-        error: true,
-        compact: true,
-        maxWidth: 200,
-      ),
-      ]);
+  // Nhận các interceptor từ DI
+  DioClient(
+    AuthInterceptor authInterceptor,
+    ErrorInterceptor errorInterceptor,
+    LoggingInterceptor loggingInterceptor,
+  ) {
+    _dio =
+        Dio(
+            BaseOptions(
+              baseUrl: ApiConstants.baseUrl,
+              connectTimeout: AppConstants.connectionTimeout,
+              receiveTimeout: AppConstants.receiveTimeout,
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+              },
+            ),
+          )
+          ..interceptors.addAll([
+            authInterceptor, // Dùng interceptor đã được inject
+            errorInterceptor,
+            loggingInterceptor,
+            PrettyDioLogger(
+              requestHeader: true,
+              requestBody: true,
+              responseBody: true,
+              responseHeader: false,
+              error: true,
+              compact: true,
+              maxWidth: 90,
+            ),
+          ]);
   }
   late final Dio _dio;
 
