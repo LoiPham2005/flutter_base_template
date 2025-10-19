@@ -12,12 +12,12 @@ class DbKeysLocal {
   // type bool
   static const String isFirstRun = 'is_first_run';
   static const String isLogin = 'is_first_login';
-  static const String isSaveLogin = '/is_save_login';
-  static const String isWarning = '/is_warning';
-  static const String userId = '/user_id';
+  static const String isSaveLogin = 'is_save_login';
+  static const String isWarning = 'is_warning';
+  static const String userId = 'user_id';
   static const String user = 'user';
   static const String themeKey = 'theme_key'; // 🔑 lưu theme hiện tại
-  static const String isDark = '/is_dark';
+  static const String isDark = 'is_dark';
   
   static String bankApp = "bank_app";
 

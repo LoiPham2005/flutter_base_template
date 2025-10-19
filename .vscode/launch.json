@@ -1,53 +1,36 @@
-// // {
-// //   "version": "0.2.0",
-// //   "configurations": [
-// //     {
-// //       "name": "Development",
-// //       "request": "launch",
-// //       "type": "dart",
-// //       "program": "lib/main.dart",
-// //       "args": [
-// //         "--dart-define-from-file=.env.development"
-// //       ]
-// //     },
-// //     {
-// //       "name": "Staging",
-// //       "request": "launch",
-// //       "type": "dart",
-// //       "program": "lib/main.dart",
-// //       "args": [
-// //         "--dart-define-from-file=.env.staging"
-// //       ]
-// //     },
-// //     {
-// //       "name": "Production",
-// //       "request": "launch",
-// //       "type": "dart",
-// //       "program": "lib/main.dart",
-// //       "args": [
-// //         "--dart-define-from-file=.env.production"
-// //       ]
-// //     }
-// //   ]
-// // }
+
 
 
 // {
 //   "version": "0.2.0",
 //   "configurations": [
 //     {
-//       "name": "🔧 Development",
+//       "name": "🧩 Development",
 //       "request": "launch",
 //       "type": "dart",
-//       "program": "lib/main.dart",
-//       "args": []
+//       "program": "lib/main_dev.dart",
+//       "args": [
+//         "--dart-define-from-file=.env.development"
+//       ]
+//     },
+//     {
+//       "name": "🧪 Staging",
+//       "request": "launch",
+//       "type": "dart",
+//       "program": "lib/main_Staging.dart",
+//       "args": [
+//         "--dart-define-from-file=.env.staging"
+//       ]
 //     },
 //     {
 //       "name": "🚀 Production",
 //       "request": "launch",
 //       "type": "dart",
-//       "program": "lib/main.dart",
-//       "args": ["--release"]
+//       "program": "lib/main_prod.dart",
+//       "args": [
+//         "--dart-define-from-file=.env.production",
+//         "--release"
+//       ]
 //     }
 //   ]
 // }
@@ -57,32 +40,25 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "🧩 Development",
+      "name": "Development",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main.dart",
-      "args": [
-        "--dart-define-from-file=.env.development"
-      ]
+      "program": "lib/main_dev.dart",
+      "args": ["--flavor", "development"]
     },
     {
-      "name": "🧪 Staging",
-      "request": "launch",
+      "name": "Staging",
+      "request": "launch", 
       "type": "dart",
-      "program": "lib/main.dart",
-      "args": [
-        "--dart-define-from-file=.env.staging"
-      ]
+      "program": "lib/main_staging.dart",
+      "args": ["--flavor", "staging"]
     },
     {
-      "name": "🚀 Production",
+      "name": "Production",
       "request": "launch",
-      "type": "dart",
-      "program": "lib/main.dart",
-      "args": [
-        "--dart-define-from-file=.env.production",
-        "--release"
-      ]
+      "type": "dart", 
+      "program": "lib/main_prod.dart",
+      "args": ["--flavor", "production"]
     }
   ]
 }

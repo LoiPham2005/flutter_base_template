@@ -14,8 +14,8 @@ class DioClient {
   DioClient({String? baseUrl}) {
     _dio = Dio(
       BaseOptions(
-        // baseUrl: baseUrl ?? ApiConstants.baseUrlDev,
-        baseUrl: baseUrl ?? EnvConfig.apiBaseUrl,  // ✅ Từ .env
+        baseUrl: baseUrl ?? ApiConstants.baseUrlDev,
+        // baseUrl: baseUrl ?? EnvConfig.apiBaseUrl,  // ✅ Từ .env
         connectTimeout: AppConstants.connectionTimeout,
         receiveTimeout: AppConstants.receiveTimeout,
         headers: {

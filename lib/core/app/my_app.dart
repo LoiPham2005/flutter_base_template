@@ -4,7 +4,7 @@ import 'package:flutter_base_template/core/config/app_config.dart';
 import 'package:flutter_base_template/core/l10n/app_localization_delegate_config.dart';
 import 'package:flutter_base_template/core/theme/app_theme.dart';
 
-import '../../routes/app_router.dart';
+import '../../router/app_router.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -45,14 +45,8 @@ class _MyAppState extends State<MyApp> {
       localizationsDelegates: AppLocalizationConfig.localizationsDelegates,
 
       // router
-      routerConfig: appRouter,
+      routerConfig: AppRouter.router,
 
-    
-      // Navigation
-      // navigatorKey: NavigationService().navigatorKey,
-
-      // Home
-      // home: const HomePage(),
     );
   }
 }
