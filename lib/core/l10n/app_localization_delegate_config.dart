@@ -15,7 +15,6 @@ class AppLocalizationConfig {
 
   // Các delegate
   static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = [
-    // AppLocalizations.delegate,
     GlobalMaterialLocalizations.delegate,
     GlobalWidgetsLocalizations.delegate,
     GlobalCupertinoLocalizations.delegate,

@@ -3,10 +3,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class CacheManager {
-  static CacheManager? _instance;
-  final SharedPreferences _prefs;
   
   CacheManager._(this._prefs);
+  
+  static CacheManager? _instance;
+  final SharedPreferences _prefs;
   
   static Future<CacheManager> getInstance() async {
     if (_instance == null) {
