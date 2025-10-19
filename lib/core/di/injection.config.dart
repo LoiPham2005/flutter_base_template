@@ -24,6 +24,7 @@ import '../../features/category/domain/repositories/category_repository.dart'
 import '../../features/category/domain/usecases/category_usecases.dart'
     as _i514;
 import '../../features/category/presentation/bloc/category_bloc.dart' as _i292;
+import '../l10n/localization_service.dart' as _i502;
 import '../network/api_client.dart' as _i557;
 import '../network/base_repository.dart' as _i393;
 import '../network/dio_client.dart' as _i667;
@@ -32,7 +33,9 @@ import '../network/interceptors/error_interceptor.dart' as _i511;
 import '../network/interceptors/logging_interceptor.dart' as _i344;
 import '../network/network_info.dart' as _i932;
 import '../storage/secure_storage.dart' as _i619;
+import '../storage/storage_core.dart' as _i311;
 import '../storage/storage_service.dart' as _i865;
+import '../theme/theme_service.dart' as _i499;
 import '../utils/check_auth_service.dart' as _i476;
 import 'injection.dart' as _i464;
 
@@ -62,11 +65,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i745.AuthInterceptor>(
       () => _i745.AuthInterceptor(gh<_i865.StorageService>()),
     );
+    gh.lazySingleton<_i499.ThemeService>(
+      () => _i499.ThemeService(gh<_i865.StorageService>()),
+    );
     gh.lazySingleton<_i619.SecureStorage>(
       () => _i619.SecureStorage(gh<_i558.FlutterSecureStorage>()),
     );
     gh.lazySingleton<_i932.NetworkInfo>(
       () => _i932.NetworkInfoImpl(gh<_i895.Connectivity>()),
+    );
+    gh.lazySingleton<_i502.LocalizationService>(
+      () => _i502.LocalizationService(gh<_i311.StorageCore>()),
     );
     gh.lazySingleton<_i667.DioClient>(
       () => _i667.DioClient(

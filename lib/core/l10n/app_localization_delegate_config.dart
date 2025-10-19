@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'app_localizations.dart';
+import 'localization_service.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 class AppLocalizationConfig {

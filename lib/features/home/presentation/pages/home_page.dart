@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_base_template/core/extensions/localization_x.dart';
-import 'package:flutter_base_template/core/l10n/app_localizations.dart';
+import 'package:flutter_base_template/core/l10n/localization_service.dart';
 
 
 class HomePage extends StatelessWidget {

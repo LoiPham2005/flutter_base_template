@@ -2,8 +2,17 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'base_theme.dart';
 
+enum AppThemeKey { light, dark, green, blue }
 class AppTheme {
   AppTheme._();
+
+    /// 🎭 Danh sách tất cả Theme
+  static final Map<AppThemeKey, ThemeData> themes = {
+    AppThemeKey.light: lightTheme,
+    AppThemeKey.dark: darkTheme,
+    // AppThemeKey.green: _greenTheme,
+    // AppThemeKey.blue: _blueTheme,
+  };
 
   static final ThemeData lightTheme = BaseTheme.buildBaseTheme(
     colorScheme: const ColorScheme.light(
