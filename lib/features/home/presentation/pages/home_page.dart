@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
         title: const Text('Home Page'),
       ),
       body: Center(
-        child: Text(context.tr.appTitle),
+        child: Text(context.l10n.appTitle),
       ),
     );
   }

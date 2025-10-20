@@ -8,6 +8,10 @@ class AppConstants {
   
   // App Info
   static const String appName = 'My Flutter App';
+  static const String appNameDev = 'Base App (Dev)';
+  static const String appNameStg = 'Base App (Stg)';
+  static const String appNameProd = 'Base App';
+
   static const String appVersion = '1.0.0';
   
   // Timeouts

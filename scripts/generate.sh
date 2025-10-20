@@ -7,6 +7,8 @@ flutter pub run build_runner build --delete-conflicting-outputs
 
 echo "✅ Code generation completed successfully!"
 
+# gen l10n
+flutter gen-l10n
 
 
 # Build APK

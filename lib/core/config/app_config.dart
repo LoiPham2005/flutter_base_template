@@ -1,5 +1,6 @@
 // filepath: lib/core/config/app_config.dart
 import 'package:flutter_base_template/core/constants/api_constants.dart';
+import 'package:flutter_base_template/core/constants/app_constants.dart';
 
 enum Environment { development, staging, production }
 
@@ -18,19 +19,19 @@ class AppConfig {
     switch (env) {
       case Environment.development:
         return AppConfig(
-          appName: 'Base App (Dev)',
+          appName: AppConstants.appNameDev,
           baseUrl: ApiConstants.baseUrlDev,
           environment: env,
         );
       case Environment.staging:
         return AppConfig(
-          appName: 'Base App (Stg)',
+          appName: AppConstants.appNameStg,
           baseUrl: ApiConstants.baseUrlStaging,
           environment: env,
         );
       case Environment.production:
         return AppConfig(
-          appName: 'Base App',
+          appName: AppConstants.appNameProd,
           baseUrl: ApiConstants.baseUrlProd,
           environment: env,
         );
