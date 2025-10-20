@@ -24,6 +24,7 @@ import '../../features/category/domain/repositories/category_repository.dart'
 import '../../features/category/domain/usecases/category_usecases.dart'
     as _i514;
 import '../../features/category/presentation/bloc/category_bloc.dart' as _i292;
+import '../config/app_config.dart' as _i650;
 import '../l10n/localization_service.dart' as _i502;
 import '../network/api_client.dart' as _i557;
 import '../network/base_repository.dart' as _i393;
@@ -68,21 +69,29 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i499.ThemeService>(
       () => _i499.ThemeService(gh<_i865.StorageService>()),
     );
+    gh.lazySingleton<_i650.AppConfig>(
+      () => _i650.AppConfig(
+        appName: gh<String>(),
+        baseUrl: gh<String>(),
+        environment: gh<_i650.Environment>(),
+      ),
+    );
     gh.lazySingleton<_i619.SecureStorage>(
       () => _i619.SecureStorage(gh<_i558.FlutterSecureStorage>()),
     );
     gh.lazySingleton<_i932.NetworkInfo>(
       () => _i932.NetworkInfoImpl(gh<_i895.Connectivity>()),
     );
-    gh.lazySingleton<_i502.LocalizationService>(
-      () => _i502.LocalizationService(gh<_i311.StorageCore>()),
-    );
     gh.lazySingleton<_i667.DioClient>(
       () => _i667.DioClient(
+        gh<_i650.AppConfig>(),
         gh<_i745.AuthInterceptor>(),
         gh<_i511.ErrorInterceptor>(),
         gh<_i344.LoggingInterceptor>(),
       ),
+    );
+    gh.lazySingleton<_i502.LocalizationService>(
+      () => _i502.LocalizationService(gh<_i311.StorageCore>()),
     );
     gh.lazySingleton<_i557.ApiClient>(
       () => _i557.ApiClient(gh<_i667.DioClient>()),

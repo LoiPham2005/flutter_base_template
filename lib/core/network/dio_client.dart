@@ -8,11 +8,13 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'interceptors/auth_interceptor.dart';
 import 'interceptors/error_interceptor.dart';
 import 'interceptors/logging_interceptor.dart';
+import 'package:flutter_base_template/core/config/app_config.dart';
 
 @LazySingleton()
 class DioClient {
-  // Nhận các interceptor từ DI
+  // Nhận AppConfig từ DI
   DioClient(
+    AppConfig appConfig,
     AuthInterceptor authInterceptor,
     ErrorInterceptor errorInterceptor,
     LoggingInterceptor loggingInterceptor,
@@ -20,7 +22,7 @@ class DioClient {
     _dio =
         Dio(
             BaseOptions(
-              baseUrl: ApiConstants.baseUrl,
+              baseUrl: appConfig.baseUrl,
               connectTimeout: AppConstants.connectionTimeout,
               receiveTimeout: AppConstants.receiveTimeout,
               headers: {
@@ -40,7 +42,7 @@ class DioClient {
               responseHeader: false,
               error: true,
               compact: true,
-              maxWidth: 90,
+              maxWidth: 200,
             ),
           ]);
   }

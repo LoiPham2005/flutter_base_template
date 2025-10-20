@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_base_template/core/storage/storage_core.dart';
 import 'package:get/get.dart';
 import 'package:injectable/injectable.dart';
 import '../storage/storage_service.dart';
 import '../storage/storage_keys.dart';
-import 'app_localization_delegate_config.dart';
 
 @lazySingleton
 class LocalizationService {
-  final StorageCore _storagecore;
-
-  LocalizationService(this._storagecore);
+  LocalizationService(this._storageService);
+  final StorageService _storageService;
 
   // Observable locale state
   final _currentLocale = const Locale('vi').obs;
@@ -25,7 +22,7 @@ class LocalizationService {
 
   // Khởi tạo locale từ storage
   Future<void> initLocale() async {
-    final savedLocale = _storagecore.get<String>(StorageKeys.languageCode);
+    final savedLocale = _storageService.get<String>(StorageKeys.languageCode);
     if (savedLocale != null && supportedLanguages.containsKey(savedLocale)) {
       await changeLocale(savedLocale);
     }
@@ -39,7 +36,7 @@ class LocalizationService {
     if (newLocale == _currentLocale.value) return;
 
     _currentLocale.value = newLocale;
-    await _storagecore.set(StorageKeys.languageCode, languageCode);
+    await _storageService.set(StorageKeys.languageCode, languageCode);
     Get.updateLocale(newLocale);
   }
 

@@ -33,11 +33,12 @@
 
 // dùng gen code
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter_base_template/core/di/injection.config.dart';
+import 'package:flutter_base_template/core/config/app_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'injection.config.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -46,21 +47,24 @@ final GetIt getIt = GetIt.instance;
   preferRelativeImports: true,
   asExtension: true,
 )
-Future<void> configureDependencies() async => getIt.init();
+Future<void> configureDependencies({required String flavor}) async {
+  // Đăng ký AppConfig một cách tường minh dựa trên flavor
+  getIt.registerSingleton<AppConfig>(AppConfig.fromFlavor(flavor));
+
+  // Chạy code generation của injectable
+  getIt.init();
+}
 
 @module
 abstract class RegisterModule {
-  // Cung cấp SharedPreferences
   @preResolve
   Future<SharedPreferences> get prefs => SharedPreferences.getInstance();
 
-  // Cung cấp FlutterSecureStorage
   @lazySingleton
   FlutterSecureStorage get secureStorage => const FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
   );
 
-  // Cung cấp Connectivity
   @lazySingleton
   Connectivity get connectivity => Connectivity();
 }
