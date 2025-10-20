@@ -9,9 +9,10 @@ echo "✅ Code generation completed successfully!"
 
 
 
-# Build cho môi trường development
+# Build APK
 flutter build apk --flavor development -t lib/main_development.dart
-flutter build appbundle --flavor development -t lib/main_development.dart
-
-# Build cho môi trường production
+flutter build apk --flavor staging -t lib/main_staging.dart
 flutter build apk --flavor production -t lib/main_production.dart
+
+# Build AAB
+flutter build appbundle --flavor production -t lib/main_production.dart

@@ -34,7 +34,6 @@ import '../network/interceptors/error_interceptor.dart' as _i511;
 import '../network/interceptors/logging_interceptor.dart' as _i344;
 import '../network/network_info.dart' as _i932;
 import '../storage/secure_storage.dart' as _i619;
-import '../storage/storage_core.dart' as _i311;
 import '../storage/storage_service.dart' as _i865;
 import '../theme/theme_service.dart' as _i499;
 import '../utils/check_auth_service.dart' as _i476;
@@ -63,38 +62,20 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i865.StorageService>(
       () => _i865.StorageService(gh<_i460.SharedPreferences>()),
     );
-    gh.lazySingleton<_i745.AuthInterceptor>(
-      () => _i745.AuthInterceptor(gh<_i865.StorageService>()),
-    );
-    gh.lazySingleton<_i499.ThemeService>(
-      () => _i499.ThemeService(gh<_i865.StorageService>()),
-    );
-    gh.lazySingleton<_i650.AppConfig>(
-      () => _i650.AppConfig(
-        appName: gh<String>(),
-        baseUrl: gh<String>(),
-        environment: gh<_i650.Environment>(),
-      ),
-    );
     gh.lazySingleton<_i619.SecureStorage>(
       () => _i619.SecureStorage(gh<_i558.FlutterSecureStorage>()),
     );
     gh.lazySingleton<_i932.NetworkInfo>(
       () => _i932.NetworkInfoImpl(gh<_i895.Connectivity>()),
     );
-    gh.lazySingleton<_i667.DioClient>(
-      () => _i667.DioClient(
-        gh<_i650.AppConfig>(),
-        gh<_i745.AuthInterceptor>(),
-        gh<_i511.ErrorInterceptor>(),
-        gh<_i344.LoggingInterceptor>(),
-      ),
+    gh.lazySingleton<_i745.AuthInterceptor>(
+      () => _i745.AuthInterceptor(gh<_i865.StorageService>()),
     );
     gh.lazySingleton<_i502.LocalizationService>(
-      () => _i502.LocalizationService(gh<_i311.StorageCore>()),
+      () => _i502.LocalizationService(gh<_i865.StorageService>()),
     );
-    gh.lazySingleton<_i557.ApiClient>(
-      () => _i557.ApiClient(gh<_i667.DioClient>()),
+    gh.lazySingleton<_i499.ThemeService>(
+      () => _i499.ThemeService(gh<_i865.StorageService>()),
     );
     gh.lazySingleton<_i869.CategoryRepository>(
       () => _i528.CategoryRepositoryImpl(
@@ -102,16 +83,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i932.NetworkInfo>(),
       ),
     );
-    gh.lazySingleton<_i88.CategoryRemoteDataSourceImpl>(
-      () => _i88.CategoryRemoteDataSourceImpl(gh<_i667.DioClient>()),
-    );
     gh.lazySingleton<_i393.BaseRepository>(
       () => _i393.BaseRepository(gh<_i932.NetworkInfo>()),
     );
-    gh.lazySingleton<_i476.CheckAuthService>(
-      () => _i476.CheckAuthService(
-        gh<_i865.StorageService>(),
-        gh<_i667.DioClient>(),
+    gh.lazySingleton<_i667.DioClient>(
+      () => _i667.DioClient(
+        gh<_i650.AppConfig>(),
+        gh<_i745.AuthInterceptor>(),
+        gh<_i511.ErrorInterceptor>(),
+        gh<_i344.LoggingInterceptor>(),
       ),
     );
     gh.factory<_i514.GetCategoriesUseCase>(
@@ -123,6 +103,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i292.CategoryBloc>(
       () => _i292.CategoryBloc(
         getCategoriesUseCase: gh<_i514.GetCategoriesUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i557.ApiClient>(
+      () => _i557.ApiClient(gh<_i667.DioClient>()),
+    );
+    gh.lazySingleton<_i88.CategoryRemoteDataSourceImpl>(
+      () => _i88.CategoryRemoteDataSourceImpl(gh<_i667.DioClient>()),
+    );
+    gh.lazySingleton<_i476.CheckAuthService>(
+      () => _i476.CheckAuthService(
+        gh<_i865.StorageService>(),
+        gh<_i667.DioClient>(),
       ),
     );
     return this;

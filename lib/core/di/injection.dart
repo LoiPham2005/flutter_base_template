@@ -1,42 +1,8 @@
-// import 'package:connectivity_plus/connectivity_plus.dart';
-// import 'package:flutter_base_template/core/network/dio_client.dart';
-// import 'package:flutter_base_template/core/network/network_info.dart';
-// import 'package:flutter_base_template/core/services/navigation_service.dart';
-// import 'package:flutter_base_template/core/storage/local_storage.dart';
-// import 'package:get_it/get_it.dart';
-// import 'register_services.dart';
-
-// final GetIt getIt = GetIt.instance;
-
-// /// Gọi để khởi tạo tất cả dependency khi app start
-// Future<void> setupDependencyInjection() async {
-//   await registerServices();
-
-//     // Core Services
-//   getIt.registerLazySingleton(() => NavigationService());
-
-//   // Storage
-//   final localStorage = await LocalStorage.getInstance();
-//   getIt.registerLazySingleton(() => localStorage);
-
-//   // Network
-//   getIt.registerLazySingleton(() => Connectivity());
-//   getIt.registerLazySingleton<NetworkInfo>(
-//     () => NetworkInfoImpl(getIt<Connectivity>()),
-//   );
-//   getIt.registerLazySingleton(() => DioClient());
-
-//   // Features - Add your features here
-//   // await setupAuthDependencies();
-//   // await setupCategoryDependencies();
-// }
-
-// dùng gen code
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_base_template/core/config/app_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:injectable/injectable.dart';
+import 'package:injectable/injectable.dart' hide Environment; // 👈 Sửa dòng này
 import 'package:shared_preferences/shared_preferences.dart';
 import 'injection.config.dart';
 
@@ -47,12 +13,13 @@ final GetIt getIt = GetIt.instance;
   preferRelativeImports: true,
   asExtension: true,
 )
-Future<void> configureDependencies({required String flavor}) async {
-  // Đăng ký AppConfig một cách tường minh dựa trên flavor
-  getIt.registerSingleton<AppConfig>(AppConfig.fromFlavor(flavor));
+// Sửa lại để nhận đúng enum Environment của bạn
+Future<void> configureDependencies({required Environment env}) async {
+  // ✅ Đăng ký AppConfig từ enum
+  getIt.registerSingleton<AppConfig>(AppConfig.fromEnvironment(env));
 
-  // Chạy code generation của injectable
-  getIt.init();
+  // ✅ Chạy code generation của injectable, truyền vào tên của enum
+  getIt.init(environment: env.name);
 }
 
 @module
