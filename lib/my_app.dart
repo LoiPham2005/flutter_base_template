@@ -27,8 +27,8 @@ class MyApp extends StatelessWidget {
 
       // Localization
       locale: localizationService.currentLocale,
-      supportedLocales: AppLocalizationConfig.supportedLocales,
-      localizationsDelegates: AppLocalizationConfig.localizationsDelegates,
+      supportedLocales: AppLocalizationDelegateConfig.supportedLocales,
+      localizationsDelegates: AppLocalizationDelegateConfig.localizationsDelegates,
 
       home: const HomePage(),
     );
