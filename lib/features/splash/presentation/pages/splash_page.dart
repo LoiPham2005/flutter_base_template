@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_base_template/core/constants/app_constants.dart';
 import 'package:flutter_base_template/core/storage/storage_service.dart';
 import 'package:flutter_base_template/core/utils/check_internet.dart';
 import 'package:flutter_base_template/core/utils/check_version.dart';
@@ -6,8 +7,6 @@ import 'package:flutter_base_template/features/auth/presentation/pages/login_pag
 import 'package:flutter_base_template/features/bottom_menu/presentation/pages/bottom_menu.dart';
 import 'package:flutter_base_template/features/welcome/presentation/pages/welcom_page.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_base_template/core/di/injection.dart';
 
 class SplashPage extends StatelessWidget {
@@ -45,8 +44,8 @@ class SplashPage extends StatelessWidget {
       // Check version
       await CheckVersion.check(
         context,
-        androidPackageId: 'com.example.dat_san_247_mobile',
-        iosBundleId: 'com.example.dat_san_247_mobile',
+        androidPackageId: AppConstants.androidPackageId,
+        iosBundleId: AppConstants.iosBundleId,
       );
 
       final firstRun = storageService.isFirstRun();

@@ -17,7 +17,6 @@
 //   static const String errorAnimation = 'assets/animations/error.json';
 // }
 
-
 // lib/core/constants/assets.dart
 class Assets {
   Assets._();

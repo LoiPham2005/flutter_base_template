@@ -5,7 +5,10 @@
 // lib/core/constants/app_constants.dart
 class AppConstants {
   AppConstants._();
-  
+
+  // PackageId
+  static const String androidPackageId = 'com.example.dat_san_247_mobile';
+  static const String iosBundleId = 'com.example.dat_san_247_mobile';
   // App Info
   static const String appName = 'My Flutter App';
   static const String appNameDev = 'Base App (Dev)';

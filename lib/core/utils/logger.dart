@@ -24,10 +24,6 @@ class Logger {
 
   static void info(String message, {String? tag, dynamic data}) {
     _log(LogLevel.info, message, tag: tag, data: data);
-    // if (EnvConfig.enableLogging) {
-    //   // ✅ Từ .env
-    //   developer.log('ℹ️ $message', name: 'APP');
-    // }
   }
 
   static void warning(String message, {String? tag, dynamic data}) {
