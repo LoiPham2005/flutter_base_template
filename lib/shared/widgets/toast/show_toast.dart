@@ -6,7 +6,7 @@ void ShowToast(
   BuildContext context, {
   required String message,
   ToastificationType type = ToastificationType.success,
-  Duration duration = const Duration(seconds: 4),
+  Duration duration = const Duration(seconds: 3),
   ToastificationStyle style = ToastificationStyle.fillColored,
   Alignment alignment = Alignment.topRight,
 }) {

@@ -1,25 +1,15 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter_base_template/core/config/app_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:injectable/injectable.dart' hide Environment; // 👈 Sửa dòng này
+import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'injection.config.dart';
 
 final GetIt getIt = GetIt.instance;
 
-@InjectableInit(
-  initializerName: 'init',
-  preferRelativeImports: true,
-  asExtension: true,
-)
-// Sửa lại để nhận đúng enum Environment của bạn
-Future<void> configureDependencies({required Environment env}) async {
-  // ✅ Đăng ký AppConfig từ enum
-  getIt.registerSingleton<AppConfig>(AppConfig.fromEnvironment(env));
-
-  // ✅ Chạy code generation của injectable, truyền vào tên của enum
-  getIt.init(environment: env.name);
+@InjectableInit()
+Future<void> configureDependencies() async {
+  await getIt.init();
 }
 
 @module

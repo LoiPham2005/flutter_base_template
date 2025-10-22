@@ -12,12 +12,12 @@
 // class CategoryRepositoryImpl implements CategoryRepository {
 //   final CategoryRemoteDataSource remoteDataSource;
 //   final NetworkInfo networkInfo;
-  
+
 //   CategoryRepositoryImpl({
 //     required this.remoteDataSource,
 //     required this.networkInfo,
 //   });
-  
+
 //   @override
 //   Future<Result<List<Category>>> getCategories({
 //     Map<String, dynamic>? params,
@@ -35,7 +35,7 @@
 //       return const Error(NetworkFailure());
 //     }
 //   }
-  
+
 //   @override
 //   Future<Result<Category>> getCategoryDetail(String id) async {
 //     if (await networkInfo.isConnected) {
@@ -51,7 +51,7 @@
 //       return const Error(NetworkFailure());
 //     }
 //   }
-  
+
 //   @override
 //   Future<Result<Category>> createCategory(Map<String, dynamic> data) async {
 //     if (await networkInfo.isConnected) {
@@ -67,7 +67,7 @@
 //       return const Error(NetworkFailure());
 //     }
 //   }
-  
+
 //   @override
 //   Future<Result<Category>> updateCategory(
 //     String id,
@@ -86,7 +86,7 @@
 //       return const Error(NetworkFailure());
 //     }
 //   }
-  
+
 //   @override
 //   Future<Result<bool>> deleteCategory(String id) async {
 //     if (await networkInfo.isConnected) {
@@ -113,48 +113,59 @@ import '../../domain/repositories/category_repository.dart';
 import '../datasources/category_remote_datasource.dart';
 
 @LazySingleton(as: CategoryRepository)
-class CategoryRepositoryImpl extends BaseRepository implements CategoryRepository {
-  final CategoryRemoteDataSource remoteDataSource;
+class CategoryRepositoryImpl extends BaseRepository
+    implements CategoryRepository {
+  final CategoryRemoteDataSource _remoteDataSource;
+  final NetworkInfo _networkInfo;
 
-  CategoryRepositoryImpl(
-    this.remoteDataSource,
-    NetworkInfo networkInfo,
-  ) : super(networkInfo);
+  CategoryRepositoryImpl(this._remoteDataSource, this._networkInfo)
+      : super(_networkInfo);
 
   @override
   Future<Result<List<Category>>> getCategories({Map<String, dynamic>? params}) {
     return safeCall(() async {
-      final models = await remoteDataSource.getCategories(params: params);
-      return models.map((e) => e.toEntity()).toList();
+      final result = await _remoteDataSource.getCategories(params: params);
+      
+      // ✅ Map list of models to list of entities
+      return result.map(
+        (models) => models.map((model) => model.toEntity()).toList(),
+      );
     });
   }
 
   @override
   Future<Result<Category>> getCategoryDetail(String id) {
     return safeCall(() async {
-      final model = await remoteDataSource.getCategoryDetail(id);
-      return model.toEntity();
+      final result = await _remoteDataSource.getCategoryDetail(id);
+      
+      // ✅ Map single model to entity
+      return result.map((model) => model.toEntity());
     });
   }
 
   @override
   Future<Result<Category>> createCategory(Map<String, dynamic> data) {
     return safeCall(() async {
-      final model = await remoteDataSource.createCategory(data);
-      return model.toEntity();
+      final result = await _remoteDataSource.createCategory(data);
+      
+      // ✅ Map single model to entity
+      return result.map((model) => model.toEntity());
     });
   }
 
   @override
   Future<Result<Category>> updateCategory(String id, Map<String, dynamic> data) {
     return safeCall(() async {
-      final model = await remoteDataSource.updateCategory(id, data);
-      return model.toEntity();
+      final result = await _remoteDataSource.updateCategory(id, data);
+      
+      // ✅ Map single model to entity
+      return result.map((model) => model.toEntity());
     });
   }
 
   @override
   Future<Result<bool>> deleteCategory(String id) {
-    return safeCall(() => remoteDataSource.deleteCategory(id));
+    // ✅ Không cần map vì trả về bool
+    return safeCall(() => _remoteDataSource.deleteCategory(id));
   }
 }

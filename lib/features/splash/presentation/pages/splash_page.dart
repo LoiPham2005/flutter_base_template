@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_base_template/core/constants/app_constants.dart';
+import 'package:flutter_base_template/core/extensions/context_extensions.dart';
 import 'package:flutter_base_template/core/storage/storage_service.dart';
 import 'package:flutter_base_template/core/utils/check_internet.dart';
 import 'package:flutter_base_template/core/utils/check_version.dart';
@@ -57,18 +58,18 @@ class SplashPage extends StatelessWidget {
       }
 
       if (firstRun) {
-        Get.offAll(() => const WelcomPage());
+        context.pushReplacement(const WelcomPage());
       } else {
         if (loggedIn) {
-          Get.offAll(() => const BottomMenu());
+          context.pushReplacement(const BottomMenu());
         } else {
-          Get.offAll(() => const LoginPage());
+          context.pushReplacement(const LoginPage());
         }
       }
     } catch (e) {
       print('Error in continuation: $e');
       // Fallback về login page nếu có lỗi
-      Get.offAll(() => const LoginPage());
+      context.pushReplacement(const LoginPage());
     }
   }
 

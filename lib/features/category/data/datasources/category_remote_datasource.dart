@@ -14,9 +14,9 @@
 
 // class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
 //   final DioClient dioClient;
-  
+
 //   CategoryRemoteDataSourceImpl(this.dioClient);
-  
+
 //   @override
 //   Future<List<CategoryModel>> getCategories({Map<String, dynamic>? params}) async {
 //     try {
@@ -32,7 +32,7 @@
 //       throw ServerException(message: 'Lỗi không xác định khi tải danh mục');
 //     }
 //   }
-  
+
 //   @override
 //   Future<CategoryModel> getCategoryDetail(String id) async {
 //     try {
@@ -42,7 +42,7 @@
 //       throw ServerException(message: 'Không thể tải chi tiết danh mục');
 //     }
 //   }
-  
+
 //   @override
 //   Future<CategoryModel> createCategory(Map<String, dynamic> data) async {
 //     try {
@@ -52,7 +52,7 @@
 //       throw ServerException(message: 'Không thể tạo danh mục');
 //     }
 //   }
-  
+
 //   @override
 //   Future<CategoryModel> updateCategory(String id, Map<String, dynamic> data) async {
 //     try {
@@ -62,7 +62,7 @@
 //       throw ServerException(message: 'Không thể cập nhật danh mục');
 //     }
 //   }
-  
+
 //   @override
 //   Future<bool> deleteCategory(String id) async {
 //     try {
@@ -74,8 +74,11 @@
 //   }
 // }
 
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_base_template/core/errors/result.dart';
+import 'package:flutter_base_template/core/network/api_client.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/constants/api_constants.dart';
@@ -84,67 +87,65 @@ import '../../../../core/network/base_remote_data_source.dart';
 import '../models/category_model.dart';
 
 abstract class CategoryRemoteDataSource {
-  Future<List<CategoryModel>> getCategories({Map<String, dynamic>? params});
-  Future<CategoryModel> getCategoryDetail(String id);
-  Future<CategoryModel> createCategory(Map<String, dynamic> data);
-  Future<CategoryModel> updateCategory(String id, Map<String, dynamic> data);
-  Future<bool> deleteCategory(String id);
+  Future<Result<List<CategoryModel>>> getCategories({
+    Map<String, dynamic>? params,
+  });
+  Future<Result<CategoryModel>> getCategoryDetail(String id);
+  Future<Result<CategoryModel>> createCategory(Map<String, dynamic> data);
+  Future<Result<CategoryModel>> updateCategory(
+    String id,
+    Map<String, dynamic> data,
+  );
+  Future<Result<bool>> deleteCategory(String id);
 }
 
-@LazySingleton()
+@LazySingleton(as: CategoryRemoteDataSource)
 class CategoryRemoteDataSourceImpl extends BaseRemoteDataSource
     implements CategoryRemoteDataSource {
-  final DioClient dioClient;
-
-  CategoryRemoteDataSourceImpl(this.dioClient);
+  CategoryRemoteDataSourceImpl(this._apiClient);
+  final ApiClient _apiClient;
 
   @override
-  Future<List<CategoryModel>> getCategories({Map<String, dynamic>? params}) {
-    return safeApiCall(
-      () => dioClient.get(ApiConstants.categories, queryParameters: params),
-      (data) {
-        if (data is! List) {
-          throw ServerException(message: 'Dữ liệu không hợp lệ');
-        }
-        return data.map((e) => CategoryModel.fromJson(e)).toList();
-      },
-      errorMessage: 'Không thể tải danh mục',
+  Future<Result<List<CategoryModel>>> getCategories({
+    Map<String, dynamic>? params,
+  }) async {
+    return _apiClient.getResult(ApiConstants.categories, (json) {
+      final list = (json['item']['category'] ?? json) as List;
+      return list.map((e) => CategoryModel.fromJson(e)).toList();
+    }, queryParameters: params);
+  }
+
+  @override
+  Future<Result<CategoryModel>> getCategoryDetail(String id) {
+    return _apiClient.getResult(
+      '${ApiConstants.categories}/$id',
+      (json) => CategoryModel.fromJson(json['data'] ?? json),
     );
   }
 
   @override
-  Future<CategoryModel> getCategoryDetail(String id) {
-    return safeApiCall(
-      () => dioClient.get('${ApiConstants.categories}/$id'),
-      (data) => CategoryModel.fromJson(data),
-      errorMessage: 'Không thể tải chi tiết danh mục',
+  Future<Result<CategoryModel>> createCategory(Map<String, dynamic> data) {
+    return _apiClient.postResult(
+      ApiConstants.categories,
+      (json) => CategoryModel.fromJson(json['data'] ?? json),
+      data: data,
     );
   }
 
   @override
-  Future<CategoryModel> createCategory(Map<String, dynamic> data) {
-    return safeApiCall(
-      () => dioClient.post(ApiConstants.categories, data: data),
-      (data) => CategoryModel.fromJson(data),
-      errorMessage: 'Không thể tạo danh mục',
+  Future<Result<CategoryModel>> updateCategory(
+    String id,
+    Map<String, dynamic> data,
+  ) {
+    return _apiClient.putResult(
+      '${ApiConstants.categories}/$id',
+      (json) => CategoryModel.fromJson(json['data'] ?? json),
+      data: data,
     );
   }
 
   @override
-  Future<CategoryModel> updateCategory(String id, Map<String, dynamic> data) {
-    return safeApiCall(
-      () => dioClient.put('${ApiConstants.categories}/$id', data: data),
-      (data) => CategoryModel.fromJson(data),
-      errorMessage: 'Không thể cập nhật danh mục',
-    );
-  }
-
-  @override
-  Future<bool> deleteCategory(String id) {
-    return safeApiCall(
-      () => dioClient.delete('${ApiConstants.categories}/$id'),
-      (_) => true,
-      errorMessage: 'Không thể xóa danh mục',
-    );
+  Future<Result<bool>> deleteCategory(String id) {
+    return _apiClient.deleteResult('${ApiConstants.categories}/$id');
   }
 }

@@ -15,20 +15,16 @@ class BaseRepository {
   /// - Kiểm tra mạng
   /// - Bắt lỗi ServerException, UnknownFailure
   /// - Trả về Result<T>
-  Future<Result<T>> safeCall<T>(Future<T> Function() remoteCall) async {
+   /// ✅ Hàm xử lý cho remoteCall trả về Result<T>
+  Future<Result<T>> safeCall<T>(
+    Future<Result<T>> Function() remoteCall,
+  ) async {
     // 1️⃣ Kiểm tra kết nối mạng
     if (!await networkInfo.isConnected) {
       return const Error(NetworkFailure());
     }
 
-    // 2️⃣ Thực thi API call và xử lý lỗi
-    try {
-      final result = await remoteCall();
-      return Success(result);
-    } on ServerException catch (e) {
-      return Error(ServerFailure(message: e.message));
-    } catch (e) {
-      return Error(UnknownFailure(message: e.toString()));
-    }
+    // 2️⃣ Trả về Result từ remoteCall (đã được xử lý ở ApiClient)
+    return await remoteCall();
   }
 }

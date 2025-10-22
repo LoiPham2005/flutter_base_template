@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_base_template/core/l10n/localization_service.dart';
+import 'package:flutter_base_template/core/storage/storage_service.dart';
+import 'package:flutter_base_template/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:flutter_base_template/features/splash/presentation/pages/splash_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_base_template/core/theme/theme_service.dart';
 import 'package:flutter_base_template/features/home/presentation/pages/home_page.dart';
-import 'package:get/get.dart';
+import 'package:flutter_base_template/features/auth/presentation/pages/login_page.dart';
 import 'package:flutter_base_template/core/di/injection.dart';
 import 'package:flutter_base_template/core/theme/app_theme.dart';
 import 'package:flutter_base_template/core/constants/app_constants.dart';
-import 'package:flutter_base_template/core/l10n/app_localization_delegate_config.dart';
+import 'package:flutter_base_template/core/l10n/generated/app_localizations.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -14,23 +18,34 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeService = getIt<ThemeService>();
-    final localizationService = getIt<LocalizationService>();
+    final localeCubit = getIt<LocaleCubit>();
 
-    return GetMaterialApp(
-      title: AppConstants.appName,
-      debugShowCheckedModeBanner: false,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => localeCubit..initLocale()),
+        BlocProvider(create: (_) => getIt<AuthBloc>()),
+      ],
+      child: BlocBuilder<LocaleCubit, Locale>(
+        builder: (context, locale) {
+          return MaterialApp(
+            title: AppConstants.appName,
+            debugShowCheckedModeBanner: false,
 
-      // Theme
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: themeService.currentThemeMode,
+            // Theme
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: themeService.currentThemeMode,
 
-      // Localization
-      locale: localizationService.currentLocale,
-      supportedLocales: AppLocalizationDelegateConfig.supportedLocales,
-      localizationsDelegates: AppLocalizationDelegateConfig.localizationsDelegates,
+            // Localization
+            locale: locale,
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
 
-      home: const HomePage(),
+            // Change home to LoginPage if not logged in
+            home: const SplashPage()
+          );
+        },
+      ),
     );
   }
 }
