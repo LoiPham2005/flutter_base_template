@@ -38,14 +38,14 @@ android {
         multiDexEnabled = true
     }
 
-  //  signingConfigs {
-  //      create("release") {
-  //          keyAlias = keystoreProperties["keyAlias"] as String
-  //          keyPassword = keystoreProperties["keyPassword"] as String
-   //         storeFile = file(keystoreProperties["storeFile"] as String)
-   //         storePassword = keystoreProperties["storePassword"] as String
-   //     }
-   // }
+ //  signingConfigs {
+ //      create("release") {
+ //          keyAlias = keystoreProperties["keyAlias"] as String
+ //          keyPassword = keystoreProperties["keyPassword"] as String
+ //         storeFile = file(keystoreProperties["storeFile"] as String)
+ //         storePassword = keystoreProperties["storePassword"] as String
+ //      }
+ //  }
 
     flavorDimensions += "environment"
     productFlavors {

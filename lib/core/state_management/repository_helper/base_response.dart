@@ -7,9 +7,6 @@ class BaseResponse<T> {
   final int? status;
   final String? message;
   final T? data;
-  final String? accessToken;
-  final String? refreshToken;
-  final String? tokenType;
   final String? expiresAt;
 
   const BaseResponse({
@@ -19,9 +16,6 @@ class BaseResponse<T> {
     this.status,
     this.message,
     this.data,
-    this.accessToken,
-    this.refreshToken,
-    this.tokenType,
     this.expiresAt,
   });
 
@@ -39,9 +33,7 @@ class BaseResponse<T> {
       success: true,
       status: 200,
       data: data,
-      message: message,
-      accessToken: accessToken,
-      refreshToken: refreshToken,
+      message: message
     );
   }
 
@@ -73,10 +65,7 @@ class BaseResponse<T> {
       status: status ?? this.status,
       message: message ?? this.message,
       data: data ?? this.data,
-      accessToken: accessToken ?? this.accessToken,
-      refreshToken: refreshToken ?? this.refreshToken,
-      tokenType: tokenType ?? this.tokenType,
-      expiresAt: expiresAt ?? this.expiresAt,
+      expiresAt: expiresAt ?? this.expiresAt
     );
   }
 
@@ -103,9 +92,6 @@ class BaseResponse<T> {
           status: response.statusCode,
           message: map['message'],
           data: rawData != null ? fromJson(rawData) : null,
-          accessToken: map['accessToken'],
-          refreshToken: map['refreshToken'],
-          tokenType: map['token_type'],
           expiresAt: map['expires_at'],
         );
       } else {
