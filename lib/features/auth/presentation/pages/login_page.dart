@@ -22,12 +22,12 @@ class LoginPage extends StatelessWidget {
       appBar: AppBar(title: const Text('Đăng nhập')),
       body: BlocConsumer<AuthBloc, BaseState>(
         listener: (context, state) {
-          if (state.status == BlocStatus.failure) {
+          if (state.isFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.error ?? 'Đăng nhập thất bại')),
             );
           }
-          if (state.status == BlocStatus.success) {
+          if (state.isSuccess) {
             // Save auth data
             final authResponse = state.data;
             if (authResponse != null) {
@@ -37,9 +37,7 @@ class LoginPage extends StatelessWidget {
                 ..setLoggedIn(true);
 
               // Navigate to home
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => const HomePage()),
-              );
+              context.pushReplacement(const HomePage());
             }
           }
         },
@@ -73,7 +71,7 @@ class LoginPage extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: state.status == BlocStatus.loading
+                      onPressed: state.isLoading
                           ? null
                           : () {
                               if (formKey.currentState?.validate() ?? false) {
@@ -85,7 +83,7 @@ class LoginPage extends StatelessWidget {
                                 );
                               }
                             },
-                      child: state.status == BlocStatus.loading
+                      child: state.isLoading
                           ? const CircularProgressIndicator()
                           : const Text('Đăng nhập'),
                     ),

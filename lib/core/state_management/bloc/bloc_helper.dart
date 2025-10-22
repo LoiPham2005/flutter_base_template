@@ -1,6 +1,5 @@
 import 'package:flutter_base_template/core/state_management/bloc/bloc_status.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../errors/failures.dart';
 import '../../errors/result.dart';
 
 /// Hàm helper dùng chung cho tất cả Bloc khi gọi UseCase

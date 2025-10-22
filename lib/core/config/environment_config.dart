@@ -1,4 +1,5 @@
 import 'package:flutter_base_template/core/constants/api_constants.dart';
+import 'package:flutter_base_template/core/constants/app_constants.dart';
 
 enum Environment { development, staging, production }
 
@@ -43,11 +44,11 @@ class EnvironmentConfig {
   static String get appName {
     switch (_environment) {
       case Environment.development:
-        return 'MyApp Dev';
+        return AppConstants.appNameDev;
       case Environment.staging:
-        return 'MyApp Staging';
+        return AppConstants.appNameStg;
       case Environment.production:
-        return 'MyApp';
+        return AppConstants.appNameProd;
     }
   }
   

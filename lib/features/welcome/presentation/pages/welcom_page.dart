@@ -8,24 +8,26 @@ class WelcomPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Center(
-            child: Text(
+      body: SizedBox(
+        width: double.infinity,
+        height: double.infinity,
+        child: Column(
+          // crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
               'Welcome to the App!',
               // style: Theme.of(context).textTheme.bodyLarge,
-              style: TextStyle(
-                color: context.colorScheme.secondary
-              ),
+              style: TextStyle(color: context.colorScheme.secondary),
             ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              context.push(const LoginPage());
-            },
-            child: const Text('Get Started'),
-          ),
-        ],
+            ElevatedButton(
+              onPressed: () {
+                context.push(const LoginPage());
+              },
+              child: const Text('Get Started'),
+            ),
+          ],
+        ),
       ),
     );
   }

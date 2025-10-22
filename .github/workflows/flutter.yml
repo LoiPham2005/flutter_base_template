@@ -1,4 +1,4 @@
-name: Flutter CI
+name: Flutter CI/CD
 
 on:
   push:
@@ -11,23 +11,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      # 1️⃣ Clone source code
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.32.5'
+      # 2️⃣ Cài đặt Flutter
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.5' # hoặc version bạn đang dùng
 
-    - name: Install dependencies
-      run: flutter pub get
+      # 3️⃣ Cài dependencies
+      - name: Install dependencies
+        run: flutter pub get
 
-    - name: Run tests
-      run: flutter test
+      # 4️⃣ (Tuỳ chọn) Chạy test
+      - name: Run tests
+        run: flutter test
 
-    - name: Build APK
-      run: flutter build apk --release
+      # 5️⃣ Build APK
+      - name: Build Release APK
+        run: flutter build apk --release
 
-    - name: Upload APK artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: app-release.apk
-        path: build/app/outputs/flutter-apk/app-release.apk
+      # Nếu bạn có flavor, ví dụ "dev" hoặc "prod", dùng:
+      # run: flutter build apk --release --flavor prod -t lib/main_production.dart
+
+      # 6️⃣ Build AAB (Google Play)
+      - name: Build App Bundle (AAB)
+        run: flutter build appbundle --release
+
+      # 7️⃣ Upload artifact APK
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      # 8️⃣ Upload artifact AAB
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-aab
+          path: build/app/outputs/bundle/release/app-release.aab
