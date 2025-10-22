@@ -95,7 +95,7 @@ abstract class FeatureRemoteDataSource {
 }
 
 @LazySingleton(as: FeatureRemoteDataSource)
-class FeatureRemoteDataSourceImpl extends BaseRemoteDataSource 
+class FeatureRemoteDataSourceImpl  
     implements FeatureRemoteDataSource {
   final ApiClient _apiClient;
   
@@ -117,22 +117,23 @@ class FeatureRemoteDataSourceImpl extends BaseRemoteDataSource
 # 3. Create repositories (`domain/repositories/feature_repository_impl.dart`):
 ```dart
 @LazySingleton(as: FeatureRepository)
-class FeatureRepositoryImpl extends BaseRepository 
-    implements FeatureRepository {
+class FeatureRepositoryImpl implements FeatureRepository {
   final FeatureRemoteDataSource _remoteDataSource;
-  final NetworkInfo _networkInfo;
 
-  FeatureRepositoryImpl(this._remoteDataSource, this._networkInfo)
-      : super(_networkInfo);
+  FeatureRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<Result<List<Feature>>> getFeatures({Map<String, dynamic>? params}) {
-    return safeCall(() async {
-      final result = await _remoteDataSource.getFeatures(params: params);
-      return result.map(
-        (models) => models.map((model) => model.toEntity()).toList(),
-      );
-    });
+  Future<Result<List<FeatureModel>>> getFeatures({Map<String, dynamic>? params}) async {
+    final result = await _remoteDataSource.getFeatures(params: params);
+    return result.map(
+      (models) => models.map((model) => model.toEntity()).toList(),
+    );
+  }
+
+  @override
+  Future<Result<FeatureModel>> getgetFeaturesDetail(String id) async {
+    final result = await _remoteDataSource.getgetFeaturesDetail(id);
+    return result.map((model) => model.toEntity());
   }
 }
 ```

@@ -1,5 +1,8 @@
 // lib/core/network/dio_client.dart
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:flutter_base_template/core/config/environment_config.dart';
 import 'package:flutter_base_template/core/constants/app_constants.dart';
 import 'package:flutter_base_template/core/utils/logger.dart';
@@ -17,32 +20,44 @@ class DioClient {
     ErrorInterceptor errorInterceptor,
     LoggingInterceptor loggingInterceptor,
   ) {
-    _dio =
-        Dio(
-            BaseOptions(
-              baseUrl: EnvironmentConfig.apiBaseUrl,
-              connectTimeout: AppConstants.connectionTimeout,
-              receiveTimeout: AppConstants.receiveTimeout,
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-              },
-            ),
-          )
-          ..interceptors.addAll([
-            authInterceptor, 
-            errorInterceptor,
-            loggingInterceptor,
-            PrettyDioLogger(
-              requestHeader: true,
-              requestBody: true,
-              responseBody: true,
-              responseHeader: false,
-              error: true,
-              compact: true,
-              maxWidth: 200,
-            ),
-          ]);
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: EnvironmentConfig.apiBaseUrl,
+        connectTimeout: AppConstants.connectionTimeout,
+        receiveTimeout: AppConstants.receiveTimeout,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      ),
+    );
+
+    // 🧠 Cache setup (chỉ dùng bộ nhớ, không dùng Hive)
+    final cacheOptions = CacheOptions(
+      store: MemCacheStore(), // Lưu tạm trong RAM
+      policy: CachePolicy.request, // Cache khi request
+      hitCacheOnNetworkFailure: true, // Khi mất mạng vẫn lấy cache
+      priority: CachePriority.high,
+      maxStale: const Duration(days: 7), // Cache hợp lệ trong 7 ngày
+    );
+
+    // 🧠 Add cache interceptor
+    _dio.interceptors.add(DioCacheInterceptor(options: cacheOptions));
+
+    _dio.interceptors.addAll([
+      authInterceptor,
+      errorInterceptor,
+      loggingInterceptor,
+      PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseBody: true,
+        responseHeader: false,
+        error: true,
+        compact: true,
+        maxWidth: 200,
+      ),
+    ]);
   }
   late final Dio _dio;
 

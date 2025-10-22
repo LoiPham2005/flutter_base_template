@@ -83,7 +83,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/errors/exceptions.dart';
-import '../../../../core/network/base_remote_data_source.dart';
+import '../../../../core/errors/result_handler.dart';
 import '../models/category_model.dart';
 
 abstract class CategoryRemoteDataSource {
@@ -100,7 +100,7 @@ abstract class CategoryRemoteDataSource {
 }
 
 @LazySingleton(as: CategoryRemoteDataSource)
-class CategoryRemoteDataSourceImpl extends BaseRemoteDataSource
+class CategoryRemoteDataSourceImpl 
     implements CategoryRemoteDataSource {
   CategoryRemoteDataSourceImpl(this._apiClient);
   final ApiClient _apiClient;

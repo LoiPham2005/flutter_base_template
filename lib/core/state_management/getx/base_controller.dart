@@ -1,6 +1,5 @@
 import 'package:flutter_base_template/core/errors/result.dart';
 import 'package:get/get.dart';
-import 'package:flutter_base_template/core/state_management/repository_helper/base_response.dart';
 
 class BaseController extends GetxController {
   final isLoading = false.obs;

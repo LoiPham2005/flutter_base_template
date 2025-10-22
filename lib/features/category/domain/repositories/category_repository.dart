@@ -1,6 +1,4 @@
 // lib/features/category/domain/repositories/category_repository.dart
-import 'package:flutter_base_template/core/state_management/repository_helper/base_response.dart';
-
 import '../../../../core/errors/result.dart';
 import '../entities/category.dart';
 

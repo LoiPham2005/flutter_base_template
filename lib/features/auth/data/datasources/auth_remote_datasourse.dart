@@ -39,7 +39,7 @@ import 'package:flutter_base_template/core/constants/api_constants.dart';
 import 'package:flutter_base_template/core/errors/exceptions.dart';
 import 'package:flutter_base_template/core/errors/result.dart';
 import 'package:flutter_base_template/core/network/api_client.dart';
-import 'package:flutter_base_template/core/network/base_remote_data_source.dart';
+import 'package:flutter_base_template/core/errors/result_handler.dart';
 import 'package:flutter_base_template/core/network/dio_client.dart';
 import 'package:injectable/injectable.dart';
 import '../models/auth_model.dart';
@@ -52,8 +52,7 @@ abstract class AuthRemoteDataSource {
 }
 
 @LazySingleton(as: AuthRemoteDataSource)
-class AuthRemoteDataSourceImpl extends BaseRemoteDataSource
-    implements AuthRemoteDataSource {
+class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   AuthRemoteDataSourceImpl(this._apiClient);
   final ApiClient _apiClient;
 
@@ -65,7 +64,7 @@ class AuthRemoteDataSourceImpl extends BaseRemoteDataSource
     // Trả về Result nguyên vẹn, không fold
     return _apiClient.postResult(
       ApiConstants.login,
-      (json) => AuthResponseModel.fromJson(json['data'] ?? json),
+      (json) => AuthResponseModel.fromJson(json),
       data: {'email': email, 'password': password},
     );
   }

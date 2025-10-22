@@ -14,8 +14,6 @@ import 'package:flutter_base_template/core/di/injection.dart' as _i125;
 import 'package:flutter_base_template/core/l10n/localization_service.dart'
     as _i238;
 import 'package:flutter_base_template/core/network/api_client.dart' as _i278;
-import 'package:flutter_base_template/core/network/base_repository.dart'
-    as _i414;
 import 'package:flutter_base_template/core/network/dio_client.dart' as _i858;
 import 'package:flutter_base_template/core/network/interceptors/auth_interceptor.dart'
     as _i7;
@@ -94,9 +92,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i564.ThemeService>(
       () => _i564.ThemeService(gh<_i223.StorageService>()),
     );
-    gh.lazySingleton<_i414.BaseRepository>(
-      () => _i414.BaseRepository(gh<_i978.NetworkInfo>()),
-    );
     gh.lazySingleton<_i858.DioClient>(
       () => _i858.DioClient(
         gh<_i7.AuthInterceptor>(),
@@ -105,7 +100,7 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.lazySingleton<_i278.ApiClient>(
-      () => _i278.ApiClient(gh<_i858.DioClient>()),
+      () => _i278.ApiClient(gh<_i858.DioClient>(), gh<_i978.NetworkInfo>()),
     );
     gh.lazySingleton<_i286.CheckAuthService>(
       () => _i286.CheckAuthService(
@@ -119,17 +114,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i348.AuthRemoteDataSource>(
       () => _i348.AuthRemoteDataSourceImpl(gh<_i278.ApiClient>()),
     );
-    gh.lazySingleton<_i163.CategoryRepository>(
-      () => _i800.CategoryRepositoryImpl(
-        gh<_i863.CategoryRemoteDataSource>(),
-        gh<_i978.NetworkInfo>(),
-      ),
-    );
     gh.lazySingleton<_i785.AuthRepository>(
-      () => _i229.AuthRepositoryImpl(
-        gh<_i348.AuthRemoteDataSource>(),
-        gh<_i978.NetworkInfo>(),
-      ),
+      () => _i229.AuthRepositoryImpl(gh<_i348.AuthRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i163.CategoryRepository>(
+      () => _i800.CategoryRepositoryImpl(gh<_i863.CategoryRemoteDataSource>()),
     );
     gh.factory<_i468.LoginUseCase>(
       () => _i468.LoginUseCase(gh<_i785.AuthRepository>()),
