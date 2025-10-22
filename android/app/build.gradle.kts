@@ -47,33 +47,41 @@ android {
  //      }
  //  }
 
-    flavorDimensions += "environment"
-    productFlavors {
-        create("development") {
-            dimension = "environment"
-            applicationIdSuffix = ".dev"
-            versionNameSuffix = "-dev"
-            resValue("string", "app_name", "Base App Dev")
+     flavorDimensions += "environment"
+     productFlavors {
+         create("development") {
+             dimension = "environment"
+             applicationIdSuffix = ".dev"
+             versionNameSuffix = "-dev"
+             resValue("string", "app_name", "Base App Dev")
+         }
+         create("staging") {
+             dimension = "environment"
+             applicationIdSuffix = ".stg"
+             versionNameSuffix = "-stg"
+             resValue("string", "app_name", "Base App Stg")
+         }
+         create("production") {
+             dimension = "environment"
+             resValue("string", "app_name", "Base App")
+         }
+     }
+
+    buildTypes {
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
         }
-        create("staging") {
-            dimension = "environment"
-            applicationIdSuffix = ".stg"
-            versionNameSuffix = "-stg"
-            resValue("string", "app_name", "Base App Stg")
-        }
-        create("production") {
-            dimension = "environment"
-            resValue("string", "app_name", "Base App")
+        release {
+            isMinifyEnabled = false
+            isShrinkResources = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android.txt"),
+                file("proguard-rules.pro")
+            )
+            signingConfig = signingConfigs.getByName("debug") // thay bằng release key khi publish
         }
     }
 
-    buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
-        }
-    }
 }
 
 dependencies {
