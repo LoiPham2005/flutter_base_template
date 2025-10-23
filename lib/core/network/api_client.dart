@@ -1,4 +1,5 @@
 // lib/core/network/api_client.dart
+import 'package:flutter_base_template/core/network/api_response.dart';
 import 'package:injectable/injectable.dart';
 import '../errors/exceptions.dart';
 import '../errors/result.dart';
@@ -18,30 +19,22 @@ class ApiClient {
   // Helper: Unwrap API Response
   // ===============================
   T _unwrapApiResponse<T>(dynamic responseData, JsonParser<T> fromJson) {
-    if (responseData is Map<String, dynamic>) {
-      final hasSuccess = responseData.containsKey('success');
-      final hasResult = responseData.containsKey('result');
-
-      if (hasSuccess || hasResult) {
-        final success =
-            responseData['success'] ?? responseData['result'] ?? false;
-        final message = responseData['message'] as String?;
-        final data = responseData['data'];
-        final error = responseData['error'] as String?;
-        final code = responseData['code'] as int?;
-
-        if (success) {
-          return data == null ? fromJson(responseData) : fromJson(data);
-        } else {
-          throw ServerException(
-            message: error ?? message ?? 'Request failed',
-            code: code?.toString(),
-          );
-        }
-      }
+    if (responseData is! Map<String, dynamic>) {
+      return fromJson(responseData);
     }
 
-    return fromJson(responseData);
+    final apiResponse = ApiResponse<T>.fromJson(responseData, (json) {
+      return json == null ? fromJson(responseData) : fromJson(json);
+    });
+
+    if (apiResponse.isSuccess) {
+      return apiResponse.data ?? fromJson(responseData);
+    } else {
+      throw ServerException(
+        message: apiResponse.error ?? apiResponse.message ?? 'Request failed',
+        code: apiResponse.code?.toString(),
+      );
+    }
   }
 
   // ===============================
@@ -83,6 +76,7 @@ class ApiClient {
     JsonParser<T> fromJson, {
     Map<String, dynamic>? queryParameters,
     int maxRetries = 1,
+    bool unwrap = true, // Thêm option unwrap
   }) async {
     return _safeRequest(
       () => _retryRequest(() async {
@@ -90,7 +84,9 @@ class ApiClient {
           path,
           queryParameters: queryParameters,
         );
-        final data = _unwrapApiResponse<T>(response.data, fromJson);
+        final data = unwrap
+            ? _unwrapApiResponse<T>(response.data, fromJson)
+            : fromJson(response.data);
         return Success(data);
       }, maxRetries: maxRetries),
     );
@@ -105,6 +101,7 @@ class ApiClient {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     int maxRetries = 1,
+    bool unwrap = true, // Thêm option unwrap
   }) async {
     return _safeRequest(
       () => _retryRequest(() async {
@@ -113,7 +110,9 @@ class ApiClient {
           data: data,
           queryParameters: queryParameters,
         );
-        final result = _unwrapApiResponse<T>(response.data, fromJson);
+        final result = unwrap
+            ? _unwrapApiResponse<T>(response.data, fromJson)
+            : fromJson(response.data);
         return Success(result);
       }, maxRetries: maxRetries),
     );
@@ -128,6 +127,7 @@ class ApiClient {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     int maxRetries = 1,
+    bool unwrap = true, // Thêm option unwrap
   }) async {
     return _safeRequest(
       () => _retryRequest(() async {
@@ -136,7 +136,9 @@ class ApiClient {
           data: data,
           queryParameters: queryParameters,
         );
-        final result = _unwrapApiResponse<T>(response.data, fromJson);
+        final result = unwrap
+            ? _unwrapApiResponse<T>(response.data, fromJson)
+            : fromJson(response.data);
         return Success(result);
       }, maxRetries: maxRetries),
     );
@@ -151,6 +153,7 @@ class ApiClient {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     int maxRetries = 1,
+    bool unwrap = true, // Thêm option unwrap
   }) async {
     return _safeRequest(
       () => _retryRequest(() async {
@@ -159,7 +162,9 @@ class ApiClient {
           data: data,
           queryParameters: queryParameters,
         );
-        final result = _unwrapApiResponse<T>(response.data, fromJson);
+        final result = unwrap
+            ? _unwrapApiResponse<T>(response.data, fromJson)
+            : fromJson(response.data);
         return Success(result);
       }, maxRetries: maxRetries),
     );
@@ -194,35 +199,5 @@ class ApiClient {
       }, maxRetries: maxRetries),
     );
   }
-
-  // ===============================
-  // GET LIST (Pagination)
-  // ===============================
-  Future<Result<List<T>>> getListResult<T>(
-    String path,
-    JsonParser<T> fromJson, {
-    Map<String, dynamic>? queryParameters,
-    int maxRetries = 1,
-  }) async {
-    return _safeRequest(
-      () => _retryRequest(() async {
-        final response = await _dioClient.get(
-          path,
-          queryParameters: queryParameters,
-        );
-
-        final data = _unwrapApiResponse<List<dynamic>>(response.data, (json) {
-          if (json is List) return json;
-          if (json is Map && json.containsKey('items'))
-            return json['items'] as List;
-          if (json is Map && json.containsKey('list'))
-            return json['list'] as List;
-          return <dynamic>[];
-        });
-
-        final list = data.map((item) => fromJson(item)).toList();
-        return Success(list);
-      }, maxRetries: maxRetries),
-    );
-  }
+  
 }
