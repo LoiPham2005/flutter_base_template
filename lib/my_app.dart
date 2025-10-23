@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_base_template/core/l10n/localization_service.dart';
 import 'package:flutter_base_template/core/storage/storage_service.dart';
+import 'package:flutter_base_template/core/theme/theme_cubit.dart';
+import 'package:flutter_base_template/core/theme/theme_state.dart';
 import 'package:flutter_base_template/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter_base_template/features/splash/presentation/pages/splash_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,32 +19,36 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeService = getIt<ThemeService>();
     final localeCubit = getIt<LocaleCubit>();
+    final themeCubit = getIt<ThemeCubit>();
 
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => localeCubit..initLocale()),
+        BlocProvider(create: (_) => themeCubit..initTheme()),
         BlocProvider(create: (_) => getIt<AuthBloc>()),
       ],
       child: BlocBuilder<LocaleCubit, Locale>(
         builder: (context, locale) {
-          return MaterialApp(
-            title: AppConstants.appName,
-            debugShowCheckedModeBanner: false,
+          return BlocBuilder<ThemeCubit, ThemeState>(
+            builder: (context, themeState) {
+              return MaterialApp(
+                title: AppConstants.appName,
+                debugShowCheckedModeBanner: false,
 
-            // Theme
-            theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            themeMode: themeService.currentThemeMode,
+                // Theme
+                theme: AppTheme.lightTheme,
+                darkTheme: AppTheme.darkTheme,
+                themeMode: themeState.themeMode,
 
-            // Localization
-            locale: locale,
-            supportedLocales: AppLocalizations.supportedLocales,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+                // Localization
+                locale: locale,
+                supportedLocales: AppLocalizations.supportedLocales,
+                localizationsDelegates: AppLocalizations.localizationsDelegates,
 
-            // Change home to LoginPage if not logged in
-            home: const SplashPage()
+                home: const SplashPage(),
+              );
+            },
           );
         },
       ),

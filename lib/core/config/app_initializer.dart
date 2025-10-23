@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_base_template/core/config/environment_config.dart';
 import 'package:flutter_base_template/core/di/injection.dart';
 import 'package:flutter_base_template/core/l10n/localization_service.dart';
+import 'package:flutter_base_template/core/theme/theme_cubit.dart';
 import 'package:flutter_base_template/core/theme/theme_service.dart';
 import 'package:flutter_base_template/core/utils/logger.dart';
 
@@ -35,7 +36,8 @@ class AppInitializer {
       await configureDependencies();
 
       // 🔹 Khởi tạo các service sau khi DI đã sẵn sàng
-      await getIt<ThemeService>().initTheme();
+      // await getIt<ThemeService>().initTheme();
+      await getIt<ThemeCubit>().initTheme();
       await getIt<LocaleCubit>().initLocale();
 
       Logger.success('App initialized successfully');

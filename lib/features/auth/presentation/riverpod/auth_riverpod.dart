@@ -1,5 +1,5 @@
 // import 'dart:async';
-// import 'package:flutter_base_template/core/state_management/riverpod/provider_helper/base_async_notifier.dart';
+// import 'package:flutter_base_template/core/state_management/riverpod/base_async_notifier.dart';
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_base_template/core/di/injection.dart';
 // import 'package:flutter_base_template/features/auth/domain/entities/auth_entity.dart';
