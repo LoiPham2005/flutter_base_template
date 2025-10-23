@@ -7,6 +7,7 @@ class ApiResponse<T> {
   final T? data;
   final String? error;
   final int? code;
+  final bool? tokenExpired; // ✅ Token hết hạn
 
   const ApiResponse({
     required this.success,
@@ -15,6 +16,7 @@ class ApiResponse<T> {
     this.data,
     this.error,
     this.code,
+    this.tokenExpired,
   });
 
   /// ✅ Getter tiện lợi (nếu API có thể trả `success` hoặc `result`)
@@ -28,6 +30,14 @@ class ApiResponse<T> {
     final successValue = json['success'] ?? false;
     final resultValue = json['result'] ?? successValue; // fallback
 
+    bool? tokenExpiredValue;
+    if (json['tokenExpired'] != null) {
+      final val = json['tokenExpired'];
+      tokenExpiredValue = val is bool
+          ? val
+          : val.toString().toLowerCase() == 'true';
+    }
+
     return ApiResponse<T>(
       success: successValue is bool
           ? successValue
@@ -39,6 +49,7 @@ class ApiResponse<T> {
       data: json['data'] != null ? fromJsonT(json['data']) : null,
       error: json['error']?.toString(),
       code: json['code'] is int ? json['code'] : int.tryParse('${json['code']}'),
+      tokenExpired: tokenExpiredValue,
     );
   }
 
@@ -51,7 +62,7 @@ class ApiResponse<T> {
       'data': data != null && toJsonT != null ? toJsonT(data as T) : data,
       'error': error,
       'code': code,
+      'tokenExpired': tokenExpired,
     };
   }
-
 }
