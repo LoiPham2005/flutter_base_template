@@ -31,7 +31,7 @@ jobs:
 
       # 5️⃣ Build APK
       - name: Build Release APK
-        run: flutter build apk --release
+        run: flutter build apk --release --flavor prod -t lib/main_production.dart
 
       # Nếu bạn có flavor, ví dụ "dev" hoặc "prod", dùng:
       # run: flutter build apk --release --flavor prod -t lib/main_production.dart
