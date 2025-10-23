@@ -1,55 +1,55 @@
-name: Flutter CI/CD
+# name: Flutter CI/CD
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+# on:
+#   push:
+#     branches: [ main ]
+#   pull_request:
+#     branches: [ main ]
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
 
-    steps:
-      # 1️⃣ Clone source code
-      - name: Checkout repository
-        uses: actions/checkout@v3
+#     steps:
+#       # 1️⃣ Clone source code
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
 
-      # 2️⃣ Cài đặt Flutter
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.32.5-stable' # hoặc version bạn đang dùng
+#       # 2️⃣ Cài đặt Flutter
+#       - name: Setup Flutter
+#         uses: subosito/flutter-action@v2
+#         with:
+#           flutter-version: '3.22.5' # hoặc version bạn đang dùng
 
-      # 3️⃣ Cài dependencies
-      - name: Install dependencies
-        run: flutter pub get
+#       # 3️⃣ Cài dependencies
+#       - name: Install dependencies
+#         run: flutter pub get
 
-      # 4️⃣ (Tuỳ chọn) Chạy test
-      - name: Run tests
-        run: flutter test
+#       # 4️⃣ (Tuỳ chọn) Chạy test
+#       - name: Run tests
+#         run: flutter test
 
-      # 5️⃣ Build APK
-      - name: Build Release APK
-        run: flutter build apk --release --flavor prod -t lib/main_production.dart
+#       # 5️⃣ Build APK
+#       - name: Build Release APK
+#         run: flutter build apk --release
 
-      # Nếu bạn có flavor, ví dụ "dev" hoặc "prod", dùng:
-      # run: flutter build apk --release --flavor prod -t lib/main_production.dart
+#       # Nếu bạn có flavor, ví dụ "dev" hoặc "prod", dùng:
+#       # run: flutter build apk --release --flavor prod -t lib/main_production.dart
 
-      # 6️⃣ Build AAB (Google Play)
-      # - name: Build App Bundle (AAB)
-      #   run: flutter build appbundle --release
+#       # 6️⃣ Build AAB (Google Play)
+#       - name: Build App Bundle (AAB)
+#         run: flutter build appbundle --release
 
-      # # 7️⃣ Upload artifact APK
-      # - name: Upload APK artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: app-release-apk
-      #     path: build/app/outputs/flutter-apk/app-release.apk
+#       # 7️⃣ Upload artifact APK
+#       - name: Upload APK artifact
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: app-release-apk
+#           path: build/app/outputs/flutter-apk/app-release.apk
 
-      # # 8️⃣ Upload artifact AAB
-      # - name: Upload AAB artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: app-release-aab
-      #     path: build/app/outputs/bundle/release/app-release.aab
+#       # 8️⃣ Upload artifact AAB
+#       - name: Upload AAB artifact
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: app-release-aab
+#           path: build/app/outputs/bundle/release/app-release.aab
