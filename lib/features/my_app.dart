@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_base_template/core/l10n/localization_service.dart';
+import 'package:flutter_base_template/core/services/navigation_service.dart';
 import 'package:flutter_base_template/core/theme/theme_cubit.dart';
 import 'package:flutter_base_template/core/theme/theme_state.dart';
 import 'package:flutter_base_template/features/auth/presentation/bloc/auth_bloc.dart';
@@ -41,6 +42,8 @@ class MyApp extends StatelessWidget {
                 locale: locale,
                 supportedLocales: AppLocalizations.supportedLocales,
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
+
+                navigatorKey: NavigationService().navigatorKey,
 
                 home: const SplashPage(),
               );

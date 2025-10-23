@@ -1,15 +1,32 @@
 // lib/core/services/navigation_service.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_base_template/core/l10n/generated/app_localizations.dart';
 
 class NavigationService {
-  static final NavigationService _instance = NavigationService._internal();
   factory NavigationService() => _instance;
   NavigationService._internal();
+  static final NavigationService _instance = NavigationService._internal();
 
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   BuildContext? get context => navigatorKey.currentContext;
   NavigatorState? get navigator => navigatorKey.currentState;
+
+  // AppLocalizations? get l10n =>
+  //     context != null ? AppLocalizations.of(context!) : null;
+
+  // // Theme
+  // ThemeData? get theme => context != null ? Theme.of(context!) : null;
+  // TextTheme? get textTheme =>
+  //     context != null ? Theme.of(context!).textTheme : null;
+  // ColorScheme? get colorScheme =>
+  //     context != null ? Theme.of(context!).colorScheme : null;
+
+  // // Colors
+  // Color? get primaryColor => theme?.primaryColor;
+  // Color? get accentColor => colorScheme?.secondary;
+  // Color? get scaffoldBackgroundColor => theme?.scaffoldBackgroundColor;
+  // Color? get cardColor => theme?.cardColor;
 
   // Push
   Future<T?>? push<T>(Widget page) {
@@ -84,4 +101,108 @@ class NavigationService {
   void popToRoot() {
     navigator?.popUntil((route) => route.isFirst);
   }
+
+  // ===============================
+  // Dialogs
+  // ===============================
+
+  Future<T?> showCustomDialog<T>({
+    required Widget child,
+    bool barrierDismissible = true,
+  }) {
+    assert(context != null, 'Navigator context is not ready!');
+    return showDialog<T>(
+      context: context!,
+      barrierDismissible: barrierDismissible,
+      builder: (_) => child,
+    );
+  }
+
+  Future<bool?> showConfirmDialog({
+    required String title,
+    required String message,
+    String confirmText = 'Xác nhận',
+    String cancelText = 'Hủy',
+  }) {
+    assert(context != null, 'Navigator context is not ready!');
+    return showDialog<bool>(
+      context: context!,
+      builder: (_) => AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          TextButton(onPressed: () => pop(false), child: Text(cancelText)),
+          TextButton(onPressed: () => pop(true), child: Text(confirmText)),
+        ],
+      ),
+    );
+  }
+
+  // ===============================
+  // Bottom Sheet
+  // ===============================
+
+  Future<T?> showCustomBottomSheet<T>({
+    required Widget child,
+    bool isDismissible = true,
+    bool enableDrag = true,
+    Color? backgroundColor,
+  }) {
+    assert(context != null, 'Navigator context is not ready!');
+    return showModalBottomSheet<T>(
+      context: context!,
+      isDismissible: isDismissible,
+      enableDrag: enableDrag,
+      backgroundColor: backgroundColor,
+      builder: (_) => child,
+    );
+  }
+
+  // ===============================
+  // SnackBars
+  // ===============================
+
+  void showSnackBar(
+    String message, {
+    Duration duration = const Duration(seconds: 2),
+    SnackBarAction? action,
+    Color? backgroundColor,
+  }) {
+    assert(context != null, 'Navigator context is not ready!');
+    ScaffoldMessenger.of(context!).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: duration,
+        action: action,
+        backgroundColor: backgroundColor,
+      ),
+    );
+  }
+
+  void showErrorSnackBar(
+    String message, {
+    Duration duration = const Duration(seconds: 3),
+  }) {
+    showSnackBar(message, duration: duration, backgroundColor: Colors.red);
+  }
+
+  void showSuccessSnackBar(
+    String message, {
+    Duration duration = const Duration(seconds: 2),
+  }) {
+    showSnackBar(message, duration: duration, backgroundColor: Colors.green);
+  }
+
+  // ===============================
+  // Focus
+  // ===============================
+
+  void unfocus() {
+    context != null ? FocusScope.of(context!).unfocus() : null;
+  }
+
+  void requestFocus(FocusNode node) {
+    if (context != null) FocusScope.of(context!).requestFocus(node);
+  }
+
 }

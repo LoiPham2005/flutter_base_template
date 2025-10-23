@@ -1,6 +1,7 @@
 // filepath: lib/core/config/app_initializer.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_base_template/core/config/app_observer.dart';
 import 'package:flutter_base_template/core/config/environment_config.dart';
 import 'package:flutter_base_template/core/di/injection.dart';
 import 'package:flutter_base_template/core/l10n/localization_service.dart';
@@ -12,6 +13,9 @@ class AppInitializer {
     try {
       // 🔹 Logger
       Logger.configure(enabled: true, minLevel: LogLevel.debug);
+
+      // 🔹 Khởi tạo AppObserver để theo dõi lifecycle
+      AppObserver().initialize(); // Thêm dòng này
 
       // 🔹 UI / Orientation
       await SystemChrome.setPreferredOrientations([
