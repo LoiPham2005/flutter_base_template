@@ -6,8 +6,9 @@ import '../../errors/result.dart';
 Future<void> handleBlocRequest<T, E>(
   Emitter<E> emit,
   Future<Result<T>> Function() useCaseCall,
-  E Function({BlocStatus? status, T? data, String? error}) stateBuilder,
-) async {
+  E Function({BlocStatus? status, T? data, String? error}) stateBuilder, {
+  void Function(T data)? onSuccess, // Thêm callback onSuccess
+}) async {
   emit(stateBuilder(status: BlocStatus.loading));
 
   final result = await useCaseCall();
@@ -15,6 +16,7 @@ Future<void> handleBlocRequest<T, E>(
   result.fold(
     onSuccess: (data) {
       emit(stateBuilder(status: BlocStatus.success, data: data));
+      onSuccess?.call(data); // Gọi callback nếu có
     },
     onFailure: (failure) {
       emit(stateBuilder(status: BlocStatus.failure, error: failure.message));

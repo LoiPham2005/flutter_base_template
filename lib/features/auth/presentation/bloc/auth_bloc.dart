@@ -45,6 +45,9 @@ class AuthBloc extends Bloc<BaseEvent, BaseState> {
         data: data ?? state.data,
         error: error,
       ),
+      onSuccess: (data) {
+        
+      },
     );
   }
 }
