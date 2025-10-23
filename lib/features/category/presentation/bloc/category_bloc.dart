@@ -1,4 +1,3 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter_base_template/core/state_management/bloc/base_event.dart';
 import 'package:flutter_base_template/core/state_management/bloc/base_state.dart';
 import 'package:flutter_base_template/core/state_management/bloc/bloc_helper.dart';

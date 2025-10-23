@@ -1,6 +1,4 @@
 // lib/core/network/dio_client.dart
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:flutter_base_template/core/config/environment_config.dart';

@@ -15,13 +15,11 @@ abstract class BaseCubit<T> extends Cubit<BaseState<T>> {
   /// Helper thực thi hành động async theo Result pattern
   Future<T?> executeUseCase({
     required Future<Result<T>> Function() action,
-    String? loadingMessage,
-    String? successMessage,
     void Function(T data)? onSuccess,
+    void Function(String error)? onError, // ✅ Callback khi lỗi
   }) async {
     safeEmit(state.copyWith(
       status: BlocStatus.loading,
-      message: loadingMessage ?? 'Đang xử lý...',
       error: null,
     ));
 
@@ -33,24 +31,27 @@ abstract class BaseCubit<T> extends Cubit<BaseState<T>> {
           safeEmit(state.copyWith(
             status: BlocStatus.success,
             data: data,
-            message: successMessage ?? 'Thành công!',
           ));
           onSuccess?.call(data);
           return data;
         },
         onFailure: (failure) {
+          final errorMsg = failure.message ?? 'Đã xảy ra lỗi';
           safeEmit(state.copyWith(
             status: BlocStatus.failure,
-            error: failure.message ?? failure.toString(),
+            error: errorMsg,
           ));
+          onError?.call(errorMsg); // ✅ Gọi callback lỗi
           return null;
         },
       );
-    } catch (_) {
+    } catch (e) {
+      const errorMsg = 'Đã xảy ra lỗi không xác định';
       safeEmit(state.copyWith(
         status: BlocStatus.failure,
-        error: 'Đã xảy ra lỗi không xác định',
+        error: errorMsg,
       ));
+      onError?.call(errorMsg); // ✅ fallback callback lỗi
       return null;
     }
   }

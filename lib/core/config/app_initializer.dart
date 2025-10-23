@@ -5,7 +5,6 @@ import 'package:flutter_base_template/core/config/environment_config.dart';
 import 'package:flutter_base_template/core/di/injection.dart';
 import 'package:flutter_base_template/core/l10n/localization_service.dart';
 import 'package:flutter_base_template/core/theme/theme_cubit.dart';
-import 'package:flutter_base_template/core/theme/theme_service.dart';
 import 'package:flutter_base_template/core/utils/logger.dart';
 
 class AppInitializer {

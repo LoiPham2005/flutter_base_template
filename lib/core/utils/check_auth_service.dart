@@ -1,8 +1,6 @@
-import 'package:flutter_base_template/core/di/injection.dart';
 import 'package:flutter_base_template/core/network/dio_client.dart';
 import 'package:flutter_base_template/core/storage/storage_service.dart';
 import 'package:flutter_base_template/core/utils/logger.dart';
-import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:injectable/injectable.dart';
 

@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_base_template/core/l10n/localization_service.dart';
-import 'package:flutter_base_template/core/storage/storage_service.dart';
 import 'package:flutter_base_template/core/theme/theme_cubit.dart';
 import 'package:flutter_base_template/core/theme/theme_state.dart';
 import 'package:flutter_base_template/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter_base_template/features/splash/presentation/pages/splash_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_base_template/core/theme/theme_service.dart';
-import 'package:flutter_base_template/features/home/presentation/pages/home_page.dart';
-import 'package:flutter_base_template/features/auth/presentation/pages/login_page.dart';
 import 'package:flutter_base_template/core/di/injection.dart';
 import 'package:flutter_base_template/core/theme/app_theme.dart';
 import 'package:flutter_base_template/core/constants/app_constants.dart';

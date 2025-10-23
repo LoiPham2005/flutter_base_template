@@ -1,5 +1,4 @@
 // lib/core/errors/error_handler.dart
-import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'exceptions.dart';

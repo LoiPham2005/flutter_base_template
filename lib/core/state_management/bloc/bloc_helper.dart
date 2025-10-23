@@ -7,19 +7,28 @@ Future<void> handleBlocRequest<T, E>(
   Emitter<E> emit,
   Future<Result<T>> Function() useCaseCall,
   E Function({BlocStatus? status, T? data, String? error}) stateBuilder, {
-  void Function(T data)? onSuccess, // Thêm callback onSuccess
+  void Function(T data)? onSuccess,
+  void Function(String error)? onError,
 }) async {
   emit(stateBuilder(status: BlocStatus.loading));
 
-  final result = await useCaseCall();
+  try {
+    final result = await useCaseCall();
 
-  result.fold(
-    onSuccess: (data) {
-      emit(stateBuilder(status: BlocStatus.success, data: data));
-      onSuccess?.call(data); // Gọi callback nếu có
-    },
-    onFailure: (failure) {
-      emit(stateBuilder(status: BlocStatus.failure, error: failure.message));
-    },
-  );
+    result.fold(
+      onSuccess: (data) {
+        emit(stateBuilder(status: BlocStatus.success, data: data));
+        onSuccess?.call(data);
+      },
+      onFailure: (failure) {
+        final errorMsg = failure.message ?? 'Đã xảy ra lỗi';
+        emit(stateBuilder(status: BlocStatus.failure, error: errorMsg));
+        onError?.call(errorMsg);
+      },
+    );
+  } catch (e) {
+    const errorMsg = 'Đã xảy ra lỗi không xác định';
+    emit(stateBuilder(status: BlocStatus.failure, error: errorMsg));
+    onError?.call(errorMsg);
+  }
 }

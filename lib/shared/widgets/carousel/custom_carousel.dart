@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:get/get.dart';
 
 /// Generic reusable carousel widget
 /// - items: danh sách các widget hiển thị trong carousel
