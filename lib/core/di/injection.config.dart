@@ -27,7 +27,7 @@ import 'package:flutter_base_template/core/storage/secure_storage.dart'
 import 'package:flutter_base_template/core/storage/storage_service.dart'
     as _i223;
 import 'package:flutter_base_template/core/theme/theme_cubit.dart' as _i501;
-import 'package:flutter_base_template/core/utils/check_auth_service.dart'
+import 'package:flutter_base_template/core/services/auth_service.dart'
     as _i286;
 import 'package:flutter_base_template/features/auth/data/datasources/auth_remote_datasourse.dart'
     as _i348;
@@ -102,8 +102,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i278.ApiClient>(
       () => _i278.ApiClient(gh<_i858.DioClient>(), gh<_i978.NetworkInfo>()),
     );
-    gh.lazySingleton<_i286.CheckAuthService>(
-      () => _i286.CheckAuthService(
+    gh.lazySingleton<_i286.AuthService>(
+      () => _i286.AuthService(
         gh<_i223.StorageService>(),
         gh<_i858.DioClient>(),
       ),

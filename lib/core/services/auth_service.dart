@@ -5,8 +5,8 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
-class CheckAuthService {
-  CheckAuthService(this._storageService, this._dioClient);
+class AuthService {
+  AuthService(this._storageService, this._dioClient);
   final StorageService _storageService;
   final DioClient _dioClient;
 

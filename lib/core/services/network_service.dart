@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
-class CheckInternet {
+class NetworkService {
   static StreamSubscription? _subscription;
   static bool _isShown = false;
 

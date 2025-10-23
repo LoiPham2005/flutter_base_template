@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_base_template/core/di/injection.dart';
 import 'package:flutter_base_template/core/storage/storage_service.dart';
-import 'package:flutter_base_template/core/utils/check_auth_service.dart';
+import 'package:flutter_base_template/core/services/auth_service.dart';
 import 'package:flutter_base_template/core/utils/logger.dart';
 import 'package:injectable/injectable.dart';
 
@@ -46,7 +46,7 @@ class AuthInterceptor extends Interceptor {
 
       try {
         // Lấy service refresh token từ DI
-        final checkAuthService = getIt<CheckAuthService>();
+        final checkAuthService = getIt<AuthService>();
         await checkAuthService.checkAndRefreshToken();
 
         // Sau khi refresh thành công, thử lại request cũ với token mới
@@ -55,7 +55,7 @@ class AuthInterceptor extends Interceptor {
       } catch (e) {
         Logger.error('Failed to refresh token or retry request.', error: e);
         // Nếu refresh thất bại, đăng xuất và reject request
-        await getIt<CheckAuthService>().logout();
+        await getIt<AuthService>().logout();
         return handler.reject(err);
       }
     }

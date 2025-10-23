@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_base_template/core/constants/app_constants.dart';
 import 'package:flutter_base_template/core/extensions/context_extensions.dart';
 import 'package:flutter_base_template/core/storage/storage_service.dart';
-import 'package:flutter_base_template/core/utils/check_internet.dart';
-import 'package:flutter_base_template/core/utils/check_version.dart';
+import 'package:flutter_base_template/core/services/network_service.dart';
+import 'package:flutter_base_template/core/services/app_version_service.dart';
 import 'package:flutter_base_template/core/utils/logger.dart';
 import 'package:flutter_base_template/features/auth/presentation/pages/login_page.dart';
 import 'package:flutter_base_template/features/bottom_menu/presentation/pages/bottom_menu.dart';
@@ -17,10 +17,10 @@ class SplashPage extends StatelessWidget {
   Future<void> _initializeApp(BuildContext context) async {
     try {
       // Check internet trước
-      final hasInternet = await CheckInternet.hasConnection();
+      final hasInternet = await NetworkService.hasConnection();
       if (!hasInternet) {
         Logger.warning('Không có kết nối internet. Đang chờ kết nối lại...');
-        await CheckInternet.check(
+        await NetworkService.check(
           context,
           showMessage: true,
           onConnected: () async {
@@ -45,20 +45,20 @@ class SplashPage extends StatelessWidget {
 
   Future<void> _continueInitialization(BuildContext context) async {
     try {
-      // Lấy instance của StorageService từ DI
       final storageService = getIt<StorageService>();
 
+      // Tạo instance AppVersionService
+      final appVersionService = AppVersionService();
+
       // Check version
-      await CheckVersion.check(
+      await appVersionService.checkForUpdate(
         context,
-        androidPackageId: AppConstants.androidPackageId,
-        iosBundleId: AppConstants.iosBundleId,
+        forceCheck: true, // hoặc false tùy mục đích
       );
 
       final firstRun = storageService.isFirstRun();
       final loggedIn = storageService.isLoggedIn();
 
-      // Nếu là lần đầu chạy, set lại để lần sau không vào nữa
       if (firstRun) {
         await storageService.setFirstRun(false);
       }
@@ -72,9 +72,8 @@ class SplashPage extends StatelessWidget {
           context.pushReplacement(const LoginPage());
         }
       }
-    } catch (e) {
-      print('Error in continuation: $e');
-      // Fallback về login page nếu có lỗi
+    } catch (e, s) {
+      Logger.error('Error in continuation: $e', error: e, stackTrace: s);
       context.pushReplacement(const LoginPage());
     }
   }
