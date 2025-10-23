@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_base_template/core/utils/logger.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -30,7 +31,7 @@ class CheckVersion {
         _showUpdateDialog(context, appName, currentVersion, storeVersion);
       }
     } catch (e) {
-      print("Check version error: $e");
+      Logger.error('Check version error: $e');
     }
   }
 
@@ -43,7 +44,7 @@ class CheckVersion {
     final match = RegExp(r'\[\[\["([0-9.,]*)"]],')
         .firstMatch(response.body);
 
-    final version = match?.group(1)?.replaceAll(",", "") ?? "1.0.0";
+    final version = match?.group(1)?.replaceAll(',', '') ?? '1.0.0';
 
     return ModelVersion(
       version: version,
@@ -82,15 +83,15 @@ class CheckVersion {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Cập nhật"),
+        title: const Text('Cập nhật'),
         content: Text(
-            "Đã có phiên bản mới của $appName.\n\n"
-            "Phiên bản mới: ${storeVersion.version}\n"
-            "Phiên bản hiện tại: $currentVersion"),
+            'Đã có phiên bản mới của $appName.\n\n'
+            'Phiên bản mới: ${storeVersion.version}\n'
+            'Phiên bản hiện tại: $currentVersion'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Đóng"),
+            child: const Text('Đóng'),
           ),
           TextButton(
             onPressed: () async {
@@ -99,11 +100,11 @@ class CheckVersion {
                 await launchUrl(uri, mode: LaunchMode.externalApplication);
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Không thể mở link cập nhật")),
+                  const SnackBar(content: Text('Không thể mở link cập nhật')),
                 );
               }
             },
-            child: const Text("Cập nhật"),
+            child: const Text('Cập nhật'),
           ),
         ],
       ),

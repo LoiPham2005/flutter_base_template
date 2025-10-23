@@ -90,6 +90,6 @@ class FormatUtils {
   
   static String maskPhone(String phone) {
     if (phone.length < 4) return phone;
-    return phone.substring(0, phone.length - 4) + '****';
+    return '${phone.substring(0, phone.length - 4)}****';
   }
 }

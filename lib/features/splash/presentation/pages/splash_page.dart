@@ -4,6 +4,7 @@ import 'package:flutter_base_template/core/extensions/context_extensions.dart';
 import 'package:flutter_base_template/core/storage/storage_service.dart';
 import 'package:flutter_base_template/core/utils/check_internet.dart';
 import 'package:flutter_base_template/core/utils/check_version.dart';
+import 'package:flutter_base_template/core/utils/logger.dart';
 import 'package:flutter_base_template/features/auth/presentation/pages/login_page.dart';
 import 'package:flutter_base_template/features/bottom_menu/presentation/pages/bottom_menu.dart';
 import 'package:flutter_base_template/features/welcome/presentation/pages/welcom_page.dart';
@@ -18,20 +19,25 @@ class SplashPage extends StatelessWidget {
       // Check internet trước
       final hasInternet = await CheckInternet.hasConnection();
       if (!hasInternet) {
+        Logger.warning('Không có kết nối internet. Đang chờ kết nối lại...');
         await CheckInternet.check(
           context,
           showMessage: true,
           onConnected: () async {
+            Logger.info(
+              'Đã có kết nối internet. Tiếp tục khởi tạo ứng dụng...',
+            );
             // Tiếp tục khởi tạo khi có internet
             await _continueInitialization(context);
           },
         );
       } else {
+        Logger.info('Kết nối internet ổn định. Tiếp tục khởi tạo ứng dụng...');
         // Có internet, tiếp tục khởi tạo
         await _continueInitialization(context);
       }
-    } catch (e) {
-      print('Error initializing app: $e');
+    } catch (e, s) {
+      Logger.error('Lỗi khi khởi tạo ứng dụng: $e', stackTrace: s);
       // Fallback nếu có lỗi
       await _continueInitialization(context);
     }

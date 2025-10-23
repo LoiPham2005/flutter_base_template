@@ -16,11 +16,10 @@ class CheckAuthService {
     if (_isRefreshing) return;
 
     final accessToken = _storageService.getToken();
-    final refreshToken = _storageService
-        .getRefreshToken(); // Giả sử bạn có phương thức này
+    final refreshToken = _storageService.getRefreshToken();
 
     if (accessToken == null || refreshToken == null) {
-      print('Tokens không tồn tại, không cần refresh.');
+      Logger.warning('🔑 Tokens không tồn tại — bỏ qua refresh.');
       return;
     }
 
@@ -29,13 +28,13 @@ class CheckAuthService {
       final bool isRefreshTokenExpired = JwtDecoder.isExpired(refreshToken);
 
       if (isRefreshTokenExpired) {
-        print('Refresh token đã hết hạn. Đăng xuất...');
+        Logger.error('⏰ Refresh token đã hết hạn → Đăng xuất người dùng.');
         await logout();
         return;
       }
 
       if (isAccessTokenExpired) {
-        print('Access token đã hết hạn. Bắt đầu làm mới...');
+        Logger.info('♻️ Access token hết hạn → Bắt đầu refresh...');
         _isRefreshing = true;
 
         final response = await _dioClient.post(
@@ -48,17 +47,18 @@ class CheckAuthService {
           final newRefreshToken = response.data['data']['refreshToken'];
 
           await _storageService.saveToken(newAccessToken);
-          await _storageService.saveRefreshToken(
-            newRefreshToken,
-          ); // Giả sử bạn có phương thức này
-          print('Refresh token thành công.');
+          await _storageService.saveRefreshToken(newRefreshToken);
+
+          Logger.success('✅ Refresh token thành công.');
         } else {
-          print('Refresh token thất bại. Đăng xuất...');
+          Logger.error('❌ Refresh token thất bại → Đăng xuất người dùng.');
           await logout();
         }
+      } else {
+        Logger.debug('🔒 Access token vẫn còn hiệu lực, không cần refresh.');
       }
-    } catch (e) {
-      print('Lỗi khi refresh token: $e. Đăng xuất...');
+    } catch (e, stack) {
+      Logger.error('💥 Lỗi khi refresh token: $e', error: e, stackTrace: stack);
       await logout();
     } finally {
       _isRefreshing = false;
@@ -67,8 +67,7 @@ class CheckAuthService {
 
   Future<void> logout() async {
     await _storageService.clearAuthData();
-    // Cân nhắc điều hướng người dùng về trang đăng nhập
-    // Get.offAll(() => const LoginPage());
-    Logger.info('User logged out and auth data cleared.');
+    // TODO: Điều hướng người dùng về màn hình đăng nhập (nếu có)
+    Logger.info('🚪 Người dùng đã đăng xuất và dữ liệu xác thực đã được xóa.');
   }
 }

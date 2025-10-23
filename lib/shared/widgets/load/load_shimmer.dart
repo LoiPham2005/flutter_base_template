@@ -4,7 +4,7 @@ import 'package:shimmer/shimmer.dart';
 class LoadShimmer extends StatelessWidget {
   Widget child;
   bool isLoading;
-  LoadShimmer({ required this.child, required this.isLoading}) ;
+  LoadShimmer({super.key,  required this.child, required this.isLoading}) ;
 
   @override
   Widget build(BuildContext context) {

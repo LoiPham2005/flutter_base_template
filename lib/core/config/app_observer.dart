@@ -9,7 +9,7 @@ class AppObserver with WidgetsBindingObserver {
 
   void initialize() {
     WidgetsBinding.instance.addObserver(this);
-    Logger.info("✅ AppLifecycleObserver initialized");
+    Logger.info('✅ AppLifecycleObserver initialized');
   }
 
   void dispose() {
@@ -18,22 +18,22 @@ class AppObserver with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    Logger.info("🔄 App lifecycle changed: $state");
+    Logger.info('🔄 App lifecycle changed: $state');
     switch (state) {
       case AppLifecycleState.resumed:
-        Logger.info("📱 App resumed (foreground)");
+        Logger.info('📱 App resumed (foreground)');
         break;
       case AppLifecycleState.paused:
-        Logger.info("⏸️ App paused (background)");
+        Logger.info('⏸️ App paused (background)');
         break;
       case AppLifecycleState.detached:
-        Logger.info("❌ App detached (closed)");
+        Logger.info('❌ App detached (closed)');
         break;
       case AppLifecycleState.inactive:
-        Logger.info("⚪ App inactive (temporary)");
+        Logger.info('⚪ App inactive (temporary)');
         break;
       case AppLifecycleState.hidden:
-        Logger.info("👻 App hidden");
+        Logger.info('👻 App hidden');
         break;
     }
   }

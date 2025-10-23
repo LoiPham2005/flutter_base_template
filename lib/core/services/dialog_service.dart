@@ -11,6 +11,7 @@ class DialogService {
   
   BuildContext? get _context => _navigationService.context;
   
+  
   // Show dialog
   Future<T?> showCustomDialog<T>({
     required Widget child,
@@ -91,5 +92,61 @@ class DialogService {
   // Hide dialog
   void hideDialog() {
     _navigationService.pop();
+  }
+
+
+   // ===============================
+  // Bottom Sheet
+  // ===============================
+
+  Future<T?> showCustomBottomSheet<T>({
+    required Widget child,
+    bool isDismissible = true,
+    bool enableDrag = true,
+    Color? backgroundColor,
+  }) {
+    assert(_context != null, 'Navigator context is not ready!');
+    return showModalBottomSheet<T>(
+      context: _context!,
+      isDismissible: isDismissible,
+      enableDrag: enableDrag,
+      backgroundColor: backgroundColor,
+      builder: (_) => child,
+    );
+  }
+
+  // ===============================
+  // SnackBars
+  // ===============================
+
+  void showSnackBar(
+    String message, {
+    Duration duration = const Duration(seconds: 2),
+    SnackBarAction? action,
+    Color? backgroundColor,
+  }) {
+    assert(_context != null, 'Navigator context is not ready!');
+    ScaffoldMessenger.of(_context!).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: duration,
+        action: action,
+        backgroundColor: backgroundColor,
+      ),
+    );
+  }
+
+  void showErrorSnackBar(
+    String message, {
+    Duration duration = const Duration(seconds: 3),
+  }) {
+    showSnackBar(message, duration: duration, backgroundColor: Colors.red);
+  }
+
+  void showSuccessSnackBar(
+    String message, {
+    Duration duration = const Duration(seconds: 2),
+  }) {
+    showSnackBar(message, duration: duration, backgroundColor: Colors.green);
   }
 }

@@ -51,3 +51,8 @@ analyzer:
     - "**/*.freezed.dart"
   errors:
     invalid_annotation_target: ignore
+    # avoid_print: ignore
+    sort_constructors_first: ignore
+    library_private_types_in_public_api: ignore
+    unrelated_type_equality_checks: ignore
+    use_build_context_synchronously: ignore

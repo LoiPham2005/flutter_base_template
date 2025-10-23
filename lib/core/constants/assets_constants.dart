@@ -21,6 +21,7 @@
 class Assets {
   Assets._();
 
+  // ignore: library_private_types_in_public_api
   static _Images get images => _Images();
   static _Icons get icons => _Icons();
   static _Animations get animations => _Animations();

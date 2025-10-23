@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_base_template/core/extensions/context_extensions.dart';
 import 'package:flutter_base_template/core/state_management/bloc/base_state.dart';
-import 'package:flutter_base_template/core/state_management/bloc/bloc_status.dart';
 import 'package:flutter_base_template/core/storage/storage_service.dart';
 import 'package:flutter_base_template/features/home/presentation/pages/home_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

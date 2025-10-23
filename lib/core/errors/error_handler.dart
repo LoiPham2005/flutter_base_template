@@ -1,6 +1,7 @@
 // lib/core/errors/error_handler.dart
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter_base_template/core/utils/logger.dart';
 import 'exceptions.dart';
 import 'failures.dart';
 
@@ -136,9 +137,6 @@ class ErrorHandler {
   
   // Log error
   static void logError(Object error, [StackTrace? stackTrace]) {
-    print('❌ ERROR: $error');
-    if (stackTrace != null) {
-      print('Stack trace: $stackTrace');
-    }
+    Logger.error('Unhandled error: $error', stackTrace: stackTrace);
   }
 }

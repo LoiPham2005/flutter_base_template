@@ -1,3 +1,4 @@
+import 'package:flutter_base_template/core/utils/logger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationService {
@@ -26,9 +27,11 @@ class NotificationService {
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         // Xử lý click notification
         final payload = response.payload;
-        if (payload != null) {
-          print('Notification clicked: $payload');
-        }
+      if (payload != null) {
+        Logger.info('🔔 Notification clicked: $payload');
+      } else {
+        Logger.debug('Notification clicked with no payload');
+      }
       },
     );
   }
