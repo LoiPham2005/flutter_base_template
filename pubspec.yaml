@@ -110,6 +110,12 @@ dependencies:
 
   # flutter_screenutil: ^5.9.3
 
+  # --- Video & Gallery ---
+  #  video_player: ^2.6.1
+  gallery_saver_plus: ^3.2.9
+  path_provider: ^2.1.5
+  open_filex: ^4.7.0
+
 
 dev_dependencies:
   flutter_test:
@@ -128,7 +134,6 @@ dev_dependencies:
   # # Testing
   # bloc_test: ^9.1.7
   # mocktail: ^1.0.4
-  # change_app_package_name: ^1.5.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -171,16 +176,5 @@ flutter:
   #         weight: 700
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
   generate: true
-
-flutter_native_splash:
-  color: "#ffffff" # Màu nền splash
-  image: assets/image/SprotHub_Logo.png # Đường dẫn tới logo splash của bạn
-  android: true
-  ios: true
-  web: false
-
-flutter_icons:
-  android: true
-  ios: true
-  image_path: "assets/image/SprotHub_Logo.png"

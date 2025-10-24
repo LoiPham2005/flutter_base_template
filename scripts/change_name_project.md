@@ -1,109 +1,237 @@
+# Hướng dẫn đổi tên dự án Flutter
 
-# câu lệnh đổi tên tự án 
-Cách đổi tên package (bundleId) trong Flutter mới nhất
-1. Đổi bundleId cho Android & iOS
+## Phương pháp 1: Sử dụng Package (Khuyên dùng - Nhanh nhất)
 
-Chạy lệnh:
+### Bước 1: Cài đặt rename package
+```bash
+dart pub global activate rename
+```
 
-dart run rename setBundleId --value com.example.notes_app
+### Bước 2: Đổi tên app
+```bash
+# Đổi tên hiển thị của app
+dart run rename setAppName --targets ios,android,macos,linux,windows --value "Tên App Mới"
 
-2. Đổi tên hiển thị ứng dụng (App Name)
+# Hoặc đổi ngắn gọn
+dart run rename setAppName --value "Tên App Mới"
+```
 
-Chạy thêm:
+### Bước 3: Đổi bundle identifier / package name
+```bash
+# Đổi bundle ID
+dart run rename setBundleId --targets ios,android,macos,linux,windows --value "com.company.newapp"
 
-dart run rename setAppName --value "Notes App"
+# Hoặc đổi ngắn gọn
+dart run rename setBundleId --value "com.company.newapp"
+```
 
-3. Kiểm tra bundleId sau khi đổi
+### Ví dụ cụ thể:
+```bash
+# Đổi tên app thành "My Shop"
+dart run rename setAppName --value "My Shop"
 
-Chạy lệnh:
+# Đổi package thành com.mycompany.myshop
+dart run rename setBundleId --value "com.mycompany.myshop"
+```
 
-dart run rename getBundleId
+---
 
+## Phương pháp 2: Đổi thủ công (Chi tiết)
 
-Nó sẽ hiển thị kết quả như:
+Nếu bạn muốn hiểu rõ hoặc package không hoạt động, đây là cách đổi thủ công:
 
-Android: com.example.notes_app
-iOS: com.example.notes_app
+### 1. Đổi tên Android
 
-4. Dọn dẹp và chạy lại app
+#### File: `android/app/build.gradle`
+```gradle
+defaultConfig {
+    applicationId "com.company.newapp"  // Đổi dòng này
+    minSdkVersion flutter.minSdkVersion
+    targetSdkVersion flutter.targetSdkVersion
+    versionCode flutterVersionCode.toInteger()
+    versionName flutterVersionName
+}
+```
 
-Sau khi đổi tên, bạn nên làm sạch dự án:
+#### File: `android/app/src/main/AndroidManifest.xml`
+```xml
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.company.newapp">  <!-- Đổi dòng này -->
+    
+    <application
+        android:label="Tên App Mới"  <!-- Đổi tên hiển thị -->
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher">
+```
 
-flutter clean
-flutter pub get
-flutter run
+#### Đổi cấu trúc thư mục:
+```
+android/app/src/main/kotlin/
+└── com/
+    └── company/        ← Đổi tên folder
+        └── newapp/     ← Đổi tên folder
+            └── MainActivity.kt
+```
 
-
-# sau đó cần đổi thủ công các file
-Cách đổi tên package Flutter đúng chuẩn
-
-Mình sẽ hướng dẫn bạn đổi từ
-com.example.dat_san_247_mobile ➝ com.example.notes_app
-
-Bước 1 — Đổi namespace trong android/app/build.gradle
-
-Mở file:
-
-android/app/build.gradle
-
-
-Sửa:
-
-android {
-    namespace = "com.example.notes_app"
-
-Bước 2 — Đổi package trong AndroidManifest.xml
-
-Có 2 file AndroidManifest.xml cần sửa:
-
-android/app/src/main/AndroidManifest.xml
-
-android/app/src/debug/AndroidManifest.xml
-
-Tìm dòng:
-
-package="com.example.dat_san_247_mobile"
-
-
-Sửa thành:
-
-package="com.example.notes_app"
-
-Bước 3 — Đổi tên thư mục Kotlin/Java
-
-Đường dẫn cũ:
-
-android/app/src/main/kotlin/com/example/dat_san_247_mobile/
-
-
-Đổi thành:
-
-android/app/src/main/kotlin/com/example/notes_app/
-
-
-Tip:
-Trong Android Studio → Nhấp chuột phải vào thư mục dat_san_247_mobile → Refactor → Rename → Nhập notes_app → Chọn Do Refactor.
-
-Bước 4 — Sửa MainActivity.kt
-
-Mở file:
-
-android/app/src/main/kotlin/com/example/notes_app/MainActivity.kt
-
-
-Đảm bảo phần đầu file:
-
-package com.example.notes_app
+#### File: `android/app/src/main/kotlin/.../MainActivity.kt`
+```kotlin
+package com.company.newapp  // Đổi package name
 
 import io.flutter.embedding.android.FlutterActivity
 
 class MainActivity: FlutterActivity() {
 }
+```
 
-Bước 5 — Xóa cache & chạy lại
+### 2. Đổi tên iOS
 
-Chạy lệnh sau trong terminal:
+#### File: `ios/Runner/Info.plist`
+```xml
+<key>CFBundleDisplayName</key>
+<string>Tên App Mới</string>  <!-- Đổi tên hiển thị -->
 
+<key>CFBundleName</key>
+<string>Tên App Mới</string>  <!-- Đổi tên -->
+```
+
+#### Trong Xcode (nếu cần đổi Bundle Identifier):
+1. Mở `ios/Runner.xcworkspace` bằng Xcode
+2. Chọn **Runner** project ở sidebar trái
+3. Chọn tab **General**
+4. Đổi **Bundle Identifier** thành `com.company.newapp`
+
+#### Hoặc đổi trong file: `ios/Runner.xcodeproj/project.pbxproj`
+Tìm và thay thế:
+```
+PRODUCT_BUNDLE_IDENTIFIER = com.company.newapp;
+```
+
+### 3. Đổi tên trong pubspec.yaml
+
+#### File: `pubspec.yaml`
+```yaml
+name: new_app_name  # Đổi tên package (dùng snake_case)
+description: Mô tả app mới của bạn
+
+publish_to: 'none'
+version: 1.0.0+1
+```
+
+### 4. Đổi import trong code Dart
+
+Sau khi đổi `name` trong `pubspec.yaml`, phải đổi tất cả import:
+
+**Cũ:**
+```dart
+import 'package:flutter_base_template/screens/home.dart';
+```
+
+**Mới:**
+```dart
+import 'package:new_app_name/screens/home.dart';
+```
+
+**Cách nhanh:** Dùng Find & Replace trong IDE:
+- **Find:** `package:flutter_base_template/`
+- **Replace:** `package:new_app_name/`
+
+### 5. Đổi tên macOS (nếu có)
+
+#### File: `macos/Runner/Configs/AppInfo.xcconfig`
+```
+PRODUCT_NAME = Tên App Mới
+PRODUCT_BUNDLE_IDENTIFIER = com.company.newapp
+```
+
+### 6. Đổi tên Linux (nếu có)
+
+#### File: `linux/CMakeLists.txt`
+```cmake
+set(BINARY_NAME "new_app_name")
+set(APPLICATION_ID "com.company.newapp")
+```
+
+### 7. Đổi tên Windows (nếu có)
+
+#### File: `windows/runner/Runner.rc`
+Tìm và đổi các dòng:
+```
+VALUE "ProductName", "Tên App Mới"
+VALUE "FileDescription", "Tên App Mới"
+```
+
+---
+
+## Checklist sau khi đổi tên
+
+- [ ] Chạy `flutter clean`
+- [ ] Chạy `flutter pub get`
+- [ ] Xóa thư mục `build/`
+- [ ] Với Android: Xóa `android/.gradle` và `android/app/build`
+- [ ] Với iOS: Xóa `ios/Pods` và `ios/Podfile.lock`, chạy `cd ios && pod install`
+- [ ] Build và test app:
+  ```bash
+  flutter run
+  flutter build apk  # Test Android
+  flutter build ios  # Test iOS
+  ```
+
+---
+
+## Lưu ý quan trọng
+
+1. **Package name / Bundle ID phải unique:**
+   - Format: `com.company.appname`
+   - Chỉ dùng chữ thường, không dấu, không ký tự đặc biệt
+   - Ví dụ: `com.mycompany.myshop`
+
+2. **Tên trong pubspec.yaml:**
+   - Dùng snake_case: `my_shop_app`
+   - Không dùng dấu cách, không ký tự đặc biệt
+
+3. **Tên hiển thị app:**
+   - Có thể dùng dấu cách, chữ hoa
+   - Ví dụ: "My Shop App"
+
+4. **Backup trước khi đổi:**
+   ```bash
+   git commit -am "Backup before rename"
+   ```
+
+5. **Nếu dùng Firebase:**
+   - Tải lại `google-services.json` (Android)
+   - Tải lại `GoogleService-Info.plist` (iOS)
+   - Cập nhật bundle ID trong Firebase Console
+
+---
+
+## Khắc phục lỗi thường gặp
+
+### Lỗi "Couldn't find package"
+```bash
 flutter clean
 flutter pub get
-flutter run
+```
+
+### Lỗi build Android
+```bash
+cd android
+./gradlew clean
+cd ..
+flutter clean
+flutter pub get
+```
+
+### Lỗi build iOS
+```bash
+cd ios
+rm -rf Pods Podfile.lock
+pod install
+cd ..
+flutter clean
+flutter pub get
+```
+
+### Lỗi import không tìm thấy
+- Kiểm tra lại tên package trong `pubspec.yaml`
+- Find & Replace tất cả import cũ sang import mới
