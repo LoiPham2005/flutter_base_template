@@ -1,3 +1,7 @@
+# Tạo thư mục .github\workflows\build.yml
+
+# copy vào file build.yml
+
 name: Build and Deploy
 
 on:
@@ -21,7 +25,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.0'
+          flutter-version: '3.22.5'
           channel: 'stable'
       
       - name: Install dependencies
