@@ -38,46 +38,50 @@ android {
         multiDexEnabled = true
     }
 
-    signingConfigs {
-        create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = file(keystoreProperties["storeFile"] as String)
-            storePassword = keystoreProperties["storePassword"] as String
-        }
-    }
+    //  signingConfigs {
+    //      create("release") {
+    //          keyAlias = keystoreProperties["keyAlias"] as String
+    //          keyPassword = keystoreProperties["keyPassword"] as String
+    //         storeFile = file(keystoreProperties["storeFile"] as String)
+    //         storePassword = keystoreProperties["storePassword"] as String
+    //      }
+    //  }
 
-    flavorDimensions += "environment"
-    productFlavors {
-        create("development") {
-            dimension = "environment"
-            applicationIdSuffix = ".dev"
-            versionNameSuffix = "-dev"
-            resValue("string", "app_name", "Base App Dev")
-        }
-        create("staging") {
-            dimension = "environment"
-            applicationIdSuffix = ".stg"
-            versionNameSuffix = "-stg"
-            resValue("string", "app_name", "Base App Stg")
-        }
-        create("production") {
-            dimension = "environment"
-            resValue("string", "app_name", "Base App")
-        }
-    }
+     flavorDimensions += "environment"
+     productFlavors {
+         create("development") {
+             dimension = "environment"
+             applicationIdSuffix = ".dev"
+             versionNameSuffix = "-dev"
+             resValue("string", "app_name", "Base App Dev")
+         }
+         create("staging") {
+             dimension = "environment"
+             applicationIdSuffix = ".stg"
+             versionNameSuffix = "-stg"
+             resValue("string", "app_name", "Base App Stg")
+         }
+         create("production") {
+             dimension = "environment"
+             resValue("string", "app_name", "Base App")
+         }
+     }
 
     buildTypes {
-        getByName("release") {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            signingConfig = signingConfigs.getByName("release")
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
+        }
+        release {
+            isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android.txt"),
+                file("proguard-rules.pro")
             )
+            signingConfig = signingConfigs.getByName("debug") // thay bằng release key khi publish
         }
     }
+
 }
 
 dependencies {
