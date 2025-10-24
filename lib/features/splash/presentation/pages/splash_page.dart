@@ -1,88 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_base_template/core/constants/app_constants.dart';
-import 'package:flutter_base_template/core/extensions/context_extensions.dart';
-import 'package:flutter_base_template/core/storage/storage_service.dart';
-import 'package:flutter_base_template/core/services/network_service.dart';
-import 'package:flutter_base_template/core/services/app_version_service.dart';
-import 'package:flutter_base_template/core/utils/logger.dart';
-import 'package:flutter_base_template/features/auth/presentation/pages/login_page.dart';
-import 'package:flutter_base_template/features/bottom_menu/presentation/pages/bottom_menu.dart';
-import 'package:flutter_base_template/features/welcome/presentation/pages/welcom_page.dart';
-import 'package:get/get.dart';
-import 'package:flutter_base_template/core/di/injection.dart';
+import 'package:flutter_base_template/core/config/app_launcher.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
 
-  Future<void> _initializeApp(BuildContext context) async {
-    try {
-      // Check internet trước
-      final hasInternet = await NetworkService.hasConnection();
-      if (!hasInternet) {
-        Logger.warning('Không có kết nối internet. Đang chờ kết nối lại...');
-        await NetworkService.check(
-          context,
-          showMessage: true,
-          onConnected: () async {
-            Logger.info(
-              'Đã có kết nối internet. Tiếp tục khởi tạo ứng dụng...',
-            );
-            // Tiếp tục khởi tạo khi có internet
-            await _continueInitialization(context);
-          },
-        );
-      } else {
-        Logger.info('Kết nối internet ổn định. Tiếp tục khởi tạo ứng dụng...');
-        // Có internet, tiếp tục khởi tạo
-        await _continueInitialization(context);
-      }
-    } catch (e, s) {
-      Logger.error('Lỗi khi khởi tạo ứng dụng: $e', stackTrace: s);
-      // Fallback nếu có lỗi
-      await _continueInitialization(context);
-    }
-  }
-
-  Future<void> _continueInitialization(BuildContext context) async {
-    try {
-      final storageService = getIt<StorageService>();
-
-      // Tạo instance AppVersionService
-      final appVersionService = AppVersionService();
-
-      // Check version
-      await appVersionService.checkForUpdate(
-        context,
-        forceCheck: true, // hoặc false tùy mục đích
-      );
-
-      final firstRun = storageService.isFirstRun();
-      final loggedIn = storageService.isLoggedIn();
-
-      if (firstRun) {
-        await storageService.setFirstRun(false);
-      }
-
-      if (firstRun) {
-        context.pushReplacement(const WelcomPage());
-      } else {
-        if (loggedIn) {
-          context.pushReplacement(const BottomMenu());
-        } else {
-          context.pushReplacement(const LoginPage());
-        }
-      }
-    } catch (e, s) {
-      Logger.error('Error in continuation: $e', error: e, stackTrace: s);
-      context.pushReplacement(const LoginPage());
-    }
+   Future<void> _boot(BuildContext context) async {
+    await AppLauncher.launch(context); // 🚀 Logic khởi chạy + điều hướng
   }
 
   @override
   Widget build(BuildContext context) {
     // Khởi tạo app sau khi build hoàn tất
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initializeApp(context);
+      _boot(context);
     });
 
     return const Scaffold(
