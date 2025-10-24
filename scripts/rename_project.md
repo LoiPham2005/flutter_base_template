@@ -1,5 +1,24 @@
 # Hướng dẫn đổi tên dự án Flutter
 
+```bash
+Các bước nhanh nhất:
+ # 1. Cài đặt rename package
+dart pub global activate rename
+
+# 2. Đổi tên app hiển thị
+dart run rename setAppName --value "Tên App Của Bạn"
+
+# 3. Đổi package name/bundle ID
+dart run rename setBundleId --value "com.yourcompany.yourapp"
+
+# 4. Clean và rebuild
+flutter clean
+flutter pub get
+flutter run
+
+```
+
+# Hướng dẫn chi tiết đổi tên dự án Flutter
 ## Phương pháp 1: Sử dụng Package (Khuyên dùng - Nhanh nhất)
 
 ### Bước 1: Cài đặt rename package
