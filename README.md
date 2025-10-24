@@ -1,171 +1,231 @@
-# Flutter Production-Ready Template
+# 🚀 Flutter Base Template
 
-Một template dự án Flutter hoàn chỉnh, sẵn sàng cho production với kiến trúc sạch, các gói thư viện thiết yếu và các thực hành tốt nhất đã được tích hợp.
+<div align="center">
 
-## 🚀 Tính năng nổi bật
+![Flutter](https://img.shields.io/badge/Flutter-3.22.0+-02569B?logo=flutter&logoColor=white)
+![Dart](https://img.shields.io/badge/Dart-3.4.0+-0175C2?logo=dart&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Platform](https://img.shields.io/badge/Platform-Android%20|%20iOS-blue.svg)
 
-- 🏗️ **Kiến trúc sạch (Clean Architecture)**: Phân tách rõ ràng các lớp Presentation, Domain, và Data.
-- 📁 **Cấu trúc theo tính năng (Feature-First)**: Dễ dàng tìm kiếm, quản lý và phát triển các tính năng độc lập.
-- 🔄 **Quản lý trạng thái đa dạng**: Hỗ trợ sẵn **BLoC**, **GetX**, và **Riverpod**.
-- 💉 **Dependency Injection**: Tích hợp `get_it` và `injectable` để quản lý dependency một cách tự động và hiệu quả.
-- 🌐 **Lớp mạng (Networking)**: Sử dụng `Dio` mạnh mẽ với các `Interceptor` (Auth, Logging, Error) đã được cấu hình.
-- 🔒 **Lưu trữ an toàn**: Tích hợp `shared_preferences` cho dữ liệu thông thường và `flutter_secure_storage` cho dữ liệu nhạy cảm.
-- 🎨 **Quản lý Theme**: Dễ dàng chuyển đổi giữa Light/Dark mode và lưu trạng thái.
-- 🌍 **Đa ngôn ngữ (Localization)**: Cấu hình sẵn cho việc dịch thuật với file `.arb`.
-- 📱 **Giao diện đáp ứng (Responsive UI)**: Các tiện ích và hằng số cho việc xây dựng UI linh hoạt.
-- 🧪 **Cấu hình Test**: Nền tảng cho Unit, Widget, và Integration Test.
-- ⚙️ **Tự động hóa**: Tích hợp sẵn GitHub Actions cho CI (Continuous Integration).
+**Production-ready Flutter template với Clean Architecture, DI, và State Management đa dạng**
 
-## 📂 Cấu trúc thư mục
+[Tài liệu](#-documentation) • [Bắt đầu](#-quick-start) • [Tính năng](#-features) • [Cấu trúc](#-project-structure)
+
+</div>
+
+---
+
+## ✨ Features
+
+- 🏗️ **Clean Architecture** - Domain, Data, Presentation layers
+- 📁 **Feature-First** - Tổ chức theo tính năng, dễ scale
+- 💉 **DI tự động** - get_it + injectable
+- 🔄 **State Management** - BLoC, GetX, Riverpod, Provider
+- 🌐 **Networking** - Dio + Interceptors + Result wrapper
+- 🔒 **Storage** - SharedPreferences + SecureStorage
+- 🎨 **Theme** - Light/Dark mode
+- 🌍 **i18n** - Multi-language với .arb
+- 📱 **Responsive** - Screen utilities
+- 🧪 **Testing** - Unit, Widget, Integration tests
+- ⚙️ **Flavors** - Development, Staging, Production
+- 🔥 **CI/CD** - GitHub Actions
+
+---
+
+## 🚀 Quick Start
+
+```bash
+# 1. Clone & install
+git clone <your-repo-url>
+cd flutter_base_template
+flutter pub get
+
+# 2. Generate code
+flutter pub run build_runner build --delete-conflicting-outputs
+
+# 3. Run
+flutter run --flavor development -t lib/main_development.dart
+```
+
+**VS Code**: Nhấn `F5` → Chọn flavor → Run
+
+---
+
+## 📂 Project Structure
 
 ```
 lib/
-├── core/                   # Chức năng cốt lõi, dùng chung toàn ứng dụng
-│   ├── config/             # Cấu hình khởi tạo app (Observer, Initializer)
-│   ├── constants/          # Các hằng số (API endpoints, App info)
+├── core/                   # Core functionalities, shared across the app
+│   ├── config/             # App initialization & configuration (Observer, Initializer)
+│   ├── constants/          # Constants (API endpoints, App info)
 │   ├── di/                 # Dependency Injection (get_it, injectable)
-│   ├── errors/             # Xử lý lỗi (Failures, Exceptions)
-│   ├── extensions/         # Các hàm mở rộng tiện ích
-│   ├── l10n/               # Đa ngôn ngữ (Localization)
-│   ├── network/            # Lớp mạng (Dio, Interceptors, API Client)
-│   ├── services/           # Các dịch vụ nền (Notifications, Dialogs)
-│   ├── state_management/   # Các lớp cơ sở cho BLoC, GetX, Riverpod
-│   ├── storage/            # Lưu trữ dữ liệu (SharedPreferences, Secure Storage)
-│   ├── theme/              # Quản lý giao diện (Colors, Styles, Themes)
-│   └── utils/              # Các hàm tiện ích (Logger, Validators)
+│   ├── errors/             # Error handling (Failures, Exceptions)
+│   ├── extensions/         # Utility extensions
+│   ├── l10n/               # Localization (multi-language support)
+│   ├── network/            # Network layer (Dio, Interceptors, API Client)
+│   ├── services/           # Core services (Notifications, Dialogs)
+│   ├── state_management/   # Base classes for BLoC, GetX, Riverpod
+│   ├── storage/            # Data storage (SharedPreferences, Secure Storage)
+│   ├── theme/              # UI management (Colors, Styles, Themes)
+│   └── utils/              # Utilities (Logger, Validators)
 │
-├── features/               # Các tính năng của ứng dụng
-│   ├── auth/               # Ví dụ: Tính năng xác thực
+├── features/               # App features
+│   ├── auth/               # Example: Authentication feature
 │   │   ├── data/
 │   │   ├── domain/
 │   │   └── presentation/
-│   └── ...                 # Các tính năng khác
+│   └── ...                 # Other features
 │
-└── shared/                 # Các thành phần dùng chung trong UI
-    ├── models/             # Các model chung
-    └── widgets/            # Các widget có thể tái sử dụng
+└── shared/                 # Shared UI components
+    ├── models/             # Shared models
+    └── widgets/            # Reusable widgets
 ```
 
-## 🛠️ Bắt đầu
+---
 
-### Yêu cầu
-- Flutter SDK (phiên bản 3.22.0 trở lên)
-- Dart SDK (phiên bản 3.4.0 trở lên)
-- Android Studio / VS Code
+## 📚 Documentation
 
-### Cài đặt
-1.  **Clone repository:**
-    ```bash
-    git clone <your-repository-url>
-    cd <your-project-name>
-    ```
+### Bắt đầu
+- 📖 [Getting Started](docs/GETTING_STARTED.md) - Setup chi tiết
+- 🎨 [Rename Project](docs/RENAME_PROJECT.md) - Đổi tên dự án
 
-2.  **Cài đặt các gói thư viện:**
-    ```bash
-    flutter pub get
-    ```
+### Phát triển
+- 🏗️ [Architecture](docs/ARCHITECTURE.md) - Clean Architecture
+- 🔌 [API Implementation](docs/API_IMPLEMENTATION.md) - Thêm API
+- 🔄 [State Management](docs/STATE_MANAGEMENT.md) - BLoC, GetX, Riverpod
+- ✨ [Features Guide](docs/FEATURES_GUIDE.md) - Tạo feature mới
+- 📝 [Coding Standards](docs/CODING_STANDARDS.md) - Quy tắc code
 
-3.  **Tạo các file cần thiết (code generation):**
-    Lệnh này sẽ tạo ra các file `.g.dart`, `.freezed.dart` và `injection.config.dart`.
-    ```bash
-    flutter pub run build_runner build --delete-conflicting-outputs
-    ```
+### Build & Deploy
+- 🚀 [Build & Deploy](docs/BUILD_AND_DEPLOY.md) - Release app
+- 🧪 [Testing](docs/TESTING.md) - Viết tests
+- ❓ [FAQ](docs/FAQ.md) - Giải đáp
 
-### Chạy ứng dụng
-Dự án đã được cấu hình sẵn trong file `.vscode/launch.json` để chạy với các môi trường khác nhau.
+### Đóng góp
+- 🤝 [Contributing](docs/CONTRIBUTING.md) - Cách contribute
 
--   Mở VS Code, vào tab "Run and Debug" (Ctrl+Shift+D).
--   Chọn một trong các cấu hình sau từ dropdown:
-    -   `🧩 Development`
-    -   `🧪 Staging`
-    -   `🚀 Production`
--   Nhấn F5 để bắt đầu.
+---
 
-## 📱 Build ứng dụng
+## 🛠️ Tech Stack
 
-### Android
-1.  **Tạo Keystore:**
-    Nếu chưa có, hãy tạo một file keystore để ký ứng dụng.
-    ```bash
-    keytool -genkey -v -keystore android/app/signing/release-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
-    ```
+**Core**: Flutter 3.22+, Dart 3.4+
 
-2.  **Cập nhật `android/key.properties`:**
-    Điền thông tin keystore của bạn vào file này.
-    ```properties
-    storePassword=your_store_password
-    keyPassword=your_key_password
-    keyAlias=upload
-    storeFile=signing/release-keystore.jks
-    ```
+**Architecture**: get_it, injectable
 
-3.  **Build APK hoặc App Bundle:**
-    ```bash
-    # Build APK
-    flutter build apk --release
+**State**: flutter_bloc, get, riverpod, provider
 
-    # Build App Bundle
-    flutter build appbundle --release
-    ```
+**Network**: dio, connectivity_plus
 
-### iOS
-1.  Mở dự án `ios/Runner.xcworkspace` bằng Xcode.
-2.  Trong Xcode, chọn `Product` > `Archive`.
-3.  Làm theo các bước để ký và phân phối ứng dụng.
+**Storage**: shared_preferences, flutter_secure_storage
 
-## 📚 Hướng dẫn sử dụng các Core Services
+**UI**: flutter_screenutil, cached_network_image
 
-### ThemeService
-Quản lý và thay đổi giao diện sáng/tối.
+**Dev**: build_runner, freezed, json_serializable
+
+---
+
+## 🎯 Core Services
+
 ```dart
-// Lấy service từ DI
+// Theme
 final themeService = getIt<ThemeService>();
-
-// Chuyển đổi theme
 themeService.toggleTheme();
 
-// Kiểm tra theme hiện tại
-if (themeService.isDarkMode) {
-  // ...
-}
-```
-
-### LocalizationService
-Quản lý và thay đổi ngôn ngữ.
-```dart
-// Lấy service từ DI
+// Localization
 final localizationService = getIt<LocalizationService>();
-
-// Thay đổi ngôn ngữ sang tiếng Anh
 localizationService.changeLocale('en');
-```
-Sử dụng trong widget:
-```dart
-import 'package:flutter_base_template/core/extensions/localization_x.dart';
+Text(context.tr.hello);
 
-Text(context.tr.hello); // "hello" là key trong file .arb
-```
+// Storage
+final storage = getIt<StorageService>();
+await storage.set('key', 'value');
 
-### StorageService
-Lưu trữ dữ liệu không nhạy cảm.
-```dart
-final storageService = getIt<StorageService>();
-
-// Lưu dữ liệu
-await storageService.set('my_key', 'my_value');
-
-// Đọc dữ liệu
-String? myValue = storageService.get<String>('my_key');
+// Secure Storage
+final secure = getIt<SecureStorage>();
+await secure.write(key: 'token', value: 'secret');
 ```
 
-### SecureStorage
-Lưu trữ dữ liệu nhạy cảm (ví dụ: token).
-```dart
-final secureStorage = getIt<SecureStorage>();
+---
 
-// Lưu token
-await secureStorage.write(key: StorageKeys.accessToken, value: 'your_secret_token');
+## ⚡ Commands
 
-// Đọc token
-String? token = await secureStorage.read(key: StorageKeys.accessToken);
+```bash
+# Run flavors
+flutter run --flavor development -t lib/main_development.dart
+flutter run --flavor staging -t lib/main_staging.dart
+flutter run --flavor production -t lib/main_production.dart
+
+# Build
+flutter build apk --release --flavor production -t lib/main_production.dart
+flutter build appbundle --release --flavor production -t lib/main_production.dart
+flutter build ios --release --flavor production -t lib/main_production.dart
+
+# Code generation
+flutter pub run build_runner build --delete-conflicting-outputs
+flutter pub run build_runner watch --delete-conflicting-outputs
+
+# Assets
+flutter pub run flutter_launcher_icons:main --path=flutter_icons.yaml
+flutter pub run flutter_native_splash:create --path=flutter_splash.yaml
+
+# Quality
+flutter analyze
+flutter format .
+flutter test
 ```
+
+---
+
+## 🎨 Customization
+
+### Đổi tên dự án
+
+```bash
+# Cài đặt
+dart pub global activate rename
+
+# Đổi tên & bundle ID
+dart run rename setAppName --value "Your App Name"
+dart run rename setBundleId --value "com.yourcompany.yourapp"
+
+# Clean
+flutter clean && flutter pub get
+```
+
+Chi tiết: [RENAME_PROJECT.md](docs/RENAME_PROJECT.md)
+
+---
+
+## 🤝 Contributing
+
+Contributions welcome! Xem [Contributing Guide](docs/CONTRIBUTING.md)
+
+```bash
+git checkout -b feature/amazing-feature
+git commit -m 'feat: Add amazing feature'
+git push origin feature/amazing-feature
+```
+
+---
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE)
+
+---
+
+## 📞 Support
+
+- 📧 Email: support@yourcompany.com
+- 🐛 Issues: [GitHub Issues](https://github.com/yourrepo/issues)
+- 📖 Docs: [Documentation](docs/)
+
+---
+
+<div align="center">
+
+**Made with ❤️ using Flutter**
+
+⭐ Star nếu hữu ích!
+
+</div>
