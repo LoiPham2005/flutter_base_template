@@ -1,4 +1,4 @@
-// filepath: lib/core/config/app_launcher.dart
+// filepath: lib/core/config/app_startup.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_base_template/core/di/injection.dart';
 import 'package:flutter_base_template/core/extensions/context_extensions.dart';
