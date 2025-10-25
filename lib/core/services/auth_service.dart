@@ -1,4 +1,9 @@
-import 'package:flutter_base_template/core/network/dio_client.dart';
+// ════════════════════════════════════════════════════════════════
+// 📁 lib/core/services/auth_service.dart
+// ════════════════════════════════════════════════════════════════
+import 'package:dio/dio.dart';
+import 'package:flutter_base_template/core/config/environment_config.dart';
+import 'package:flutter_base_template/core/constants/api_constants.dart';
 import 'package:flutter_base_template/core/storage/storage_service.dart';
 import 'package:flutter_base_template/core/utils/logger.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -6,68 +11,139 @@ import 'package:injectable/injectable.dart';
 
 @lazySingleton
 class AuthService {
-  AuthService(this._storageService, this._dioClient);
+  AuthService(this._storageService);
   final StorageService _storageService;
-  final DioClient _dioClient;
 
   bool _isRefreshing = false;
 
-  Future<void> checkAndRefreshToken() async {
-    if (_isRefreshing) return;
+  /// Kiểm tra và refresh token nếu cần
+  /// Returns: true nếu token còn hợp lệ hoặc refresh thành công
+  Future<bool> checkAndRefreshToken() async {
+    if (_isRefreshing) {
+      Logger.debug('🔄 Refresh đang diễn ra, bỏ qua request mới.');
+      return false;
+    }
 
     final accessToken = _storageService.getToken();
-    final refreshToken = _storageService.getRefreshToken();
+    final refreshTokenValue = _storageService.getRefreshToken();
 
-    if (accessToken == null || refreshToken == null) {
-      Logger.warning('🔑 Tokens không tồn tại — bỏ qua refresh.');
-      return;
+    // Không có token → user chưa login
+    if (accessToken == null || refreshTokenValue == null) {
+      Logger.debug('🔑 Không có token, bỏ qua kiểm tra.');
+      return false;
     }
 
     try {
-      final bool isAccessTokenExpired = JwtDecoder.isExpired(accessToken);
-      final bool isRefreshTokenExpired = JwtDecoder.isExpired(refreshToken);
-
-      if (isRefreshTokenExpired) {
-        Logger.error('⏰ Refresh token đã hết hạn → Đăng xuất người dùng.');
+      // Kiểm tra refresh token trước
+      if (JwtDecoder.isExpired(refreshTokenValue)) {
+        Logger.error('⏰ Refresh token hết hạn → Đăng xuất.');
         await logout();
-        return;
+        return false;
       }
 
-      if (isAccessTokenExpired) {
-        Logger.info('♻️ Access token hết hạn → Bắt đầu refresh...');
-        _isRefreshing = true;
+      // Access token còn hạn → OK
+      if (!JwtDecoder.isExpired(accessToken)) {
+        Logger.debug('🔒 Access token vẫn hợp lệ.');
+        return true;
+      }
 
-        final response = await _dioClient.post(
-          '/auth/refresh-token',
-          data: {'refreshToken': refreshToken},
-        );
+      // Access token hết hạn → Refresh
+      Logger.info('♻️ Access token hết hạn → Bắt đầu refresh...');
+      return await refreshToken();
+    } catch (e, stack) {
+      Logger.error('💥 Lỗi khi kiểm tra token', error: e, stackTrace: stack);
+      await logout();
+      return false;
+    }
+  }
 
-        if (response.statusCode == 200 && response.data['success'] == true) {
-          final newAccessToken = response.data['data']['accessToken'];
-          final newRefreshToken = response.data['data']['refreshToken'];
+  /// Refresh token
+  /// Returns: true nếu refresh thành công
+  Future<bool> refreshToken() async {
+    if (_isRefreshing) {
+      Logger.warning('⚠️ Refresh đang diễn ra, không gọi lại.');
+      return false;
+    }
 
-          await _storageService.saveToken(newAccessToken);
-          await _storageService.saveRefreshToken(newRefreshToken);
+    final currentRefreshToken = _storageService.getRefreshToken();
+    if (currentRefreshToken == null) {
+      Logger.error('❌ Không có refresh token để thực hiện refresh.');
+      return false;
+    }
 
-          Logger.success('✅ Refresh token thành công.');
-        } else {
-          Logger.error('❌ Refresh token thất bại → Đăng xuất người dùng.');
-          await logout();
-        }
+    _isRefreshing = true;
+
+    try {
+      // Tạo Dio instance riêng để tránh trigger interceptor
+      final dio = Dio(
+        BaseOptions(
+          baseUrl: EnvironmentConfig.apiBaseUrl,
+          connectTimeout: const Duration(seconds: 30),
+          receiveTimeout: const Duration(seconds: 30),
+        ),
+      );
+
+      final response = await dio.post(
+        ApiConstants.refreshToken,
+        data: {'refreshToken': currentRefreshToken},
+      );
+
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        final newAccessToken = response.data['data']['accessToken'] as String;
+        final newRefreshToken = response.data['data']['refreshToken'] as String;
+
+        await _storageService.saveToken(newAccessToken);
+        await _storageService.saveRefreshToken(newRefreshToken);
+
+        Logger.success('✅ Refresh token thành công.');
+        return true;
       } else {
-        Logger.debug('🔒 Access token vẫn còn hiệu lực, không cần refresh.');
+        Logger.error('❌ Refresh token thất bại: ${response.data}');
+        await logout();
+        return false;
       }
     } catch (e, stack) {
-      Logger.error('💥 Lỗi khi refresh token: $e', error: e, stackTrace: stack);
+      Logger.error('💥 Lỗi khi refresh token', error: e, stackTrace: stack);
       await logout();
+      return false;
     } finally {
       _isRefreshing = false;
     }
   }
 
+  /// Đăng xuất và xóa dữ liệu xác thực
   Future<void> logout() async {
     await _storageService.clearAuthData();
-    // TODO: Điều hướng người dùng về màn hình đăng nhập (nếu có)
-    Logger.info('🚪 Người dùng đã đăng xuất và dữ liệu xác thực đã được xóa.');
+    _isRefreshing = false;
+
+    // TODO: Navigate to login screen
+    // getIt<NavigationService>().navigateToLogin();
+
+    Logger.info('🚪 Đăng xuất thành công.');
+  }
+
+  /// Kiểm tra xem user đã đăng nhập chưa
+  bool get isLoggedIn {
+    final token = _storageService.getToken();
+    if (token == null) return false;
+
+    try {
+      return !JwtDecoder.isExpired(token);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Lấy thông tin từ token
+  Map<String, dynamic>? getTokenPayload() {
+    final token = _storageService.getToken();
+    if (token == null) return null;
+
+    try {
+      return JwtDecoder.decode(token);
+    } catch (e) {
+      Logger.error('❌ Không thể decode token', error: e);
+      return null;
+    }
   }
 }

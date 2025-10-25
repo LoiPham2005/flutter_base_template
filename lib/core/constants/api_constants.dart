@@ -17,7 +17,19 @@ class ApiConstants {
   // Endpoints
   static const String login = '/auth/login';
   static const String register = '/auth/register';
+  static const String refreshToken = '/auth/refresh-token';
+  static const String forgotPassword = '/auth/forgot-password';
+  static const String resetPassword = '/auth/reset-password';
   static const String profile = '/user/profile';
   static const String products = '/products';
   static const String categories = '/categories';
+
+  // 🔓 Danh sách các API public (không cần xác thực)
+  static const List<String> publicEndpoints = [
+    login,
+    register,
+    refreshToken,
+    forgotPassword,
+    resetPassword,
+  ];
 }

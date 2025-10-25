@@ -40,21 +40,21 @@ class DioClient {
     );
 
     // 🧠 Add cache interceptor
-    _dio.interceptors.add(DioCacheInterceptor(options: cacheOptions));
+    // _dio.interceptors.add(DioCacheInterceptor(options: cacheOptions));
 
     _dio.interceptors.addAll([
       authInterceptor,
       errorInterceptor,
       loggingInterceptor,
-      PrettyDioLogger(
-        requestHeader: true,
-        requestBody: true,
-        responseBody: true,
-        responseHeader: false,
-        error: true,
-        compact: true,
-        maxWidth: 200,
-      ),
+      // PrettyDioLogger(
+      //   requestHeader: true,
+      //   requestBody: true,
+      //   responseBody: true,
+      //   responseHeader: false,
+      //   error: true,
+      //   compact: true,
+      //   maxWidth: 200,
+      // ),
     ]);
   }
   late final Dio _dio;

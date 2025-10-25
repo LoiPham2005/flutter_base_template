@@ -1,5 +1,8 @@
-// lib/core/network/interceptors/auth_interceptor.dart
+// ════════════════════════════════════════════════════════════════
+// 📁 lib/core/network/interceptors/auth_interceptor.dart
+// ════════════════════════════════════════════════════════════════
 import 'package:dio/dio.dart';
+import 'package:flutter_base_template/core/constants/api_constants.dart';
 import 'package:flutter_base_template/core/di/injection.dart';
 import 'package:flutter_base_template/core/storage/storage_service.dart';
 import 'package:flutter_base_template/core/services/auth_service.dart';
@@ -8,7 +11,6 @@ import 'package:injectable/injectable.dart';
 
 @LazySingleton()
 class AuthInterceptor extends Interceptor {
-  // Nhận StorageService thông qua constructor
   AuthInterceptor(this._storageService);
   final StorageService _storageService;
 
@@ -16,23 +18,18 @@ class AuthInterceptor extends Interceptor {
   void onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
-  ) async {
-    // Bỏ qua việc thêm token cho các API không cần xác thực
-    final noAuthPaths = [
-      '/auth/login',
-      '/auth/register',
-      '/auth/refresh-token',
-    ];
-    if (noAuthPaths.any((path) => options.path.contains(path))) {
+  ) {
+    // Skip token cho các API public
+    if (_isPublicApi(options.path)) {
       return handler.next(options);
     }
 
-    // Lấy token từ StorageService (lưu ý: không có await vì hàm là sync)
+    // Thêm token vào header
     final token = _storageService.getToken();
-
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';
-      Logger.debug('Added token to request: ${options.path}');
+    } else {
+      Logger.warning('⚠️ No token found for protected endpoint: ${options.path}');
     }
 
     handler.next(options);
@@ -40,48 +37,70 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    // Chỉ xử lý lỗi 401 (Unauthorized)
-    if (err.response?.statusCode == 401) {
-      Logger.warning('Token expired or invalid. Attempting to refresh...');
+    // Chỉ xử lý lỗi 401 Unauthorized
+    if (err.response?.statusCode != 401) {
+      return handler.next(err);
+    }
 
-      try {
-        // Lấy service refresh token từ DI
-        final checkAuthService = getIt<AuthService>();
-        await checkAuthService.checkAndRefreshToken();
+    // Skip retry cho các API public hoặc refresh token API
+    if (_isPublicApi(err.requestOptions.path)) {
+      return handler.next(err);
+    }
 
-        // Sau khi refresh thành công, thử lại request cũ với token mới
-        final newRequest = await _retry(err.requestOptions);
-        return handler.resolve(newRequest);
-      } catch (e) {
-        Logger.error('Failed to refresh token or retry request.', error: e);
-        // Nếu refresh thất bại, đăng xuất và reject request
-        await getIt<AuthService>().logout();
+    Logger.warning('🔄 Token expired (401). Attempting refresh...');
+
+    try {
+      // Refresh token qua AuthService
+      final authService = getIt<AuthService>();
+      final success = await authService.refreshToken();
+
+      if (!success) {
+        Logger.error('❌ Refresh failed. Logging out...');
+        await authService.logout();
         return handler.reject(err);
       }
-    }
 
-    handler.next(err);
+      // Retry request với token mới
+      Logger.info('✅ Refresh success. Retrying request...');
+      final response = await _retryRequest(err.requestOptions);
+      return handler.resolve(response);
+    } catch (e) {
+      Logger.error('💥 Error during token refresh', error: e);
+      await getIt<AuthService>().logout();
+      return handler.reject(err);
+    }
   }
 
-  /// Thử lại request với token mới đã được lưu trong StorageService
-  Future<Response<dynamic>> _retry(RequestOptions requestOptions) async {
-    final newOptions = Options(
+  // 🔒 Danh sách API không cần auth
+  /// Kiểm tra xem API có phải public không
+  bool _isPublicApi(String path) {
+    return ApiConstants.publicEndpoints.any((publicPath) => path.contains(publicPath));
+  }
+
+  /// Retry request với token mới
+  Future<Response<dynamic>> _retryRequest(RequestOptions requestOptions) async {
+    final token = _storageService.getToken();
+    
+    final options = Options(
       method: requestOptions.method,
-      headers: requestOptions.headers,
+      headers: {
+        ...requestOptions.headers,
+        'Authorization': 'Bearer $token',
+      },
     );
 
-    // Lấy lại token mới nhất từ storage
-    final newAuthToken = _storageService.getToken();
-    if (newAuthToken != null) {
-      newOptions.headers!['Authorization'] = 'Bearer $newAuthToken';
-    }
+    // Tạo Dio instance mới để tránh trigger interceptor lại
+    final dio = Dio(BaseOptions(
+      baseUrl: requestOptions.baseUrl,
+      connectTimeout: requestOptions.connectTimeout,
+      receiveTimeout: requestOptions.receiveTimeout,
+    ));
 
-    // Dùng một instance Dio mới để tránh vòng lặp interceptor vô hạn
-    return Dio().request<dynamic>(
+    return dio.request<dynamic>(
       requestOptions.path,
       data: requestOptions.data,
       queryParameters: requestOptions.queryParameters,
-      options: newOptions,
+      options: options,
     );
   }
 }
