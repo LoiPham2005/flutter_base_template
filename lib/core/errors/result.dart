@@ -1,54 +1,98 @@
-// lib/core/errors/result.dart
-// Result pattern for better error handling
-
+// ════════════════════════════════════════════════════════════════
+// 📁 lib/core/errors/result.dart
+// ════════════════════════════════════════════════════════════════
 import 'package:flutter_base_template/core/errors/failures.dart';
 
-abstract class Result<T> {
+/// Result pattern - Thay thế Either trong functional programming
+sealed class Result<T> {
   const Result();
   
-  bool get isSuccess => this is Success<T>;
-  bool get isFailure => this is Error<T>;
+  /// Check if result is success
+  bool get isSuccess => this is ResultSuccess<T>;
   
-  T? get data => isSuccess ? (this as Success<T>).value : null;
-  Failure? get error => isFailure ? (this as Error<T>).failure : null;
+  /// Check if result is failure
+  bool get isFailure => this is ResultFailure<T>;
   
-  // Fold pattern
+  /// Get data (null if failure)
+  T? get dataOrNull => isSuccess ? (this as ResultSuccess<T>).data : null;
+  
+  /// Get failure (null if success)
+  Failure? get failureOrNull => isFailure ? (this as ResultFailure<T>).failure : null;
+  
+  /// Fold pattern - Transform result to single type
   R fold<R>({
     required R Function(T data) onSuccess,
     required R Function(Failure failure) onFailure,
   }) {
-    if (isSuccess) {
-      return onSuccess((this as Success<T>).value);
-    } else {
-      return onFailure((this as Error<T>).failure);
-    }
+    return switch (this) {
+      ResultSuccess(data: final data) => onSuccess(data),
+      ResultFailure(failure: final failure) => onFailure(failure),
+    };
   }
   
-  // Map
+  /// Map success data to another type
   Result<R> map<R>(R Function(T data) transform) {
-    if (isSuccess) {
-      return Success(transform((this as Success<T>).value));
-    } else {
-      return Error((this as Error<T>).failure);
-    }
+    return switch (this) {
+      ResultSuccess(data: final data) => ResultSuccess(transform(data)),
+      ResultFailure(failure: final failure) => ResultFailure(failure),
+    };
   }
   
-  // FlatMap
+  /// FlatMap - Chain multiple Result operations
   Result<R> flatMap<R>(Result<R> Function(T data) transform) {
-    if (isSuccess) {
-      return transform((this as Success<T>).value);
-    } else {
-      return Error((this as Error<T>).failure);
+    return switch (this) {
+      ResultSuccess(data: final data) => transform(data),
+      ResultFailure(failure: final failure) => ResultFailure(failure),
+    };
+  }
+  
+  /// Get data or throw exception
+  T getOrThrow() {
+    return switch (this) {
+      ResultSuccess(data: final data) => data,
+      ResultFailure(failure: final failure) => throw Exception(failure.message),
+    };
+  }
+  
+  /// Get data or return default value
+  T getOrDefault(T defaultValue) {
+    return switch (this) {
+      ResultSuccess(data: final data) => data,
+      ResultFailure() => defaultValue,
+    };
+  }
+  
+  /// Execute side effect if success
+  Result<T> onSuccess(void Function(T data) action) {
+    if (this is ResultSuccess<T>) {
+      action((this as ResultSuccess<T>).data);
     }
+    return this;
+  }
+  
+  /// Execute side effect if failure
+  Result<T> onFailure(void Function(Failure failure) action) {
+    if (this is ResultFailure<T>) {
+      action((this as ResultFailure<T>).failure);
+    }
+    return this;
   }
 }
 
-class Success<T> extends Result<T> {
-  final T value;
-  const Success(this.value);
+/// Success result with data
+final class ResultSuccess<T> extends Result<T> {
+  final T data;
+  const ResultSuccess(this.data);
+  
+  @override
+  String toString() => 'ResultSuccess(data: $data)';
 }
 
-class Error<T> extends Result<T> {
+/// Failure result with error
+final class ResultFailure<T> extends Result<T> {
   final Failure failure;
-  const Error(this.failure);
+  const ResultFailure(this.failure);
+  
+  @override
+  String toString() => 'ResultFailure(failure: $failure)';
 }

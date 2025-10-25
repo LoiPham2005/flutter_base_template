@@ -1,4 +1,6 @@
-// lib/core/errors/error_handler.dart
+// ════════════════════════════════════════════════════════════════
+// 📁 lib/core/errors/error_handler.dart
+// ════════════════════════════════════════════════════════════════
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_base_template/core/utils/logger.dart';
@@ -8,35 +10,49 @@ import 'failures.dart';
 class ErrorHandler {
   ErrorHandler._();
   
-  // Convert Exception to Failure
-  static Failure handleException(Object exception) {
+  /// Convert Exception thành Failure (để dùng trong UI)
+  static Failure exceptionToFailure(Object exception) {
     if (exception is ServerException) {
       return ServerFailure(message: exception.message, code: exception.code);
-    } else if (exception is NetworkException) {
+    }
+    
+    if (exception is NetworkException) {
       return NetworkFailure(message: exception.message, code: exception.code);
-    } else if (exception is CacheException) {
+    }
+    
+    if (exception is CacheException) {
       return CacheFailure(message: exception.message, code: exception.code);
-    } else if (exception is AuthenticationException) {
+    }
+    
+    if (exception is AuthenticationException) {
       return AuthenticationFailure(message: exception.message, code: exception.code);
-    } else if (exception is UnauthorizedException) {
+    }
+    
+    if (exception is UnauthorizedException) {
       return UnauthorizedFailure(message: exception.message, code: exception.code);
-    } else if (exception is NotFoundException) {
+    }
+    
+    if (exception is NotFoundException) {
       return NotFoundFailure(message: exception.message, code: exception.code);
-    } else if (exception is ValidationException) {
+    }
+    
+    if (exception is ValidationException) {
       return ValidationFailure(
         message: exception.message,
         code: exception.code,
         errors: exception.errors,
       );
-    } else if (exception is TimeoutException) {
-      return TimeoutFailure(message: exception.message, code: exception.code);
-    } else {
-      return UnknownFailure(message: exception.toString());
     }
+    
+    if (exception is TimeoutException) {
+      return TimeoutFailure(message: exception.message, code: exception.code);
+    }
+    
+    return UnknownFailure(message: exception.toString());
   }
   
-  // Handle Dio Error
-  static AppException handleDioError(DioException error) {
+  /// Parse DioException thành AppException
+  static AppException parseDioException(DioException error) {
     switch (error.type) {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
@@ -44,7 +60,10 @@ class ErrorHandler {
         return TimeoutException(message: 'Hết thời gian chờ kết nối');
       
       case DioExceptionType.badResponse:
-        return _handleStatusCode(error.response?.statusCode, error.response?.data);
+        return _parseHttpStatusCode(
+          error.response?.statusCode,
+          error.response?.data,
+        );
       
       case DioExceptionType.cancel:
         return AppException(message: 'Yêu cầu đã bị hủy');
@@ -63,45 +82,38 @@ class ErrorHandler {
     }
   }
   
-  static AppException _handleStatusCode(int? statusCode, dynamic data) {
-    String message = 'Đã xảy ra lỗi';
-    
-    // Try to extract message from response
-    if (data is Map<String, dynamic>) {
-      message = data['message'] ?? data['error'] ?? message;
-    }
+  /// Parse HTTP status code thành Exception tương ứng
+  static AppException _parseHttpStatusCode(int? statusCode, dynamic responseData) {
+    final message = _extractErrorMessage(responseData);
     
     switch (statusCode) {
       case 400:
         return ValidationException(
           message: message,
           code: '400',
-          errors: _extractErrors(data),
+          errors: _extractValidationErrors(responseData),
         );
       
       case 401:
         return AuthenticationException(
-          message: 'Phiên đăng nhập hết hạn',
-          code: '401',
+          message: message.isNotEmpty ? message : 'Phiên đăng nhập hết hạn',
         );
       
       case 403:
         return UnauthorizedException(
-          message: 'Bạn không có quyền truy cập',
-          code: '403',
+          message: message.isNotEmpty ? message : 'Bạn không có quyền truy cập',
         );
       
       case 404:
         return NotFoundException(
-          message: 'Không tìm thấy dữ liệu',
-          code: '404',
+          message: message.isNotEmpty ? message : 'Không tìm thấy dữ liệu',
         );
       
       case 422:
         return ValidationException(
           message: message,
           code: '422',
-          errors: _extractErrors(data),
+          errors: _extractValidationErrors(responseData),
         );
       
       case 500:
@@ -114,29 +126,41 @@ class ErrorHandler {
       
       default:
         return ServerException(
-          message: message,
+          message: message.isNotEmpty ? message : 'Đã xảy ra lỗi',
           code: statusCode?.toString(),
         );
     }
   }
   
-  static Map<String, String>? _extractErrors(dynamic data) {
+  /// Trích xuất error message từ response
+  static String _extractErrorMessage(dynamic data) {
     if (data is Map<String, dynamic>) {
-      final errors = data['errors'];
-      if (errors is Map<String, dynamic>) {
-        return errors.map(
-          (key, value) => MapEntry(
-            key,
-            value is List ? value.first.toString() : value.toString(),
-          ),
-        );
-      }
+      // Thử các key phổ biến
+      return data['message']?.toString() ?? 
+             data['error']?.toString() ?? 
+             data['msg']?.toString() ?? 
+             '';
     }
-    return null;
+    return '';
   }
   
-  // Log error
+  /// Trích xuất validation errors từ response
+  static Map<String, String>? _extractValidationErrors(dynamic data) {
+    if (data is! Map<String, dynamic>) return null;
+    
+    final errors = data['errors'];
+    if (errors is! Map<String, dynamic>) return null;
+    
+    return errors.map((key, value) {
+      if (value is List && value.isNotEmpty) {
+        return MapEntry(key, value.first.toString());
+      }
+      return MapEntry(key, value.toString());
+    });
+  }
+  
+  /// Log error cho debugging
   static void logError(Object error, [StackTrace? stackTrace]) {
-    Logger.error('Unhandled error: $error', stackTrace: stackTrace);
+    Logger.error('Unhandled error: $error', error: error, stackTrace: stackTrace);
   }
 }

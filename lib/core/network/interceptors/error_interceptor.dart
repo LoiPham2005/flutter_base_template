@@ -7,7 +7,7 @@ import '../../errors/error_handler.dart';
 class ErrorInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    final exception = ErrorHandler.handleDioError(err);
+    final exception = ErrorHandler.parseDioException(err);
     handler.next(
       DioException(
         requestOptions: err.requestOptions,

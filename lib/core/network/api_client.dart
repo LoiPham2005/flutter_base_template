@@ -44,7 +44,9 @@ class ApiClient {
     Future<Result<T>> Function() request,
   ) async {
     if (!await _networkInfo.isConnected) {
-      return const Error(NetworkFailure());
+      return const ResultFailure(
+        NetworkFailure(),
+      ); // Sửa Error -> ResultFailure
     }
     return request();
   }
@@ -61,7 +63,12 @@ class ApiClient {
       } catch (e) {
         attempt++;
         if (attempt >= maxRetries) {
-          return Error(UnknownFailure(message: 'Max retries exceeded: $e'));
+          return ResultFailure(
+            UnknownFailure(
+              // Sửa Error -> ResultFailure
+              message: 'Max retries exceeded: $e',
+            ),
+          );
         }
         await Future.delayed(delay * attempt);
       }
@@ -76,7 +83,7 @@ class ApiClient {
     JsonParser<T> fromJson, {
     Map<String, dynamic>? queryParameters,
     int maxRetries = 1,
-    bool unwrap = true, // Thêm option unwrap
+    bool unwrap = true,
   }) async {
     return _safeRequest(
       () => _retryRequest(() async {
@@ -87,7 +94,7 @@ class ApiClient {
         final data = unwrap
             ? _unwrapApiResponse<T>(response.data, fromJson)
             : fromJson(response.data);
-        return Success(data);
+        return ResultSuccess(data); // Sửa Success -> ResultSuccess
       }, maxRetries: maxRetries),
     );
   }
@@ -101,7 +108,7 @@ class ApiClient {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     int maxRetries = 1,
-    bool unwrap = true, // Thêm option unwrap
+    bool unwrap = true,
   }) async {
     return _safeRequest(
       () => _retryRequest(() async {
@@ -113,7 +120,7 @@ class ApiClient {
         final result = unwrap
             ? _unwrapApiResponse<T>(response.data, fromJson)
             : fromJson(response.data);
-        return Success(result);
+        return ResultSuccess(result); // Sửa Success -> ResultSuccess
       }, maxRetries: maxRetries),
     );
   }
@@ -139,7 +146,7 @@ class ApiClient {
         final result = unwrap
             ? _unwrapApiResponse<T>(response.data, fromJson)
             : fromJson(response.data);
-        return Success(result);
+        return ResultSuccess(result); // Sửa Success -> ResultSuccess
       }, maxRetries: maxRetries),
     );
   }
@@ -165,7 +172,7 @@ class ApiClient {
         final result = unwrap
             ? _unwrapApiResponse<T>(response.data, fromJson)
             : fromJson(response.data);
-        return Success(result);
+        return ResultSuccess(result); // Sửa Success -> ResultSuccess
       }, maxRetries: maxRetries),
     );
   }
@@ -195,9 +202,8 @@ class ApiClient {
           }
         }
 
-        return const Success(true);
+        return const ResultSuccess(true); // Sửa Success -> ResultSuccess
       }, maxRetries: maxRetries),
     );
   }
-  
 }

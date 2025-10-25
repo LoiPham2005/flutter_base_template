@@ -2,6 +2,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
@@ -13,14 +14,14 @@ class AppVersionService {
   
   /// Kiểm tra version hiện tại của app
   Future<String> getCurrentVersion() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
     return packageInfo.version;
   }
 
   /// Lấy phiên bản mới nhất từ Google Play Store
   Future<String?> getLatestAndroidVersion() async {
     try {
-      final url = 'https://play.google.com/store/apps/details?id=$androidPackageName&hl=vi';
+      const url = 'https://play.google.com/store/apps/details?id=$androidPackageName&hl=vi';
       final response = await http.get(Uri.parse(url));
       
       if (response.statusCode == 200) {
@@ -39,7 +40,7 @@ class AppVersionService {
   /// Lấy phiên bản mới nhất từ Apple App Store
   Future<String?> getLatestIOSVersion() async {
     try {
-      final url = 'https://itunes.apple.com/lookup?id=$iosAppId&country=vn';
+      const url = 'https://itunes.apple.com/lookup?id=$iosAppId&country=vn';
       final response = await http.get(Uri.parse(url));
       
       if (response.statusCode == 200) {
@@ -56,16 +57,16 @@ class AppVersionService {
 
   /// So sánh 2 version (trả về true nếu storeVersion mới hơn currentVersion)
   bool isUpdateAvailable(String currentVersion, String storeVersion) {
-    List<int> currentParts = currentVersion.split('.').map(int.parse).toList();
-    List<int> storeParts = storeVersion.split('.').map(int.parse).toList();
+    final List<int> currentParts = currentVersion.split('.').map(int.parse).toList();
+    final List<int> storeParts = storeVersion.split('.').map(int.parse).toList();
     
-    int maxLength = currentParts.length > storeParts.length 
+    final int maxLength = currentParts.length > storeParts.length 
         ? currentParts.length 
         : storeParts.length;
     
     for (int i = 0; i < maxLength; i++) {
-      int current = i < currentParts.length ? currentParts[i] : 0;
-      int store = i < storeParts.length ? storeParts[i] : 0;
+      final int current = i < currentParts.length ? currentParts[i] : 0;
+      final int store = i < storeParts.length ? storeParts[i] : 0;
       
       if (store > current) return true;
       if (store < current) return false;
@@ -77,7 +78,7 @@ class AppVersionService {
   /// Kiểm tra có phiên bản mới và hiển thị dialog
   Future<void> checkForUpdate(BuildContext context, {bool forceCheck = false}) async {
     try {
-      String currentVersion = await getCurrentVersion();
+      final String currentVersion = await getCurrentVersion();
       String? storeVersion;
       
       if (Platform.isAndroid) {
