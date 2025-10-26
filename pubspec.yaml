@@ -116,6 +116,7 @@ dependencies:
   path_provider: ^2.1.5
   open_filex: ^4.7.0
   device_info_plus: ^12.2.0
+  flutter_image_compress: ^2.4.0
 
 
 dev_dependencies:

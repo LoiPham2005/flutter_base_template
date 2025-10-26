@@ -3,6 +3,7 @@
 // ════════════════════════════════════════════════════════════════
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageUtils {
@@ -26,6 +27,17 @@ class ImageUtils {
   static Future<List<File>> pickMultiple({int maxCount = 10}) async {
     final pickedFiles = await _picker.pickMultiImage();
     return pickedFiles.take(maxCount).map((file) => File(file.path)).toList();
+  }
+
+  // Thêm compress image
+  static Future<File?> compressImage(File file, {int quality = 85}) async {
+    // Cần thêm package: flutter_image_compress
+    final result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      '${file.parent.path}/compressed_${file.path.split('/').last}',
+      quality: quality,
+    );
+    return result != null ? File(result.path) : null;
   }
 
   /// Show image picker dialog

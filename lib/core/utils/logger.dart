@@ -124,8 +124,30 @@ class LogConfig {
 /// Logger đơn giản, tập trung
 class Logger {
   Logger._();
-
+  
   static const _prefix = '[APP]';
+  static const _defaultWidth = 60; // Default width cho border (63 ký tự)
+
+  // Định nghĩa các ký tự border
+  static const _horizontalLine = '═';
+  static const _horizontalDivider = '─'; 
+  static const _topLeft = '╔';
+  static const _topRight = '╗';
+  static const _bottomLeft = '╚';
+  static const _bottomRight = '╝';
+  static const _middleLeft = '╠';
+  static const _middleRight = '╣';
+  static const _vertical = '║';
+
+  // Tạo border line với độ dài chuẩn
+  static String get _borderLine => _horizontalLine * _defaultWidth;
+  static String get _dividerLine => _horizontalDivider * _defaultWidth;
+
+  // Tạo border với format chuẩn
+  static String get _topBorder => '$_topLeft$_borderLine';
+  static String get _middleBorder => '$_middleLeft$_borderLine'; 
+  static String get _bottomBorder => '$_bottomLeft$_borderLine';
+  static String get _sectionDivider => '$_middleLeft$_dividerLine';
 
   // ═══════════════════════════════════════════════════════════════
   // GENERAL LOGS (luôn hiển thị ở debug mode)
@@ -175,37 +197,26 @@ class Logger {
     final buffer = StringBuffer();
     final tagStr = tag != null ? '[$tag] ' : '';
 
-    buffer.writeln(
-      '╔═══════════════════════════════════════════════════════════════',
-    );
-    buffer.writeln('║ ❌ ERROR $tagStr');
-    buffer.writeln(
-      '╠═══════════════════════════════════════════════════════════════',
-    );
+    buffer.writeln(_topBorder);
+    buffer.writeln('║ ❌ ERROR $tagStr'); 
+    buffer.writeln(_middleBorder);
     buffer.writeln('║ $message');
 
     if (error != null) {
-      buffer.writeln(
-        '╠───────────────────────────────────────────────────────────────',
-      );
+      buffer.writeln(_sectionDivider);
       buffer.writeln('║ Details: ${error.toString()}');
     }
 
     if (LogConfig.enableDetailedErrors && stackTrace != null) {
-      buffer.writeln(
-        '╠───────────────────────────────────────────────────────────────',
-      );
+      buffer.writeln(_sectionDivider);
       buffer.writeln('║ Stack Trace:');
-      final lines = stackTrace.toString().split('\n').take(5); // Chỉ 5 dòng đầu
+      final lines = stackTrace.toString().split('\n').take(5);
       for (final line in lines) {
         buffer.writeln('║   $line');
       }
     }
 
-    buffer.writeln(
-      '╚═══════════════════════════════════════════════════════════════',
-    );
-
+    buffer.writeln(_bottomBorder);
     developer.log(buffer.toString(), name: _prefix, level: 1000);
   }
 
@@ -219,10 +230,9 @@ class Logger {
     final buffer = StringBuffer();
     final uri = Uri.parse(url);
 
-    buffer.writeln('╔═══════════════════════════════════════════════════════════════');
+    buffer.writeln(_topBorder);
     buffer.writeln('║ 🚀 REQUEST: $method');
-    buffer.writeln('╠═══════════════════════════════════════════════════════════════');
-    // Add domain 
+    buffer.writeln(_middleBorder);
     buffer.writeln('║ Domain: ${uri.host}');
     buffer.writeln('║ Endpoint: ${uri.path}');
 
@@ -233,7 +243,7 @@ class Logger {
 
     // Body
     if (data != null && ['POST', 'PUT', 'PATCH'].contains(method)) {
-      buffer.writeln('╠───────────────────────────────────────────────────────────────');
+      buffer.writeln(_sectionDivider);
       buffer.writeln('║ 📦 Body:');
       final bodyStr = _formatRequestBody(data);
       for (final line in bodyStr.split('\n')) {
@@ -241,7 +251,7 @@ class Logger {
       }
     }
 
-    buffer.writeln('╚═══════════════════════════════════════════════════════════════');
+    buffer.writeln(_bottomBorder);
     developer.log(buffer.toString(), name: _prefix);
   }
 
@@ -257,19 +267,20 @@ class Logger {
     final uri = Uri.parse(url);
     final statusEmoji = statusCode >= 200 && statusCode < 300 ? '✅' : '⚠️';
 
-    buffer.writeln('╔═══════════════════════════════════════════════════════════════');
-    buffer.writeln('║ $statusEmoji RESPONSE: $statusCode'); 
-    buffer.writeln('╠═══════════════════════════════════════════════════════════════');
+    buffer.writeln(_topBorder);
+    buffer.writeln('║ $statusEmoji RESPONSE: $statusCode');
+    buffer.writeln(_middleBorder);
     buffer.writeln('║ $method ${uri.path}');
 
     if (data != null) {
-      buffer.writeln('╠───────────────────────────────────────────────────────────────');
+      buffer.writeln(_sectionDivider);
       buffer.writeln('║ 📥 Response Data:');
-      
+
       // Format data động theo response
       try {
         final encoder = JsonEncoder.withIndent('  ');
-        final formatted = encoder.convert(data)
+        final formatted = encoder
+            .convert(data)
             .split('\n')
             .map((line) => '║   $line')
             .join('\n');
@@ -280,7 +291,7 @@ class Logger {
       }
     }
 
-    buffer.writeln('╚═══════════════════════════════════════════════════════════════');
+    buffer.writeln(_bottomBorder);
     developer.log(buffer.toString(), name: _prefix);
   }
 
@@ -293,25 +304,17 @@ class Logger {
   ) {
     final buffer = StringBuffer();
 
-    buffer.writeln(
-      '╔═══════════════════════════════════════════════════════════════',
-    );
+    buffer.writeln(_topBorder);
     buffer.writeln('║ ❌ HTTP ERROR [$statusCode]');
-    buffer.writeln(
-      '╠═══════════════════════════════════════════════════════════════',
-    );
+    buffer.writeln(_middleBorder);
     buffer.writeln('║ $method $url');
 
     if (errorData != null) {
-      buffer.writeln(
-        '╠───────────────────────────────────────────────────────────────',
-      );
+      buffer.writeln(_sectionDivider);
       buffer.writeln('║ Response: ${_formatJson(errorData)}');
     }
 
-    buffer.writeln(
-      '╚═══════════════════════════════════════════════════════════════',
-    );
+    buffer.writeln(_bottomBorder);
 
     developer.log(buffer.toString(), name: _prefix, level: 900);
   }
@@ -347,28 +350,20 @@ class Logger {
   static void blocError(String blocName, Object error, StackTrace stackTrace) {
     final buffer = StringBuffer();
 
-    buffer.writeln(
-      '╔═══════════════════════════════════════════════════════════════',
-    );
+    buffer.writeln(_topBorder);
     buffer.writeln('║ ❌ BLOC ERROR [$blocName]');
-    buffer.writeln(
-      '╠═══════════════════════════════════════════════════════════════',
-    );
+    buffer.writeln(_middleBorder);
     buffer.writeln('║ ${error.toString()}');
 
     if (LogConfig.enableDetailedErrors) {
-      buffer.writeln(
-        '╠───────────────────────────────────────────────────────────────',
-      );
+      buffer.writeln(_sectionDivider);
       final lines = stackTrace.toString().split('\n').take(3);
       for (final line in lines) {
         buffer.writeln('║ $line');
       }
     }
 
-    buffer.writeln(
-      '╚═══════════════════════════════════════════════════════════════',
-    );
+    buffer.writeln(_bottomBorder);
 
     developer.log(buffer.toString(), name: _prefix, level: 1000);
   }
@@ -397,11 +392,11 @@ class Logger {
     if (data is Map) {
       final buffer = StringBuffer();
       data.forEach((key, value) {
-        // Ẩn sensitive data
+        // Ẩn sensitive data nếu cần
         // if (_isSensitiveField(key.toString())) {
         //   buffer.writeln('$key: ******');
         // } else {
-          buffer.writeln('$key: $value');
+        buffer.writeln('$key: $value');
         // }
       });
       return buffer.toString().trim();
@@ -411,14 +406,14 @@ class Logger {
   }
 
   /// Kiểm tra field có phải sensitive không (password, token, etc.)
-  // static bool _isSensitiveField(String fieldName) {
-  //   final lowerField = fieldName.toLowerCase();
-  //   return lowerField.contains('password') ||
-  //       lowerField.contains('token') ||
-  //       lowerField.contains('secret') ||
-  //       lowerField.contains('apikey') ||
-  //       lowerField.contains('authorization');
-  // }
+  static bool _isSensitiveField(String fieldName) {
+    final lowerField = fieldName.toLowerCase();
+    return lowerField.contains('password') ||
+        lowerField.contains('token') ||
+        lowerField.contains('secret') ||
+        lowerField.contains('apikey') ||
+        lowerField.contains('authorization');
+  }
 
   static String _extractStatus(dynamic state) {
     if (state == null) return 'null';

@@ -2,22 +2,22 @@ import java.util.Properties
 import java.io.FileInputStream
 
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("dev.flutter.flutter-gradle-plugin")
+id("com.android.application")
+id("org.jetbrains.kotlin.android")
+id("dev.flutter.flutter-gradle-plugin")
 }
 
 // Add these lines to read key.properties
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
 if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
 android {
-    namespace = "com.example.flutter_base_template"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = "27.0.12077973"
+namespace = "com.example.flutter_base_template"
+compileSdk = flutter.compileSdkVersion
+ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -38,14 +38,14 @@ android {
         multiDexEnabled = true
     }
 
-    //  signingConfigs {
-    //      create("release") {
-    //          keyAlias = keystoreProperties["keyAlias"] as String
-    //          keyPassword = keystoreProperties["keyPassword"] as String
-    //         storeFile = file(keystoreProperties["storeFile"] as String)
-    //         storePassword = keystoreProperties["storePassword"] as String
-    //      }
-    //  }
+//  signingConfigs {
+//      create("release") {
+//          keyAlias = keystoreProperties["keyAlias"] as String
+//          keyPassword = keystoreProperties["keyPassword"] as String
+//         storeFile = file(keystoreProperties["storeFile"] as String)
+//         storePassword = keystoreProperties["storePassword"] as String
+//      }
+//  }
 
      flavorDimensions += "environment"
      productFlavors {
@@ -72,8 +72,8 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
         release {
-            isMinifyEnabled = false
-            isShrinkResources = false
+            isMinifyEnabled = false     // thay false bằng true key khi publish
+            isShrinkResources = false   // thay false bằng true key khi publish
             proguardFiles(
                 getDefaultProguardFile("proguard-android.txt"),
                 file("proguard-rules.pro")
@@ -85,11 +85,9 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }
 
 flutter {
-    source = "../.."
+source = "../.."
 }
-
-

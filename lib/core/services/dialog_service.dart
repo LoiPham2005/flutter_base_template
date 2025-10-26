@@ -6,27 +6,23 @@ class DialogService {
   static final DialogService _instance = DialogService._internal();
   factory DialogService() => _instance;
   DialogService._internal();
-  
+
   final NavigationService _navigationService = NavigationService();
-  
   BuildContext? get _context => _navigationService.context;
-  
-  
-  // Show dialog
+
+  // Dialog methods
   Future<T?> showCustomDialog<T>({
     required Widget child,
     bool barrierDismissible = true,
   }) {
-    if (_context == null) throw Exception('Context is null');
-    
+    assert(_context != null, 'Context is not ready');
     return showDialog<T>(
       context: _context!,
       barrierDismissible: barrierDismissible,
       builder: (_) => child,
     );
   }
-  
-  // Show alert dialog
+
   Future<bool?> showAlert({
     required String title,
     required String message,
@@ -34,8 +30,7 @@ class DialogService {
     String? cancelText,
     VoidCallback? onConfirm,
   }) {
-    if (_context == null) return Future.value(false);
-    
+    assert(_context != null, 'Context is not ready');
     return showDialog<bool>(
       context: _context!,
       builder: (_) => AlertDialog(
@@ -58,11 +53,9 @@ class DialogService {
       ),
     );
   }
-  
-  // Show loading dialog
+
   void showLoading({String? message}) {
-    if (_context == null) return;
-    
+    assert(_context != null, 'Context is not ready');
     showDialog(
       context: _context!,
       barrierDismissible: false,
@@ -88,24 +81,17 @@ class DialogService {
       ),
     );
   }
-  
-  // Hide dialog
-  void hideDialog() {
-    _navigationService.pop();
-  }
 
+  void hideDialog() => _navigationService.pop();
 
-   // ===============================
   // Bottom Sheet
-  // ===============================
-
-  Future<T?> showCustomBottomSheet<T>({
+  Future<T?> showBottomSheet<T>({
     required Widget child,
     bool isDismissible = true,
     bool enableDrag = true,
     Color? backgroundColor,
   }) {
-    assert(_context != null, 'Navigator context is not ready!');
+    assert(_context != null, 'Context is not ready');
     return showModalBottomSheet<T>(
       context: _context!,
       isDismissible: isDismissible,
@@ -115,38 +101,64 @@ class DialogService {
     );
   }
 
-  // ===============================
-  // SnackBars
-  // ===============================
-
+  // SnackBar methods with icons
   void showSnackBar(
     String message, {
     Duration duration = const Duration(seconds: 2),
-    SnackBarAction? action,
     Color? backgroundColor,
+    IconData? icon,
   }) {
-    assert(_context != null, 'Navigator context is not ready!');
+    assert(_context != null, 'Context is not ready');
     ScaffoldMessenger.of(_context!).showSnackBar(
       SnackBar(
-        content: Text(message),
+        content: Row(
+          children: [
+            if (icon != null) ...[
+              Icon(icon, color: Colors.white),
+              const SizedBox(width: 12),
+            ],
+            Expanded(child: Text(message)),
+          ],
+        ),
         duration: duration,
-        action: action,
         backgroundColor: backgroundColor,
       ),
     );
   }
 
-  void showErrorSnackBar(
-    String message, {
-    Duration duration = const Duration(seconds: 3),
-  }) {
-    showSnackBar(message, duration: duration, backgroundColor: Colors.red);
+  void showSuccess(String message) {
+    showSnackBar(
+      message,
+      backgroundColor: Colors.green,
+      icon: Icons.check_circle,
+      duration: const Duration(seconds: 2),
+    );
   }
 
-  void showSuccessSnackBar(
-    String message, {
-    Duration duration = const Duration(seconds: 2),
-  }) {
-    showSnackBar(message, duration: duration, backgroundColor: Colors.green);
+  void showError(String message) {
+    showSnackBar(
+      message,
+      backgroundColor: Colors.red,
+      icon: Icons.error_outline,
+      duration: const Duration(seconds: 3),
+    );
+  }
+
+  void showWarning(String message) {
+    showSnackBar(
+      message,
+      backgroundColor: Colors.orange,
+      icon: Icons.warning_amber,
+      duration: const Duration(seconds: 3),
+    );
+  }
+
+  void showInfo(String message) {
+    showSnackBar(
+      message,
+      backgroundColor: Colors.blue,
+      icon: Icons.info_outline,
+      duration: const Duration(seconds: 2),
+    );
   }
 }

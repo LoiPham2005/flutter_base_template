@@ -15,28 +15,36 @@ class DeviceUtils {
   static bool get isIOS => Platform.isIOS;
   static bool get isAndroid => Platform.isAndroid;
   static bool get isWeb => false; // Set to true if supporting web
+  static Map<String, dynamic>? _cachedDeviceInfo;
+  static Map<String, String>? _cachedAppInfo;
 
   /// Get device info
   static Future<Map<String, dynamic>> getDeviceInfo() async {
+    if (_cachedDeviceInfo != null) return _cachedDeviceInfo!;
+
+    final Map<String, dynamic> deviceInfo = {};
+
     if (isAndroid) {
       final androidInfo = await _deviceInfo.androidInfo;
-      return {
+      deviceInfo.addAll({
         'platform': 'Android',
         'model': androidInfo.model,
         'brand': androidInfo.brand,
         'version': androidInfo.version.release,
         'sdkInt': androidInfo.version.sdkInt,
-      };
+      });
     } else if (isIOS) {
       final iosInfo = await _deviceInfo.iosInfo;
-      return {
+      deviceInfo.addAll({
         'platform': 'iOS',
         'model': iosInfo.model,
         'name': iosInfo.name,
         'version': iosInfo.systemVersion,
-      };
+      });
     }
-    return {};
+
+    _cachedDeviceInfo = deviceInfo;
+    return deviceInfo;
   }
 
   /// Get app info

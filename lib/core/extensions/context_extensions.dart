@@ -179,4 +179,9 @@ extension ContextExtensions on BuildContext {
   void requestFocus(FocusNode node) {
     FocusScope.of(this).requestFocus(node);
   }
+
+    // Hide keyboard
+  static void hideKeyboard(BuildContext context) {
+    FocusScope.of(context).unfocus();
+  }
 }

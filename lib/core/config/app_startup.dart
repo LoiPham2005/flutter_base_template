@@ -14,11 +14,12 @@ import 'package:flutter_base_template/features/welcome/presentation/pages/welcom
 class AppLauncher {
   static Future<void> launch(BuildContext context) async {
     try {
-      // 🔹 Kiểm tra mạng
-      final hasInternet = await NetworkService.hasConnection();
+      // 🔹 Kiểm tra mạng với instance methods
+      final hasInternet = await NetworkService().checkConnection(); 
       if (!hasInternet) {
         Logger.warning('Không có kết nối internet. Đang chờ kết nối lại...');
-        await NetworkService.check(
+        
+        await NetworkService().monitorConnection(
           context,
           showMessage: true,
           onConnected: () async {

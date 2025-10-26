@@ -19,7 +19,9 @@ class CollectionUtils {
   static List<List<T>> chunk<T>(List<T> list, int size) {
     final chunks = <List<T>>[];
     for (var i = 0; i < list.length; i += size) {
-      chunks.add(list.sublist(i, i + size > list.length ? list.length : i + size));
+      chunks.add(
+        list.sublist(i, i + size > list.length ? list.length : i + size),
+      );
     }
     return chunks;
   }
@@ -37,7 +39,10 @@ class CollectionUtils {
   }
 
   /// Group list by key
-  static Map<K, List<V>> groupBy<K, V>(List<V> list, K Function(V) keyFunction) {
+  static Map<K, List<V>> groupBy<K, V>(
+    List<V> list,
+    K Function(V) keyFunction,
+  ) {
     final map = <K, List<V>>{};
     for (final item in list) {
       final key = keyFunction(item);
@@ -47,11 +52,15 @@ class CollectionUtils {
   }
 
   /// Find first element matching condition
-  static T? firstWhere<T>(List<T> list, bool Function(T) test, {T? orElse}) {
+  static T? firstWhere<T>(
+    List<T> list,
+    bool Function(T) test, {
+    T? Function()? orElse,
+  }) {
     try {
       return list.firstWhere(test);
     } catch (e) {
-      return orElse;
+      return orElse?.call();
     }
   }
 
@@ -79,5 +88,14 @@ class CollectionUtils {
   static T? min<T extends Comparable>(List<T>? list) {
     if (isNullOrEmpty(list)) return null;
     return list!.reduce((a, b) => a.compareTo(b) < 0 ? a : b);
+  }
+
+  // Thêm method hữu ích:
+  static List<T> flatten<T>(List<List<T>> lists) {
+    return lists.expand((list) => list).toList();
+  }
+
+  static Map<K, V> mapFromLists<K, V>(List<K> keys, List<V> values) {
+    return Map.fromIterables(keys, values);
   }
 }

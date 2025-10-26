@@ -1,8 +1,8 @@
 // lib/core/utils/date_utils.dart
 import 'package:intl/intl.dart';
 
-class DateUtils {
-  DateUtils._();
+class DateTimeUtils {
+  DateTimeUtils._();
   
   // Format date
   static String format(DateTime date, {String pattern = 'dd/MM/yyyy'}) {
