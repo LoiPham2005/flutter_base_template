@@ -12,24 +12,11 @@ import 'package:flutter_base_template/core/utils/logger.dart';
 class AppInitializer {
   static Future<void> initialize() async {
     try {
-      // 🔹 Logger
-      // Logger.configure(enabled: true, minLevel: LogLevel.debug);
-
-      // Cấu hình log (chọn 1 trong các preset)
-      if (kDebugMode) {
-        // Development: Full log
-        LogConfig.enableHttpLogs = true;
-        LogConfig.enableBlocLogs = true;
-        LogConfig.logOnlyFailedRequests = false;
-      } else {
-        // Production: Chỉ log lỗi
-        LogConfig.enableHttpLogs = false;
-        LogConfig.enableBlocLogs = false;
-        LogConfig.logOnlyFailedRequests = true;
-      }
+      // 🔹 Logger Configuration
+      _configureLogger();
 
       // 🔹 Khởi tạo AppObserver để theo dõi lifecycle
-      AppObserver().initialize(); // Thêm dòng này
+      AppObserver().initialize();
 
       // 🔹 UI / Orientation
       await SystemChrome.setPreferredOrientations([
@@ -66,5 +53,36 @@ class AppInitializer {
       );
       rethrow;
     }
+  }
+
+  /// Cấu hình logger theo environment
+  static void _configureLogger() {
+    if (EnvironmentConfig.isDev) {
+      // Development: Full logging
+      LogConfig.enableHttpLogs = true;
+      LogConfig.enableBlocLogs = true;
+      LogConfig.enableDetailedErrors = true;
+      LogConfig.enableSuccessLogs = true;
+      LogConfig.logOnlyFailedRequests = false;
+      LogConfig.maxStackTraceLines = 5;
+    } else if (EnvironmentConfig.isStaging) {
+      // Staging: Basic logging
+      LogConfig.enableHttpLogs = true;
+      LogConfig.enableBlocLogs = true;
+      LogConfig.enableDetailedErrors = false;
+      LogConfig.enableSuccessLogs = false;
+      LogConfig.logOnlyFailedRequests = true;
+      LogConfig.maxStackTraceLines = 3;
+    } else {
+      // Production: Minimal logging
+      LogConfig.enableHttpLogs = false;
+      LogConfig.enableBlocLogs = false;
+      LogConfig.enableDetailedErrors = false;
+      LogConfig.enableSuccessLogs = false;
+      LogConfig.logOnlyFailedRequests = true;
+      LogConfig.maxStackTraceLines = 1;
+    }
+
+    Logger.info('Logger configured for ${EnvironmentConfig.environment.name}');
   }
 }
