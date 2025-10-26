@@ -21,7 +21,7 @@ class LoggingInterceptor extends Interceptor {
       response.requestOptions.method,
       response.requestOptions.uri.toString(),
       response.statusCode ?? 0,
-      
+      data: response.data,
     );
     handler.next(response);
   }
