@@ -22,6 +22,6 @@
   "files.exclude": {
     "**/.dart_tool": true,
     "**/.packages": true,
-    // "**/build": true
+    "**/build": true
   }
 }
