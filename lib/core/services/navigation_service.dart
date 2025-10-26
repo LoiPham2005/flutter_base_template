@@ -1,6 +1,5 @@
 // lib/core/services/navigation_service.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_base_template/core/l10n/generated/app_localizations.dart';
 
 class NavigationService {
   factory NavigationService() => _instance;

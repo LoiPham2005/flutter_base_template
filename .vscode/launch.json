@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "🐣 Development Debug",
+      "name": "🧑‍💻 Development (Debug)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_development.dart",
@@ -10,7 +10,7 @@
       "flutterMode": "debug"
     },
     {
-      "name": "🧪 Staging Debug",
+      "name": "🧪 Staging (Debug)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_staging.dart",
@@ -18,7 +18,7 @@
       "flutterMode": "debug"
     },
     {
-      "name": "🚀 Production Debug",
+      "name": "🚀 Production (Debug)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_production.dart",
@@ -26,7 +26,7 @@
       "flutterMode": "debug"
     },
     {
-      "name": "🔥 Production Release Run",
+      "name": "📦 Production (Release)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_production.dart",
