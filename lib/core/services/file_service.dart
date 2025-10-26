@@ -1,9 +1,12 @@
+// ════════════════════════════════════════════════════════════════
+// 📁 lib/services/file_service.dart (GỘP FileService + MediaService)
+// ════════════════════════════════════════════════════════════════
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter_base_template/core/utils/logger.dart';
+import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:open_filex/open_filex.dart';
-/// ✅ FileService: Dùng để tải, lưu và mở mọi loại file (ảnh, video, PDF, ZIP, v.v.)
+
 class FileService {
   FileService._internal();
   static final FileService _instance = FileService._internal();
@@ -11,59 +14,136 @@ class FileService {
 
   final Dio _dio = Dio();
 
-  /// Tải file từ URL về máy
-  /// [url] là link tải
-  /// [fileName] là tên file muốn lưu (tùy chọn)
-  /// [folderName] là tên thư mục lưu trong Downloads
-  Future<File?> downloadFile(String url, {String? fileName, String? folderName}) async {
-    try {
-      Logger.info('⬇️ Bắt đầu tải file: $url');
+  // ═══════════════════════════════════════════════════════════════
+  // FILE OPERATIONS (Download & Open)
+  // ═══════════════════════════════════════════════════════════════
 
-      // Thư mục lưu trữ (Downloads hoặc Documents)
-      final dir = await getDownloadsDirectory() ?? await getApplicationDocumentsDirectory();
+  /// Download file from URL
+  Future<File?> downloadFile(
+    String url, {
+    String? fileName,
+    String? folderName,
+    void Function(int, int)? onProgress,
+  }) async {
+    try {
+      final dir = await getDownloadsDirectory() ?? 
+                   await getApplicationDocumentsDirectory();
       final folder = Directory('${dir.path}/${folderName ?? "MyAppFiles"}');
       if (!await folder.exists()) await folder.create(recursive: true);
 
       final filePath = '${folder.path}/${fileName ?? url.split('/').last}';
 
-      // Tải file
-      await _dio.download(url, filePath);
-      Logger.success('✅ File đã được tải về: $filePath');
+      await _dio.download(
+        url, 
+        filePath,
+        onReceiveProgress: onProgress,
+      );
 
       return File(filePath);
-    } catch (e, s) {
-      Logger.error('❌ Lỗi khi tải file: $e', stackTrace: s);
+    } catch (e) {
       return null;
     }
   }
 
-  /// Mở file sau khi tải
-  /// Hỗ trợ tất cả định dạng mà hệ điều hành nhận diện được
-  Future<void> openFile(File file) async {
+  /// Open file with system default app
+  Future<bool> openFile(File file) async {
     try {
-      if (!await file.exists()) {
-        Logger.warning('⚠️ File không tồn tại: ${file.path}');
-        return;
-      }
-      Logger.info('📂 Đang mở file: ${file.path}');
-      await OpenFilex.open(file.path);
-    } catch (e, s) {
-      Logger.error('❌ Không thể mở file: $e', stackTrace: s);
+      if (!await file.exists()) return false;
+      final result = await OpenFilex.open(file.path);
+      return result.type == ResultType.done;
+    } catch (e) {
+      return false;
     }
   }
 
-  /// Tải file và mở luôn
-  Future<void> downloadAndOpen(String url, {String? fileName, String? folderName}) async {
+  /// Download and open immediately
+  Future<bool> downloadAndOpen(
+    String url, {
+    String? fileName,
+    String? folderName,
+  }) async {
     final file = await downloadFile(url, fileName: fileName, folderName: folderName);
-    if (file != null) await openFile(file);
+    return file != null ? await openFile(file) : false;
   }
 
-  /// Kiểm tra file có tồn tại không
+  // ═══════════════════════════════════════════════════════════════
+  // MEDIA OPERATIONS (Save to Gallery)
+  // ═══════════════════════════════════════════════════════════════
+
+  /// Save image to gallery
+  Future<bool> saveImageToGallery(String filePath, {String? albumName}) async {
+    try {
+      final result = await GallerySaver.saveImage(
+        filePath,
+        albumName: albumName ?? 'MyApp',
+        toDcim: true,
+      );
+      return result == true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Save video to gallery
+  Future<bool> saveVideoToGallery(String filePath, {String? albumName}) async {
+    try {
+      final result = await GallerySaver.saveVideo(
+        filePath,
+        albumName: albumName ?? 'MyApp',
+        toDcim: true,
+      );
+      return result == true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // UTILITY METHODS
+  // ═══════════════════════════════════════════════════════════════
+
+  /// Check if file exists
   Future<bool> fileExists(String path) async {
     try {
-      return File(path).exists();
+      return await File(path).exists();
     } catch (_) {
       return false;
     }
+  }
+
+  /// Get file size
+  Future<int?> getFileSize(String path) async {
+    try {
+      return await File(path).length();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Delete file
+  Future<bool> deleteFile(String path) async {
+    try {
+      await File(path).delete();
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Get file extension
+  String getFileExtension(String path) {
+    return path.split('.').last.toLowerCase();
+  }
+
+  /// Check if file is image
+  bool isImageFile(String path) {
+    final ext = getFileExtension(path);
+    return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].contains(ext);
+  }
+
+  /// Check if file is video
+  bool isVideoFile(String path) {
+    final ext = getFileExtension(path);
+    return ['mp4', 'avi', 'mov', 'mkv', 'flv', 'wmv'].contains(ext);
   }
 }

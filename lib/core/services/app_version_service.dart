@@ -1,44 +1,64 @@
-
+// ════════════════════════════════════════════════════════════════
+// 📁 lib/services/app_version_service.dart (TỐI ƯU)
+// ════════════════════════════════════════════════════════════════
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppVersionService {
-  // Thay đổi các thông tin sau cho phù hợp với app của bạn
   static const String androidPackageName = 'com.example.yourapp';
-  static const String iosAppId = '123456789'; // App ID trên App Store
-  
-  /// Kiểm tra version hiện tại của app
+  static const String iosAppId = '123456789';
+
+  // Cache
+  static PackageInfo? _cachedPackageInfo;
+
+  /// Get current app version
   Future<String> getCurrentVersion() async {
-    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    return packageInfo.version;
+    _cachedPackageInfo ??= await PackageInfo.fromPlatform();
+    return _cachedPackageInfo!.version;
   }
 
-  /// Lấy phiên bản mới nhất từ Google Play Store
-  Future<String?> getLatestAndroidVersion() async {
+  /// Get current build number
+  Future<String> getBuildNumber() async {
+    _cachedPackageInfo ??= await PackageInfo.fromPlatform();
+    return _cachedPackageInfo!.buildNumber;
+  }
+
+  /// Get full app info
+  Future<PackageInfo> getAppInfo() async {
+    _cachedPackageInfo ??= await PackageInfo.fromPlatform();
+    return _cachedPackageInfo!;
+  }
+
+  /// Get latest version from store
+  Future<String?> getLatestVersion() async {
+    if (Platform.isAndroid) {
+      return _getLatestAndroidVersion();
+    } else if (Platform.isIOS) {
+      return _getLatestIOSVersion();
+    }
+    return null;
+  }
+
+  Future<String?> _getLatestAndroidVersion() async {
     try {
       const url = 'https://play.google.com/store/apps/details?id=$androidPackageName&hl=vi';
       final response = await http.get(Uri.parse(url));
       
       if (response.statusCode == 200) {
-        // Parse HTML để tìm version
         final match = RegExp(r'\[\[\["([0-9.]+)"\]\]').firstMatch(response.body);
-        if (match != null && match.groupCount >= 1) {
-          return match.group(1);
-        }
+        return match?.group(1);
       }
     } catch (e) {
-      debugPrint('Lỗi khi lấy version Android: $e');
+      debugPrint('Error fetching Android version: $e');
     }
     return null;
   }
 
-  /// Lấy phiên bản mới nhất từ Apple App Store
-  Future<String?> getLatestIOSVersion() async {
+  Future<String?> _getLatestIOSVersion() async {
     try {
       const url = 'https://itunes.apple.com/lookup?id=$iosAppId&country=vn';
       final response = await http.get(Uri.parse(url));
@@ -50,114 +70,102 @@ class AppVersionService {
         }
       }
     } catch (e) {
-      debugPrint('Lỗi khi lấy version iOS: $e');
+      debugPrint('Error fetching iOS version: $e');
     }
     return null;
   }
 
-  /// So sánh 2 version (trả về true nếu storeVersion mới hơn currentVersion)
-  bool isUpdateAvailable(String currentVersion, String storeVersion) {
-    final List<int> currentParts = currentVersion.split('.').map(int.parse).toList();
-    final List<int> storeParts = storeVersion.split('.').map(int.parse).toList();
+  /// Compare versions
+  bool isUpdateAvailable(String current, String store) {
+    final currentParts = current.split('.').map(int.parse).toList();
+    final storeParts = store.split('.').map(int.parse).toList();
     
-    final int maxLength = currentParts.length > storeParts.length 
+    final maxLength = currentParts.length > storeParts.length 
         ? currentParts.length 
         : storeParts.length;
     
     for (int i = 0; i < maxLength; i++) {
-      final int current = i < currentParts.length ? currentParts[i] : 0;
-      final int store = i < storeParts.length ? storeParts[i] : 0;
+      final curr = i < currentParts.length ? currentParts[i] : 0;
+      final stor = i < storeParts.length ? storeParts[i] : 0;
       
-      if (store > current) return true;
-      if (store < current) return false;
+      if (stor > curr) return true;
+      if (stor < curr) return false;
     }
     
     return false;
   }
 
-  /// Kiểm tra có phiên bản mới và hiển thị dialog
-  Future<void> checkForUpdate(BuildContext context, {bool forceCheck = false}) async {
+  /// Check for update and show dialog
+  Future<void> checkForUpdate(BuildContext context, {bool showNoUpdateDialog = false}) async {
     try {
-      final String currentVersion = await getCurrentVersion();
-      String? storeVersion;
+      final current = await getCurrentVersion();
+      final latest = await getLatestVersion();
       
-      if (Platform.isAndroid) {
-        storeVersion = await getLatestAndroidVersion();
-      } else if (Platform.isIOS) {
-        storeVersion = await getLatestIOSVersion();
-      }
-      
-      if (storeVersion != null && isUpdateAvailable(currentVersion, storeVersion)) {
+      if (latest != null && isUpdateAvailable(current, latest)) {
         if (context.mounted) {
-          _showUpdateDialog(context, currentVersion, storeVersion);
+          _showUpdateDialog(context, current, latest);
         }
-      } else if (forceCheck && context.mounted) {
+      } else if (showNoUpdateDialog && context.mounted) {
         _showNoUpdateDialog(context);
       }
     } catch (e) {
-      debugPrint('Lỗi khi kiểm tra update: $e');
+      debugPrint('Error checking update: $e');
     }
   }
 
-  /// Hiển thị dialog thông báo có phiên bản mới
-  void _showUpdateDialog(BuildContext context, String currentVersion, String newVersion) {
+  void _showUpdateDialog(BuildContext context, String current, String latest) {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Cập nhật ứng dụng'),
-          content: Text(
-            'Có phiên bản mới!\n\n'
-            'Phiên bản hiện tại: $currentVersion\n'
-            'Phiên bản mới: $newVersion\n\n'
-            'Vui lòng cập nhật để có trải nghiệm tốt nhất.',
+      builder: (ctx) => AlertDialog(
+        title: const Text('Cập nhật ứng dụng'),
+        content: Text(
+          'Có phiên bản mới!\n\n'
+          'Hiện tại: $current\n'
+          'Mới nhất: $latest\n\n'
+          'Cập nhật để có trải nghiệm tốt nhất.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Để sau'),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Để sau'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _openStore();
-              },
-              child: const Text('Cập nhật ngay'),
-            ),
-          ],
-        );
-      },
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              openStore();
+            },
+            child: const Text('Cập nhật'),
+          ),
+        ],
+      ),
     );
   }
 
-  /// Hiển thị dialog không có update (khi check thủ công)
   void _showNoUpdateDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Thông báo'),
-          content: const Text('Bạn đang sử dụng phiên bản mới nhất!'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Đóng'),
-            ),
-          ],
-        );
-      },
+      builder: (ctx) => AlertDialog(
+        title: const Text('Thông báo'),
+        content: const Text('Bạn đang dùng phiên bản mới nhất!'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
     );
   }
 
-  /// Mở store để cập nhật
-  Future<void> _openStore() async {
+  Future<void> openStore() async {
     final url = Platform.isAndroid
         ? 'https://play.google.com/store/apps/details?id=$androidPackageName'
         : 'https://apps.apple.com/app/id$iosAppId';
     
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }
 }

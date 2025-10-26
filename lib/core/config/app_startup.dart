@@ -41,7 +41,7 @@ class AppLauncher {
     final appVersionService = AppVersionService();
 
     // 🔹 Kiểm tra cập nhật version
-    await appVersionService.checkForUpdate(context, forceCheck: true);
+    await appVersionService.checkForUpdate(context);
 
     // 🔹 Kiểm tra trạng thái người dùng
     final firstRun = storageService.isFirstRun();

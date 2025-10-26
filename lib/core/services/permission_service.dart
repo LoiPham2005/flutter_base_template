@@ -1,137 +1,126 @@
+// ════════════════════════════════════════════════════════════════
+// 📁 lib/services/permission_service.dart (TỐI ƯU + CACHE)
+// ════════════════════════════════════════════════════════════════
 import 'package:flutter/material.dart';
-import 'package:flutter_base_template/core/services/navigation_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PermissionService {
-  // Singleton pattern
   static final PermissionService _instance = PermissionService._internal();
   factory PermissionService() => _instance;
   PermissionService._internal();
 
-  /// Kiểm tra 1 quyền có được cấp chưa
-  Future<bool> checkPermission(Permission permission) async {
+  // Cache permission status
+  final Map<Permission, PermissionStatus> _cache = {};
+
+  /// Check single permission (with cache)
+  Future<bool> checkPermission(Permission permission, {bool useCache = true}) async {
+    if (useCache && _cache.containsKey(permission)) {
+      return _cache[permission]!.isGranted;
+    }
+    
     final status = await permission.status;
+    _cache[permission] = status;
     return status.isGranted;
   }
 
-  /// Yêu cầu 1 quyền, tự xử lý khi bị từ chối
-  Future<bool> requestPermission(Permission permission) async {
+  /// Request single permission
+  Future<bool> requestPermission(
+    Permission permission, {
+    BuildContext? context,
+    String? message,
+  }) async {
     final status = await permission.request();
+    _cache[permission] = status;
+    
     if (status.isGranted) return true;
 
-    if (status.isPermanentlyDenied) {
-      await _showOpenSettingsDialog(permission);
+    if (status.isPermanentlyDenied && context != null) {
+      await _showOpenSettingsDialog(context, message);
     }
+    
     return false;
   }
 
-  /// Kiểm tra nhiều quyền
-  Future<Map<Permission, bool>> checkMultiplePermissions(
-      List<Permission> permissions) async {
-    final results = <Permission, bool>{};
-    for (final p in permissions) {
-      results[p] = await checkPermission(p);
-    }
-    return results;
-  }
-
-  /// Yêu cầu nhiều quyền
+  /// Request multiple permissions
   Future<Map<Permission, bool>> requestMultiplePermissions(
-      List<Permission> permissions) async {
+    List<Permission> permissions, {
+    BuildContext? context,
+  }) async {
     final statuses = await permissions.request();
     final results = <Permission, bool>{};
+    
     for (final entry in statuses.entries) {
+      _cache[entry.key] = entry.value;
       results[entry.key] = entry.value.isGranted;
-      if (entry.value.isPermanentlyDenied) {
-        await _showOpenSettingsDialog(entry.key);
+      
+      if (entry.value.isPermanentlyDenied && context != null) {
+        await _showOpenSettingsDialog(context, null);
+        break; // Only show once
       }
     }
+    
     return results;
   }
 
-  /// Mở phần cài đặt app nếu quyền bị từ chối vĩnh viễn
-  Future<void> openAppSettingsManually() async {
-    await openAppSettings();
+  // ═══════════════════════════════════════════════════════════════
+  // COMMON PERMISSIONS (Quick access)
+  // ═══════════════════════════════════════════════════════════════
+
+  Future<bool> checkCamera() => checkPermission(Permission.camera);
+  Future<bool> requestCamera(BuildContext? context) => 
+    requestPermission(Permission.camera, context: context);
+
+  Future<bool> checkPhotos() async {
+    return await checkPermission(Permission.photos) ||
+           await checkPermission(Permission.storage);
   }
 
-  /// Kiểm tra quyền camera
-  Future<bool> checkCameraPermission() async =>
-      await checkPermission(Permission.camera);
-
-  /// Yêu cầu quyền camera
-  Future<bool> requestCameraPermission() async =>
-      await requestPermission(Permission.camera);
-
-  /// Kiểm tra quyền gallery (storage/photos)
-  Future<bool> checkGalleryPermission() async {
-    if (await Permission.photos.isGranted ||
-        await Permission.storage.isGranted) {
-      return true;
-    }
-    return false;
+  Future<bool> requestPhotos(BuildContext? context) async {
+    if (await checkPhotos()) return true;
+    return await requestPermission(Permission.photos, context: context) ||
+           await requestPermission(Permission.storage, context: context);
   }
 
-  /// Yêu cầu quyền gallery (storage/photos)
-  Future<bool> requestGalleryPermission() async {
-    if (await Permission.photos.isGranted ||
-        await Permission.storage.isGranted) {
-      return true;
-    }
-    if (await Permission.photos.request().isGranted ||
-        await Permission.storage.request().isGranted) {
-      return true;
-    }
-    return false;
-  }
+  Future<bool> checkLocation() => checkPermission(Permission.locationWhenInUse);
+  Future<bool> requestLocation(BuildContext? context) =>
+    requestPermission(Permission.locationWhenInUse, context: context);
 
-  /// Kiểm tra quyền vị trí
-  Future<bool> checkLocationPermission() async =>
-      await checkPermission(Permission.locationWhenInUse);
+  Future<bool> checkNotification() => checkPermission(Permission.notification);
+  Future<bool> requestNotification(BuildContext? context) =>
+    requestPermission(Permission.notification, context: context);
 
-  /// Yêu cầu quyền vị trí
-  Future<bool> requestLocationPermission() async =>
-      await requestPermission(Permission.locationWhenInUse);
+  Future<bool> checkMicrophone() => checkPermission(Permission.microphone);
+  Future<bool> requestMicrophone(BuildContext? context) =>
+    requestPermission(Permission.microphone, context: context);
 
-  /// Kiểm tra quyền thông báo
-  Future<bool> checkNotificationPermission() async =>
-      await checkPermission(Permission.notification);
+  // ═══════════════════════════════════════════════════════════════
+  // UTILITIES
+  // ═══════════════════════════════════════════════════════════════
 
-  /// Yêu cầu quyền thông báo
-  Future<bool> requestNotificationPermission() async =>
-      await requestPermission(Permission.notification);
+  void clearCache() => _cache.clear();
 
-  /// Kiểm tra quyền micro
-  Future<bool> checkMicrophonePermission() async =>
-      await checkPermission(Permission.microphone);
+  Future<void> openSettings() => openAppSettings();
 
-  /// Yêu cầu quyền micro
-  Future<bool> requestMicrophonePermission() async =>
-      await requestPermission(Permission.microphone);
-
-  /// Hiển thị dialog mở cài đặt
-  Future<void> _showOpenSettingsDialog(Permission permission) async {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await showDialog(
-        context: NavigationService().navigatorKey.currentContext!,
-        builder: (context) => AlertDialog(
-          title: const Text('Quyền bị từ chối'),
-          content: const Text(
-              'Bạn cần mở quyền trong phần Cài đặt để sử dụng tính năng này.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Hủy'),
-            ),
-            TextButton(
-              onPressed: () async {
-                Navigator.pop(context);
-                await openAppSettings();
-              },
-              child: const Text('Mở cài đặt'),
-            ),
-          ],
-        ),
-      );
-    });
+  Future<void> _showOpenSettingsDialog(BuildContext context, String? message) async {
+    await showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Yêu cầu quyền'),
+        content: Text(message ?? 'Vui lòng cấp quyền trong Cài đặt để tiếp tục.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Hủy'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              openAppSettings();
+            },
+            child: const Text('Mở cài đặt'),
+          ),
+        ],
+      ),
+    );
   }
 }

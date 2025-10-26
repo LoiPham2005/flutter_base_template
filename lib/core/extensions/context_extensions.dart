@@ -1,5 +1,6 @@
-// lib/extensions/context_extensions.dart
-
+// ════════════════════════════════════════════════════════════════
+// 📁 lib/extensions/context_extensions.dart (BỔ SUNG)
+// ════════════════════════════════════════════════════════════════
 import 'package:flutter/material.dart';
 
 extension ContextExtensions on BuildContext {
@@ -50,9 +51,7 @@ extension ContextExtensions on BuildContext {
   // Navigation
   NavigatorState get navigator => Navigator.of(this);
   
-  void pop<T>([T? result]) {
-    Navigator.of(this).pop(result);
-  }
+  void pop<T>([T? result]) => Navigator.of(this).pop(result);
 
   Future<T?> push<T>(Widget page) {
     return Navigator.of(this).push<T>(
@@ -85,40 +84,10 @@ extension ContextExtensions on BuildContext {
     Navigator.of(this).popUntil(predicate);
   }
 
-  // SnackBar
-  void showSnackBar(
-    String message, {
-    Duration duration = const Duration(seconds: 2),
-    SnackBarAction? action,
-    Color? backgroundColor,
-  }) {
-    ScaffoldMessenger.of(this).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: duration,
-        action: action,
-        backgroundColor: backgroundColor,
-      ),
-    );
-  }
-
-  void showErrorSnackBar(String message) {
-    showSnackBar(
-      message,
-      backgroundColor: Colors.red,
-      duration: const Duration(seconds: 3),
-    );
-  }
-
-  void showSuccessSnackBar(String message) {
-    showSnackBar(
-      message,
-      backgroundColor: Colors.green,
-      duration: const Duration(seconds: 2),
-    );
-  }
-
-  // Dialog
+  // ═══════════════════════════════════════════════════════════════
+  // ✅ THAY THẾ DialogService - Dialog methods with icons
+  // ═══════════════════════════════════════════════════════════════
+  
   Future<T?> showCustomDialog<T>({
     required Widget child,
     bool barrierDismissible = true,
@@ -155,6 +124,66 @@ extension ContextExtensions on BuildContext {
     );
   }
 
+  void showSuccessDialog(String message) {
+    showCustomDialog(
+      child: AlertDialog(
+        icon: const Icon(Icons.check_circle, color: Colors.green, size: 48),
+        title: const Text('Thành công'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showErrorDialog(String message) {
+    showCustomDialog(
+      child: AlertDialog(
+        icon: const Icon(Icons.error_outline, color: Colors.red, size: 48),
+        title: const Text('Lỗi'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showLoadingDialog({String? message}) {
+    showCustomDialog(
+      barrierDismissible: false,
+      child: PopScope(
+        canPop: false,
+        child: Center(
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const CircularProgressIndicator(),
+                  if (message != null) ...[
+                    const SizedBox(height: 16),
+                    Text(message),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void hideDialog() => Navigator.of(this).pop();
+
   // Bottom Sheet
   Future<T?> showBottomSheet<T>({
     required Widget child,
@@ -171,80 +200,71 @@ extension ContextExtensions on BuildContext {
     );
   }
 
-  // Focus
-  void unfocus() {
-    FocusScope.of(this).unfocus();
-  }
-
-  void requestFocus(FocusNode node) {
-    FocusScope.of(this).requestFocus(node);
-  }
-
-    // Hide keyboard
-  static void hideKeyboard(BuildContext context) {
-    FocusScope.of(context).unfocus();
-  }
-
-
-  // Dialog with icons
-  void showSuccessDialog(String message) {
-    showCustomDialog(
-      child: AlertDialog(
-        icon: Icon(Icons.check_circle, color: Colors.green, size: 48),
-        title: Text('Thành công'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => pop(),
-            child: Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void showErrorDialog(String message) {
-    showCustomDialog(
-      child: AlertDialog(
-        icon: Icon(Icons.error_outline, color: Colors.red, size: 48),
-        title: Text('Lỗi'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => pop(),
-            child: Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Loading dialog
-  void showLoadingDialog({String? message}) {
-    showCustomDialog(
-      barrierDismissible: false,
-      child: PopScope(
-        canPop: false,
-        child: Center(
-          child: Card(
-            child: Padding(
-              padding: EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircularProgressIndicator(),
-                  if (message != null) ...[
-                    SizedBox(height: 16),
-                    Text(message),
-                  ],
-                ],
-              ),
-            ),
-          ),
+  // SnackBar with icons
+  void showSnackBar(
+    String message, {
+    Duration duration = const Duration(seconds: 2),
+    SnackBarAction? action,
+    Color? backgroundColor,
+    IconData? icon,
+  }) {
+    ScaffoldMessenger.of(this).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            if (icon != null) ...[
+              Icon(icon, color: Colors.white),
+              const SizedBox(width: 12),
+            ],
+            Expanded(child: Text(message)),
+          ],
         ),
+        duration: duration,
+        action: action,
+        backgroundColor: backgroundColor,
       ),
     );
   }
 
-  void hideDialog() => Navigator.of(this).pop();
+  void showErrorSnackBar(String message) {
+    showSnackBar(
+      message,
+      backgroundColor: Colors.red,
+      icon: Icons.error_outline,
+      duration: const Duration(seconds: 3),
+    );
+  }
+
+  void showSuccessSnackBar(String message) {
+    showSnackBar(
+      message,
+      backgroundColor: Colors.green,
+      icon: Icons.check_circle,
+      duration: const Duration(seconds: 2),
+    );
+  }
+
+  void showWarningSnackBar(String message) {
+    showSnackBar(
+      message,
+      backgroundColor: Colors.orange,
+      icon: Icons.warning_amber,
+      duration: const Duration(seconds: 3),
+    );
+  }
+
+  void showInfoSnackBar(String message) {
+    showSnackBar(
+      message,
+      backgroundColor: Colors.blue,
+      icon: Icons.info_outline,
+      duration: const Duration(seconds: 2),
+    );
+  }
+
+  // Focus
+  void unfocus() => FocusScope.of(this).unfocus();
+  void requestFocus(FocusNode node) => FocusScope.of(this).requestFocus(node);
+  void hideKeyboard() => FocusScope.of(this).unfocus();
+
 }
