@@ -6,28 +6,23 @@ import 'package:flutter_base_template/features/category/domain/usecases/category
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-
 class LoadCategories extends BaseEvent {
   final Map<String, dynamic>? params;
   final bool refresh;
 
-  const LoadCategories({
-    this.params,
-    this.refresh = false,
-  });
+  const LoadCategories({this.params, this.refresh = false});
 
   @override
   List<Object?> get props => [params, refresh];
 }
-
 
 @injectable
 class CategoryBloc extends Bloc<BaseEvent, BaseState> {
   final GetCategoriesUseCase _getCategoriesUseCase;
 
   CategoryBloc({required GetCategoriesUseCase getCategoriesUseCase})
-      : _getCategoriesUseCase = getCategoriesUseCase,
-        super(BaseState.initial()) {
+    : _getCategoriesUseCase = getCategoriesUseCase,
+      super(BaseState.initial()) {
     on<LoadCategories>(_onLoadCategories);
   }
 
@@ -35,16 +30,14 @@ class CategoryBloc extends Bloc<BaseEvent, BaseState> {
     LoadCategories event,
     Emitter<BaseState> emit,
   ) async {
-    await handleBlocRequest<List<Category>, BaseState>(
-      emit,
-      () => _getCategoriesUseCase(params: event.params),
-      ({status, data, error}) => state.copyWith(
+    await execute<List<Category>, BaseState>(
+      emit: emit,
+      useCaseCall: () => _getCategoriesUseCase(params: event.params),
+      stateBuilder: ({status, data, errorMessage}) => state.copyWith(
         status: status,
         data: data ?? state.data,
-        error: error,
+        error: errorMessage,
       ),
     );
   }
 }
-
-

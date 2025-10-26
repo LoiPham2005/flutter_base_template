@@ -15,7 +15,7 @@
 
 //   /// ✅ Login dùng hàm tái sử dụng
 //   Future<void> login(String email, String password) async {
-//     await executeUseCase<AuthResponse>(
+//     await execute<AuthResponse>(
 //       action: () => _loginUseCase(email: email, password: password),
 //       onSuccess: (data) => user.value = data,
 //     );
@@ -23,7 +23,7 @@
 
 //   /// ✅ Register cũng dùng lại y chang
 //   // Future<void> register(String email, String password) async {
-//   //   await executeUseCase<AuthResponse>(
+//   //   await execute<AuthResponse>(
 //   //     action: () => _registerUseCase(email: email, password: password),
 //   //     onSuccess: (data) => user.value = data,
 //   //   );

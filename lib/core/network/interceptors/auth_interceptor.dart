@@ -13,12 +13,10 @@ import 'package:injectable/injectable.dart';
 class AuthInterceptor extends Interceptor {
   AuthInterceptor(this._storageService);
   final StorageService _storageService;
+  final authService = getIt<AuthService>();
 
   @override
-  void onRequest(
-    RequestOptions options,
-    RequestInterceptorHandler handler,
-  ) {
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     // Skip token cho các API public
     if (_isPublicApi(options.path)) {
       return handler.next(options);
@@ -29,7 +27,7 @@ class AuthInterceptor extends Interceptor {
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';
     } else {
-      Logger.warning('⚠️ No token found for protected endpoint: ${options.path}');
+      Logger.warning('No token for: ${options.path}'); // ✅ Log ngắn gọn
     }
 
     handler.next(options);
@@ -37,35 +35,26 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    // Chỉ xử lý lỗi 401 Unauthorized
     if (err.response?.statusCode != 401) {
       return handler.next(err);
     }
 
-    // Skip retry cho các API public hoặc refresh token API
-    if (_isPublicApi(err.requestOptions.path)) {
-      return handler.next(err);
-    }
-
-    Logger.warning('🔄 Token expired (401). Attempting refresh...');
+    Logger.info('Token expired (401). Refreshing...'); // ✅ Log ngắn gọn
 
     try {
-      // Refresh token qua AuthService
-      final authService = getIt<AuthService>();
       final success = await authService.refreshToken();
 
       if (!success) {
-        Logger.error('❌ Refresh failed. Logging out...');
+        Logger.warning('Refresh failed. Logging out.'); // ✅ Log ngắn gọn
         await authService.logout();
         return handler.reject(err);
       }
 
-      // Retry request với token mới
-      Logger.info('✅ Refresh success. Retrying request...');
+      Logger.info('Refresh success. Retrying request.'); // ✅ Log ngắn gọn
       final response = await _retryRequest(err.requestOptions);
       return handler.resolve(response);
     } catch (e) {
-      Logger.error('💥 Error during token refresh', error: e);
+      Logger.error('Token refresh error', error: e); // ✅ Format đẹp
       await getIt<AuthService>().logout();
       return handler.reject(err);
     }
@@ -74,27 +63,28 @@ class AuthInterceptor extends Interceptor {
   // 🔒 Danh sách API không cần auth
   /// Kiểm tra xem API có phải public không
   bool _isPublicApi(String path) {
-    return ApiConstants.publicEndpoints.any((publicPath) => path.contains(publicPath));
+    return ApiConstants.publicEndpoints.any(
+      (publicPath) => path.contains(publicPath),
+    );
   }
 
   /// Retry request với token mới
   Future<Response<dynamic>> _retryRequest(RequestOptions requestOptions) async {
     final token = _storageService.getToken();
-    
+
     final options = Options(
       method: requestOptions.method,
-      headers: {
-        ...requestOptions.headers,
-        'Authorization': 'Bearer $token',
-      },
+      headers: {...requestOptions.headers, 'Authorization': 'Bearer $token'},
     );
 
     // Tạo Dio instance mới để tránh trigger interceptor lại
-    final dio = Dio(BaseOptions(
-      baseUrl: requestOptions.baseUrl,
-      connectTimeout: requestOptions.connectTimeout,
-      receiveTimeout: requestOptions.receiveTimeout,
-    ));
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: requestOptions.baseUrl,
+        connectTimeout: requestOptions.connectTimeout,
+        receiveTimeout: requestOptions.receiveTimeout,
+      ),
+    );
 
     return dio.request<dynamic>(
       requestOptions.path,

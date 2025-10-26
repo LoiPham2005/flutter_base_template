@@ -1,3 +1,7 @@
+// ════════════════════════════════════════════════════════════════
+// 📁 lib/core/state_management/bloc/base_cubit.dart
+// ════════════════════════════════════════════════════════════════
+import 'package:flutter_base_template/core/errors/failures.dart';
 import 'package:flutter_base_template/core/errors/result.dart';
 import 'package:flutter_base_template/core/state_management/bloc/base_state.dart';
 import 'package:flutter_base_template/core/state_management/bloc/bloc_status.dart';
@@ -12,11 +16,24 @@ abstract class BaseCubit<T> extends Cubit<BaseState<T>> {
     if (!isClosed) emit(newState);
   }
 
-  /// Helper thực thi hành động async theo Result pattern
-  Future<T?> executeUseCase({
+  /// Thực thi UseCase với full Failure object
+  /// 
+  /// Example:
+  /// ```dart
+  /// await executeUseCase(
+  ///   action: () => getUserUseCase(userId),
+  ///   onSuccess: (user) => print('User: ${user.name}'),
+  ///   onFailure: (failure) {
+  ///     if (failure is NetworkFailure) {
+  ///       showSnackBar('Không có mạng');
+  ///     }
+  ///   },
+  /// );
+  /// ```
+  Future<T?> execute({
     required Future<Result<T>> Function() action,
     void Function(T data)? onSuccess,
-    void Function(String error)? onError, // ✅ Callback khi lỗi
+    void Function(Failure failure)? onFailure, // ✅ Full Failure object
   }) async {
     safeEmit(state.copyWith(
       status: BlocStatus.loading,
@@ -36,22 +53,53 @@ abstract class BaseCubit<T> extends Cubit<BaseState<T>> {
           return data;
         },
         onFailure: (failure) {
-          final errorMsg = failure.message ?? 'Đã xảy ra lỗi';
           safeEmit(state.copyWith(
             status: BlocStatus.failure,
-            error: errorMsg,
+            error: failure.message,
           ));
-          onError?.call(errorMsg); // ✅ Gọi callback lỗi
+          onFailure?.call(failure); // ✅ Pass Failure object
           return null;
         },
       );
-    } catch (e) {
-      const errorMsg = 'Đã xảy ra lỗi không xác định';
+    } catch (exception) {
+      const unknownFailure = UnknownFailure(message: 'Đã xảy ra lỗi không xác định');
       safeEmit(state.copyWith(
         status: BlocStatus.failure,
-        error: errorMsg,
+        error: unknownFailure.message,
       ));
-      onError?.call(errorMsg); // ✅ fallback callback lỗi
+      onFailure?.call(unknownFailure);
+      return null;
+    }
+  }
+
+  /// Version đơn giản chỉ dùng String message
+  Future<T?> executeWithMessage({
+    required Future<Result<T>> Function() action,
+    void Function(T data)? onSuccess,
+    void Function(String message)? onFailure, // ✅ Rõ ràng là message
+  }) async {
+    safeEmit(state.copyWith(status: BlocStatus.loading, error: null));
+
+    try {
+      final result = await action();
+
+      return result.fold(
+        onSuccess: (data) {
+          safeEmit(state.copyWith(status: BlocStatus.success, data: data));
+          onSuccess?.call(data);
+          return data;
+        },
+        onFailure: (failure) {
+          final message = failure.message;
+          safeEmit(state.copyWith(status: BlocStatus.failure, error: message));
+          onFailure?.call(message);
+          return null;
+        },
+      );
+    } catch (exception) {
+      const message = 'Đã xảy ra lỗi không xác định';
+      safeEmit(state.copyWith(status: BlocStatus.failure, error: message));
+      onFailure?.call(message);
       return null;
     }
   }

@@ -1,4 +1,5 @@
 // filepath: lib/core/config/app_initializer.dart
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_base_template/core/config/app_observer.dart';
@@ -12,7 +13,20 @@ class AppInitializer {
   static Future<void> initialize() async {
     try {
       // 🔹 Logger
-      Logger.configure(enabled: true, minLevel: LogLevel.debug);
+      // Logger.configure(enabled: true, minLevel: LogLevel.debug);
+
+      // Cấu hình log (chọn 1 trong các preset)
+      if (kDebugMode) {
+        // Development: Full log
+        LogConfig.enableHttpLogs = true;
+        LogConfig.enableBlocLogs = true;
+        LogConfig.logOnlyFailedRequests = false;
+      } else {
+        // Production: Chỉ log lỗi
+        LogConfig.enableHttpLogs = false;
+        LogConfig.enableBlocLogs = false;
+        LogConfig.logOnlyFailedRequests = true;
+      }
 
       // 🔹 Khởi tạo AppObserver để theo dõi lifecycle
       AppObserver().initialize(); // Thêm dòng này

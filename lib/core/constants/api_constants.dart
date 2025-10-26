@@ -3,7 +3,7 @@ class ApiConstants {
   ApiConstants._();
 
   // Base URLs
-  static const String baseUrlDev = 'http://192.168.60.103:3000/api';
+  static const String baseUrlDev = 'http://192.168.1.31:3000/api';
   static const String baseUrlStaging = 'http://192.168.60.103:3000/api';
   static const String baseUrlProd = 'http://192.168.60.103:3000/api';
 

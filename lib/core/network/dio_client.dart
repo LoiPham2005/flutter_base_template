@@ -61,27 +61,20 @@ class DioClient {
 
   Dio get dio => _dio;
 
-  // GET request
   Future<Response<T>> get<T>(
     String path, {
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
   }) async {
-    try {
-      return await _dio.get(
-        path,
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken,
-      );
-    } on DioException catch (e) {
-      Logger.error('GET Error: $path', error: e);
-      rethrow;
-    }
+    return await _dio.get(
+      path,
+      queryParameters: queryParameters,
+      options: options,
+      cancelToken: cancelToken,
+    );
   }
 
-  // POST request
   Future<Response<T>> post<T>(
     String path, {
     dynamic data,
@@ -91,23 +84,17 @@ class DioClient {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    try {
-      return await _dio.post<T>(
-        path,
-        data: data,
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken,
-        onSendProgress: onSendProgress,
-        onReceiveProgress: onReceiveProgress,
-      );
-    } on DioException catch (e) {
-      Logger.error('POST Error: $path', error: e);
-      rethrow;
-    }
+    return await _dio.post<T>(
+      path,
+      data: data,
+      queryParameters: queryParameters,
+      options: options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
   }
 
-  // PUT request
   Future<Response<T>> put<T>(
     String path, {
     dynamic data,
@@ -117,23 +104,17 @@ class DioClient {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    try {
-      return await _dio.put<T>(
-        path,
-        data: data,
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken,
-        onSendProgress: onSendProgress,
-        onReceiveProgress: onReceiveProgress,
-      );
-    } on DioException catch (e) {
-      Logger.error('PUT Error: $path', error: e);
-      rethrow;
-    }
+    return await _dio.put<T>(
+      path,
+      data: data,
+      queryParameters: queryParameters,
+      options: options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
   }
 
-  // PATCH request
   Future<Response<T>> patch<T>(
     String path, {
     dynamic data,
@@ -143,23 +124,17 @@ class DioClient {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    try {
-      return await _dio.patch<T>(
-        path,
-        data: data,
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken,
-        onSendProgress: onSendProgress,
-        onReceiveProgress: onReceiveProgress,
-      );
-    } on DioException catch (e) {
-      Logger.error('PATCH Error: $path', error: e);
-      rethrow;
-    }
+    return await _dio.patch<T>(
+      path,
+      data: data,
+      queryParameters: queryParameters,
+      options: options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
   }
 
-  // DELETE request
   Future<Response<T>> delete<T>(
     String path, {
     dynamic data,
@@ -167,21 +142,15 @@ class DioClient {
     Options? options,
     CancelToken? cancelToken,
   }) async {
-    try {
-      return await _dio.delete<T>(
-        path,
-        data: data,
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken,
-      );
-    } on DioException catch (e) {
-      Logger.error('DELETE Error: $path', error: e);
-      rethrow;
-    }
+    return await _dio.delete<T>(
+      path,
+      data: data,
+      queryParameters: queryParameters,
+      options: options,
+      cancelToken: cancelToken,
+    );
   }
 
-  // Upload file
   Future<Response<T>> uploadFile<T>(
     String path,
     String filePath, {
@@ -189,40 +158,29 @@ class DioClient {
     Map<String, dynamic>? data,
     ProgressCallback? onSendProgress,
   }) async {
-    try {
-      final formData = FormData.fromMap({
-        fieldName: await MultipartFile.fromFile(filePath),
-        ...?data,
-      });
+    final formData = FormData.fromMap({
+      fieldName: await MultipartFile.fromFile(filePath),
+      ...?data,
+    });
 
-      return await _dio.post<T>(
-        path,
-        data: formData,
-        onSendProgress: onSendProgress,
-      );
-    } on DioException catch (e) {
-      Logger.error('Upload Error: $path', error: e);
-      rethrow;
-    }
+    return await _dio.post<T>(
+      path,
+      data: formData,
+      onSendProgress: onSendProgress,
+    );
   }
 
-  // Download file
   Future<Response> downloadFile(
     String urlPath,
     String savePath, {
     ProgressCallback? onReceiveProgress,
     CancelToken? cancelToken,
   }) async {
-    try {
-      return await _dio.download(
-        urlPath,
-        savePath,
-        onReceiveProgress: onReceiveProgress,
-        cancelToken: cancelToken,
-      );
-    } on DioException catch (e) {
-      Logger.error('Download Error: $urlPath', error: e);
-      rethrow;
-    }
+    return await _dio.download(
+      urlPath,
+      savePath,
+      onReceiveProgress: onReceiveProgress,
+      cancelToken: cancelToken,
+    );
   }
 }

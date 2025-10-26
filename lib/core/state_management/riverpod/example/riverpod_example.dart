@@ -23,7 +23,7 @@
 
 //   /// ✅ Login
 //   Future<void> login(String email, String password) async {
-//     await executeUseCase(
+//     await execute(
 //       action: () => _loginUseCase(email: email, password: password),
 //       onSuccess: (data) => state = AsyncData(data),
 //     );
@@ -31,7 +31,7 @@
 
 //   /// ✅ Register
 //   // Future<void> register(String email, String password) async {
-//   //   await executeUseCase(
+//   //   await execute(
 //   //     action: () => _registerUseCase(email: email, password: password),
 //   //     onSuccess: (data) => state = AsyncData(data),
 //   //   );

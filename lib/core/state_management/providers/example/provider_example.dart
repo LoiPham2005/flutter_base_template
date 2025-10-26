@@ -16,7 +16,7 @@
 
 //   /// ✅ Login tái sử dụng từ BaseProvider
 //   Future<void> login(String email, String password) async {
-//     await executeUseCase<AuthResponse>(
+//     await execute<AuthResponse>(
 //       action: () => _loginUseCase(email: email, password: password),
 //       onSuccess: (data) {
 //         _authData = data;
@@ -27,7 +27,7 @@
 
 //   /// ✅ Register tái sử dụng chung logic
 //   // Future<void> register(String email, String password) async {
-//   //   await executeUseCase<AuthResponse>(
+//   //   await execute<AuthResponse>(
 //   //     action: () => _registerUseCase(email: email, password: password),
 //   //     onSuccess: (data) {
 //   //       _authData = data;

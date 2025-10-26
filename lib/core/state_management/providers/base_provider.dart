@@ -1,29 +1,29 @@
+// ════════════════════════════════════════════════════════════════
+// 📁 lib/core/state_management/provider/base_provider.dart
+// ════════════════════════════════════════════════════════════════
 import 'package:flutter/foundation.dart';
+import 'package:flutter_base_template/core/errors/failures.dart';
 import 'package:flutter_base_template/core/errors/result.dart';
 
-/// ✅ BaseProvider dùng chung cho mọi Provider (Auth, User, Product, ...)
-/// Có thể mở rộng thêm: retry, pagination, caching...
+/// BaseProvider cho Provider pattern
 class BaseProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  String? _error;
-  String? get error => _error;
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
 
-  /// ✅ Hàm xử lý hành động chung (giống executeUseCase ở Cubit/GetX)
-  /// [action] là hàm Future trả về `Result<T>` (theo Result Pattern)
-  /// [onSuccess] callback khi thành công
-  /// [onError] callback khi lỗi (giúp UI tự xử lý)
-  Future<void> executeUseCase<T>({
+  /// Thực thi UseCase với full Failure object
+  Future<void> execute<T>({
     required Future<Result<T>> Function() action,
     void Function(T data)? onSuccess,
-    void Function(String error)? onError, // ✅ Callback khi lỗi
-    bool shouldShowLoading = true, // ✅ tránh trùng hàm hoặc biến
+    void Function(Failure failure)? onFailure, // ✅ Full Failure object
+    bool showLoading = true,
   }) async {
     try {
-      if (shouldShowLoading) {
+      if (showLoading) {
         _isLoading = true;
-        _error = null;
+        _errorMessage = null;
         notifyListeners();
       }
 
@@ -31,24 +31,68 @@ class BaseProvider extends ChangeNotifier {
 
       result.fold(
         onSuccess: (data) {
-          _error = null;
+          _errorMessage = null;
           onSuccess?.call(data);
         },
         onFailure: (failure) {
-          final msg = failure.message ?? 'Đã xảy ra lỗi';
-          _error = msg;
-          onError?.call(msg); // ✅ Gọi callback để UI xử lý lỗi
+          _errorMessage = failure.message;
+          onFailure?.call(failure); // ✅ Pass Failure object
         },
       );
-    } catch (e) {
-      const msg = 'Đã xảy ra lỗi không xác định';
-      _error = msg;
-      onError?.call(msg);
+    } catch (exception) {
+      const unknownFailure = UnknownFailure(message: 'Đã xảy ra lỗi không xác định');
+      _errorMessage = unknownFailure.message;
+      onFailure?.call(unknownFailure);
     } finally {
-      if (shouldShowLoading) {
+      if (showLoading) {
         _isLoading = false;
         notifyListeners();
       }
     }
+  }
+
+  /// Version đơn giản với String message
+  Future<void> executeWithMessage<T>({
+    required Future<Result<T>> Function() action,
+    void Function(T data)? onSuccess,
+    void Function(String message)? onFailure, // ✅ Rõ ràng là message
+    bool showLoading = true,
+  }) async {
+    try {
+      if (showLoading) {
+        _isLoading = true;
+        _errorMessage = null;
+        notifyListeners();
+      }
+
+      final result = await action();
+
+      result.fold(
+        onSuccess: (data) {
+          _errorMessage = null;
+          onSuccess?.call(data);
+        },
+        onFailure: (failure) {
+          final message = failure.message;
+          _errorMessage = message;
+          onFailure?.call(message);
+        },
+      );
+    } catch (exception) {
+      const message = 'Đã xảy ra lỗi không xác định';
+      _errorMessage = message;
+      onFailure?.call(message);
+    } finally {
+      if (showLoading) {
+        _isLoading = false;
+        notifyListeners();
+      }
+    }
+  }
+
+  /// Clear error
+  void clearError() {
+    _errorMessage = null;
+    notifyListeners();
   }
 }
