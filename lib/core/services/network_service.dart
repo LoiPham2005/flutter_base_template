@@ -12,25 +12,6 @@ class NetworkService {
   StreamSubscription? _subscription;
   bool _isShown = false;
 
-  // Thêm 2 static methods
-  static Future<bool> hasConnection() async {
-    return await NetworkService().checkConnection();
-  }
-
-  static Future<void> check(
-    BuildContext context, {
-    Function()? onConnected,
-    Function()? onDisconnected,
-    bool showMessage = true,
-  }) async {
-    return await NetworkService().monitorConnection(
-      context,
-      onConnected: onConnected,
-      onDisconnected: onDisconnected,
-      showMessage: showMessage,
-    );
-  }
-
   Future<bool> checkConnection() async {
     try {
       final result = await InternetAddress.lookup('google.com');

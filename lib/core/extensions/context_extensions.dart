@@ -184,4 +184,67 @@ extension ContextExtensions on BuildContext {
   static void hideKeyboard(BuildContext context) {
     FocusScope.of(context).unfocus();
   }
+
+
+  // Dialog with icons
+  void showSuccessDialog(String message) {
+    showCustomDialog(
+      child: AlertDialog(
+        icon: Icon(Icons.check_circle, color: Colors.green, size: 48),
+        title: Text('Thành công'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => pop(),
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showErrorDialog(String message) {
+    showCustomDialog(
+      child: AlertDialog(
+        icon: Icon(Icons.error_outline, color: Colors.red, size: 48),
+        title: Text('Lỗi'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => pop(),
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Loading dialog
+  void showLoadingDialog({String? message}) {
+    showCustomDialog(
+      barrierDismissible: false,
+      child: PopScope(
+        canPop: false,
+        child: Center(
+          child: Card(
+            child: Padding(
+              padding: EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(),
+                  if (message != null) ...[
+                    SizedBox(height: 16),
+                    Text(message),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void hideDialog() => Navigator.of(this).pop();
 }
