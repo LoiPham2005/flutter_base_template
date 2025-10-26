@@ -1,0 +1,116 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    // ───── 1. Build Runner ─────
+    {
+      "label": "Build Runner: One-time build",
+      "type": "shell",
+      "command": "flutter pub run build_runner build --delete-conflicting-outputs",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build Runner: Watch",
+      "type": "shell",
+      "command": "flutter pub run build_runner watch --delete-conflicting-outputs",
+      "group": "build",
+      "problemMatcher": []
+    },
+
+    // ───── 2. Generate Localization ─────
+    {
+      "label": "Generate Localization (l10n)",
+      "type": "shell",
+      "command": "flutter gen-l10n",
+      "group": "build",
+      "problemMatcher": []
+    },
+
+    // ───── 3. Clean Project ─────
+    {
+      "label": "Clean Project",
+      "type": "shell",
+      "command": "flutter clean && flutter pub get",
+      "group": "build",
+      "problemMatcher": []
+    },
+
+    // ───── 4. Build APK (multi flavor) ─────
+    {
+      "label": "Build APK (Development)",
+      "type": "shell",
+      "command": "flutter build apk --flavor development -t lib/main_development.dart",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build APK (Staging)",
+      "type": "shell",
+      "command": "flutter build apk --flavor staging -t lib/main_staging.dart",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build APK (Production)",
+      "type": "shell",
+      "command": "flutter build apk --flavor production -t lib/main_production.dart",
+      "group": "build",
+      "problemMatcher": []
+    },
+
+    // ───── 5. Build AAB (Play Store) ─────
+    {
+      "label": "Build AAB (Production)",
+      "type": "shell",
+      "command": "flutter build appbundle --flavor production -t lib/main_production.dart",
+      "group": "build",
+      "problemMatcher": []
+    },
+
+    // ───── 6. Run App (multi flavor) ─────
+    {
+      "label": "Run App (Development)",
+      "type": "shell",
+      "command": "flutter run --flavor development -t lib/main_development.dart",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run App (Staging)",
+      "type": "shell",
+      "command": "flutter run --flavor staging -t lib/main_staging.dart",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run App (Production)",
+      "type": "shell",
+      "command": "flutter run --flavor production -t lib/main_production.dart",
+      "group": "test",
+      "problemMatcher": []
+    },
+
+    // ───── 7. Build iOS ─────
+    {
+      "label": "Build iOS (Development)",
+      "type": "shell",
+      "command": "flutter build ios --flavor development -t lib/main_development.dart",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build iOS (Staging)",
+      "type": "shell",
+      "command": "flutter build ios --flavor staging -t lib/main_staging.dart",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build iOS (Production)",
+      "type": "shell",
+      "command": "flutter build ios --flavor production -t lib/main_production.dart",
+      "group": "build",
+      "problemMatcher": []
+    }
+  ]
+}

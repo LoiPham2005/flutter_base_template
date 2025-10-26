@@ -2,34 +2,36 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "🧩 Development",
+      "name": "🐣 Development Debug",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_development.dart",
-      "args": [
-        "--flavor",
-        "development"
-      ]
+      "args": ["--flavor", "development"],
+      "flutterMode": "debug"
     },
     {
-      "name": "🧪 Staging",
+      "name": "🧪 Staging Debug",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_staging.dart",
-      "args": [
-        "--flavor",
-        "staging"
-      ]
+      "args": ["--flavor", "staging"],
+      "flutterMode": "debug"
     },
     {
-      "name": "🚀 Production",
+      "name": "🚀 Production Debug",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_production.dart",
-      "args": [
-        "--flavor",
-        "production"
-      ]
+      "args": ["--flavor", "production"],
+      "flutterMode": "debug"
+    },
+    {
+      "name": "🔥 Production Release Run",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_production.dart",
+      "args": ["--flavor", "production", "--release"],
+      "flutterMode": "release"
     }
   ]
 }
