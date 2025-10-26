@@ -11,22 +11,6 @@ class NavigationService {
   BuildContext? get context => navigatorKey.currentContext;
   NavigatorState? get navigator => navigatorKey.currentState;
 
-  // AppLocalizations? get l10n =>
-  //     context != null ? AppLocalizations.of(context!) : null;
-
-  // // Theme
-  // ThemeData? get theme => context != null ? Theme.of(context!) : null;
-  // TextTheme? get textTheme =>
-  //     context != null ? Theme.of(context!).textTheme : null;
-  // ColorScheme? get colorScheme =>
-  //     context != null ? Theme.of(context!).colorScheme : null;
-
-  // // Colors
-  // Color? get primaryColor => theme?.primaryColor;
-  // Color? get accentColor => colorScheme?.secondary;
-  // Color? get scaffoldBackgroundColor => theme?.scaffoldBackgroundColor;
-  // Color? get cardColor => theme?.cardColor;
-
   // Push
   Future<T?>? push<T>(Widget page) {
     return navigator?.push<T>(MaterialPageRoute(builder: (_) => page));

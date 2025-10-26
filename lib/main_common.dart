@@ -16,11 +16,6 @@ Future<void> mainCommon(Environment env) async {
   // Khởi tạo toàn bộ ứng dụng với flavor tương ứng
   await AppInitializer.initialize();
 
-  // Chỉ bật Bloc Observer ở chế độ debug
-  if (kDebugMode) {
-    Bloc.observer = AppBlocObserver();
-  }
-
   // Chạy ứng dụng
   runApp(const MyApp());
 }

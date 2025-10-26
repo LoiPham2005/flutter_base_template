@@ -8,6 +8,8 @@ import 'package:flutter_base_template/core/di/injection.dart';
 import 'package:flutter_base_template/core/l10n/localization_service.dart';
 import 'package:flutter_base_template/core/theme/theme_cubit.dart';
 import 'package:flutter_base_template/core/utils/logger.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_base_template/core/config/app_bloc_observer.dart';
 
 class AppInitializer {
   static Future<void> initialize() async {
@@ -17,6 +19,9 @@ class AppInitializer {
 
       // 🔹 Khởi tạo AppObserver để theo dõi lifecycle
       AppObserver().initialize();
+
+      // 🔹 Khởi tạo BlocObserver theo environment
+      _configureBlocObserver();
 
       // 🔹 UI / Orientation
       await SystemChrome.setPreferredOrientations([
@@ -52,6 +57,14 @@ class AppInitializer {
         stackTrace: stackTrace,
       );
       rethrow;
+    }
+  }
+
+  /// Cấu hình BlocObserver theo environment
+  static void _configureBlocObserver() {
+    if (EnvironmentConfig.isDev) {
+      Bloc.observer = AppBlocObserver();
+      Logger.info('BlocObserver initialized in development mode');
     }
   }
 
