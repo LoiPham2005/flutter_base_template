@@ -5,7 +5,7 @@ class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
 
    Future<void> _boot(BuildContext context) async {
-    await AppLauncher.launch(context); // 🚀 Logic khởi chạy + điều hướng
+    await AppStartup.launch(context); // 🚀 Logic khởi chạy + điều hướng
   }
 
   @override

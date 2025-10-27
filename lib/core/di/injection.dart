@@ -7,10 +7,8 @@ import 'injection.config.dart';
 
 final GetIt getIt = GetIt.instance;
 
-@InjectableInit()
-Future<void> configureDependencies() async {
-  await getIt.init();
-}
+@InjectableInit(asExtension: true)
+Future<void> configureDependencies() async => getIt.init();
 
 @module
 abstract class RegisterModule {
@@ -20,9 +18,12 @@ abstract class RegisterModule {
   @lazySingleton
   FlutterSecureStorage get secureStorage => const FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    iOptions: IOSOptions(
+      accessibility: KeychainAccessibility.first_unlock,
+      synchronizable: true,
+    ),
   );
 
   @lazySingleton
   Connectivity get connectivity => Connectivity();
-
 }

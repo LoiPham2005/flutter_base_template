@@ -1,27 +1,33 @@
-// filepath: lib/core/config/app_startup.dart
+// ════════════════════════════════════════════════════════════════
+// 📁 lib/core/config/app_startup.dart (FIXED)
+// ════════════════════════════════════════════════════════════════
 import 'package:flutter/material.dart';
 import 'package:flutter_base_template/core/di/injection.dart';
 import 'package:flutter_base_template/core/extensions/context_extensions.dart';
-import 'package:flutter_base_template/core/services/network_service.dart';
+import 'package:flutter_base_template/core/network/network_info.dart';
 import 'package:flutter_base_template/core/services/app_version_service.dart';
 import 'package:flutter_base_template/core/storage/storage_service.dart';
 import 'package:flutter_base_template/core/utils/logger.dart';
+import 'package:flutter_base_template/core/utils/network_monitor.dart';
 import 'package:flutter_base_template/features/auth/presentation/pages/login_page.dart';
 import 'package:flutter_base_template/features/bottom_menu/presentation/pages/bottom_menu.dart';
 import 'package:flutter_base_template/features/welcome/presentation/pages/welcom_page.dart';
 
-/// AppLauncher: xử lý logic sau khi AppInitializer xong
-class AppLauncher {
+/// AppStartup: xử lý logic sau khi AppInitializer xong
+class AppStartup {
   static Future<void> launch(BuildContext context) async {
     try {
-      // 🔹 Kiểm tra mạng với instance methods
-      final hasInternet = await NetworkService().checkConnection(); 
+      // ✅ Sử dụng NetworkInfo (DI) thay vì NetworkMonitor
+      final networkInfo = getIt<NetworkInfo>();
+      final hasInternet = await networkInfo.isConnected;
+      
       if (!hasInternet) {
         Logger.warning('Không có kết nối internet. Đang chờ kết nối lại...');
         
-        await NetworkService().monitorConnection(
+        // ✅ Dùng NetworkMonitor cho UI feedback
+        await NetworkMonitor().startMonitoring(
           context,
-          showMessage: true,
+          showSnackBar: true,
           onConnected: () async {
             Logger.info('Đã có kết nối internet. Tiếp tục khởi tạo ứng dụng...');
             await _continue(context);
@@ -50,14 +56,16 @@ class AppLauncher {
     if (firstRun) await storageService.setFirstRun(false);
 
     // 🔹 Điều hướng
-     if (firstRun) {
-        context.pushReplacement(const WelcomPage());
+    if (!context.mounted) return;
+    
+    if (firstRun) {
+      context.pushReplacement(const WelcomPage());
+    } else {
+      if (loggedIn) {
+        context.pushReplacement(const BottomMenu());
       } else {
-        if (loggedIn) {
-          context.pushReplacement(const BottomMenu());
-        } else {
-          context.pushReplacement(const LoginPage());
-        }
+        context.pushReplacement(const LoginPage());
       }
+    }
   }
 }

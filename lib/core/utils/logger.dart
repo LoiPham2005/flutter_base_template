@@ -278,7 +278,7 @@ class Logger {
 
       // Format data động theo response
       try {
-        final encoder = JsonEncoder.withIndent('  ');
+        const encoder = JsonEncoder.withIndent('  ');
         final formatted = encoder
             .convert(data)
             .split('\n')

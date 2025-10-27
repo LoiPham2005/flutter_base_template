@@ -36,7 +36,33 @@
     "when": "editorTextFocus"
   },
 
-  // 🟢 Thêm phím tắt Run & Debug
+  // ⚡ Flutter Pub Commands
+  {
+    "key": "ctrl+alt+g",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Flutter Pub Get",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+alt+u",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Flutter Pub Upgrade",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+alt+o",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Flutter Pub Outdated",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+alt+c",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Flutter Clean",
+    "when": "editorTextFocus"
+  },
+
+  // 🟢 Debug & Run
   {
     "key": "f5",
     "command": "workbench.action.debug.start",

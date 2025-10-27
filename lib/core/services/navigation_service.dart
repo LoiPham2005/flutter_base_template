@@ -1,26 +1,44 @@
-// lib/core/services/navigation_service.dart
+// ════════════════════════════════════════════════════════════════
+// 📁 lib/core/services/navigation_service.dart (TỐI ƯU - CHỈ GLOBAL)
+// ════════════════════════════════════════════════════════════════
 import 'package:flutter/material.dart';
 
+/// Global navigation service - CHỈ dùng khi KHÔNG CÓ BuildContext
+/// 
+/// ⚠️ LƯU Ý: Ưu tiên dùng context.push() thay vì service này!
+/// 
+/// Use cases cho NavigationService:
+/// - Từ background services (FCM, notifications)
+/// - Từ business logic layer (không có context)
+/// - Từ static methods/callbacks
 class NavigationService {
+  NavigationService._();
+  static final NavigationService _instance = NavigationService._();
   factory NavigationService() => _instance;
-  NavigationService._internal();
-  static final NavigationService _instance = NavigationService._internal();
 
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   BuildContext? get context => navigatorKey.currentContext;
   NavigatorState? get navigator => navigatorKey.currentState;
 
-  // Push
+  // ═══════════════════════════════════════════════════════════════
+  // PUSH METHODS
+  // ═══════════════════════════════════════════════════════════════
+
   Future<T?>? push<T>(Widget page) {
-    return navigator?.push<T>(MaterialPageRoute(builder: (_) => page));
+    return navigator?.push<T>(
+      MaterialPageRoute(builder: (_) => page),
+    );
   }
 
   Future<T?>? pushNamed<T>(String routeName, {Object? arguments}) {
     return navigator?.pushNamed<T>(routeName, arguments: arguments);
   }
 
-  // Push replacement
+  // ═══════════════════════════════════════════════════════════════
+  // PUSH REPLACEMENT METHODS
+  // ═══════════════════════════════════════════════════════════════
+
   Future<T?>? pushReplacement<T, TO>(Widget page, {TO? result}) {
     return navigator?.pushReplacement<T, TO>(
       MaterialPageRoute(builder: (_) => page),
@@ -40,7 +58,10 @@ class NavigationService {
     );
   }
 
-  // Push and remove until
+  // ═══════════════════════════════════════════════════════════════
+  // PUSH AND REMOVE UNTIL METHODS
+  // ═══════════════════════════════════════════════════════════════
+
   Future<T?>? pushAndRemoveUntil<T>(
     Widget page,
     bool Function(Route<dynamic>) predicate,
@@ -63,7 +84,10 @@ class NavigationService {
     );
   }
 
-  // Pop
+  // ═══════════════════════════════════════════════════════════════
+  // POP METHODS
+  // ═══════════════════════════════════════════════════════════════
+
   void pop<T>([T? result]) {
     navigator?.pop<T>(result);
   }
@@ -80,22 +104,34 @@ class NavigationService {
     navigator?.maybePop<T>(result);
   }
 
-  // Pop to root
   void popToRoot() {
     navigator?.popUntil((route) => route.isFirst);
   }
 
- 
-  // ===============================
-  // Focus
-  // ===============================
+  // ═══════════════════════════════════════════════════════════════
+  // UTILITY METHODS
+  // ═══════════════════════════════════════════════════════════════
 
+  /// Unfocus keyboard globally
   void unfocus() {
-    context != null ? FocusScope.of(context!).unfocus() : null;
+    if (context != null) {
+      FocusScope.of(context!).unfocus();
+    }
   }
 
+  /// Request focus globally
   void requestFocus(FocusNode node) {
-    if (context != null) FocusScope.of(context!).requestFocus(node);
+    if (context != null) {
+      FocusScope.of(context!).requestFocus(node);
+    }
   }
 
+  /// Check if context is available
+  bool get hasContext => context != null;
+
+  /// Get current route name
+  String? get currentRouteName {
+    final route = ModalRoute.of(context!);
+    return route?.settings.name;
+  }
 }
