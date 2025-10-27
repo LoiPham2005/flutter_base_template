@@ -39,7 +39,7 @@ class DioClient {
     );
 
     // 🧠 Add cache interceptor
-    // _dio.interceptors.add(DioCacheInterceptor(options: cacheOptions));
+    _dio.interceptors.add(DioCacheInterceptor(options: cacheOptions));
 
     _dio.interceptors.addAll([
       authInterceptor,

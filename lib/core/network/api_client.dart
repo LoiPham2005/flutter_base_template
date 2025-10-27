@@ -46,7 +46,7 @@ class ApiClient {
     if (!await _networkInfo.isConnected) {
       return const ResultFailure(
         NetworkFailure(),
-      ); // Sửa Error -> ResultFailure
+      ); 
     }
     return request();
   }

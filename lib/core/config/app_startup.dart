@@ -8,7 +8,7 @@ import 'package:flutter_base_template/core/network/network_info.dart';
 import 'package:flutter_base_template/core/services/app_version_service.dart';
 import 'package:flutter_base_template/core/storage/storage_service.dart';
 import 'package:flutter_base_template/core/utils/logger.dart';
-import 'package:flutter_base_template/core/utils/network_monitor.dart';
+import 'package:flutter_base_template/core/services/network_monitor.dart';
 import 'package:flutter_base_template/features/auth/presentation/pages/login_page.dart';
 import 'package:flutter_base_template/features/bottom_menu/presentation/pages/bottom_menu.dart';
 import 'package:flutter_base_template/features/welcome/presentation/pages/welcom_page.dart';
