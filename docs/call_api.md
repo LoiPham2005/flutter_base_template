@@ -170,7 +170,7 @@ class FeatureBloc extends Bloc<BaseEvent, BaseState> {
     FetchDataListEvent event,
     Emitter<BaseState> emit,
   ) async {
-    await handleDataList(
+    await execute(
       event,
       emit,
       () => _getFeaturesUseCase(params: event.params),
@@ -191,7 +191,7 @@ class AuthCubit extends BaseCubit<void> {
     required String email,
     required String password,
   }) async {
-     await executeUseCase(
+     await execute(
       action: () => _loginUseCase(
         email: email,
         password: password,
@@ -213,7 +213,7 @@ class AuthController extends BaseController {
 
   /// ✅ Login dùng hàm tái sử dụng
   Future<void> login(String email, String password) async {
-    await executeUseCase<AuthResponse>(
+    await execute<AuthResponse>(
       action: () => _loginUseCase(email: email, password: password),
       onSuccess: (data) => user.value = data,
     );
@@ -237,7 +237,7 @@ class AuthProvider extends BaseProvider {
 
   /// ✅ Login tái sử dụng từ BaseProvider
   Future<void> login(String email, String password) async {
-    await executeUseCase<AuthResponse>(
+    await execute<AuthResponse>(
       action: () => _loginUseCase(email: email, password: password),
       onSuccess: (data) {
         _authData = data;
@@ -268,7 +268,7 @@ class AuthNotifier extends BaseAsyncNotifier<AuthResponse?> {
 
   /// ✅ Login
   Future<void> login(String email, String password) async {
-    await executeUseCase(
+    await execute(
       action: () => _loginUseCase(email: email, password: password),
       onSuccess: (data) => state = AsyncData(data),
     );
