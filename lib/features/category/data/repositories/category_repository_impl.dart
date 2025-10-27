@@ -11,11 +11,11 @@ class CategoryRepositoryImpl implements CategoryRepository {
   CategoryRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<Result<List<Category>>> getCategories({Map<String, dynamic>? params}) async {
+  Future<Result<List<Category>>> getCategories({
+    Map<String, dynamic>? params,
+  }) async {
     final result = await _remoteDataSource.getCategories(params: params);
-    return result.map(
-      (models) => models.map((model) => model.toEntity()).toList(),
-    );
+    return result.mapList((model) => model.toEntity());
   }
 
   @override
@@ -31,7 +31,10 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<Result<Category>> updateCategory(String id, Map<String, dynamic> data) async {
+  Future<Result<Category>> updateCategory(
+    String id,
+    Map<String, dynamic> data,
+  ) async {
     final result = await _remoteDataSource.updateCategory(id, data);
     return result.map((model) => model.toEntity());
   }

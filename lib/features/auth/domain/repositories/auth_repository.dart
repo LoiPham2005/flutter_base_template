@@ -6,4 +6,6 @@ abstract class AuthRepository {
     required String email,
     required String password,
   });
+
+  Future<Result<bool>> logout(); // Thêm method logout
 }

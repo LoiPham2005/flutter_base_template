@@ -23,4 +23,9 @@ class AuthRepositoryImpl implements AuthRepository {
 
     return result.map((model) => model.toEntity());
   }
+  
+  @override
+  Future<Result<bool>> logout() {
+    return _remoteDataSource.logout();
+  }
 }

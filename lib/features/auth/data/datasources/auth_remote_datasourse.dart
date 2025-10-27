@@ -9,6 +9,7 @@ abstract class AuthRemoteDataSource {
     required String email,
     required String password,
   });
+  Future<Result<bool>> logout();
 }
 
 @LazySingleton(as: AuthRemoteDataSource)
@@ -26,6 +27,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       ApiConstants.login,
       (json) => AuthResponseModel.fromJson(json),
       data: {'email': email, 'password': password},
+    );
+  }
+
+  @override
+  Future<Result<bool>> logout() async {
+    return _apiClient.postResult(
+      ApiConstants.logout,
+      (json) => true,
     );
   }
 }
