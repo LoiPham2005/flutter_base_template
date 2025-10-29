@@ -50,15 +50,14 @@ class AppInitializer {
 
       stopwatch.stop();
       _isInitialized = true;
-      
-      // ✅ GIẢM: CHỈ 1 log summary thay vì 3 logs riêng lẻ
-      Logger.success(
-        '✅ App initialized (${stopwatch.elapsedMilliseconds}ms) | '
-        'ENV: ${EnvironmentConfig.environment.name} | '
-        'API: ${EnvironmentConfig.apiBaseUrl}'
-      );
+
+      Logger.success('App initialized successfully');
     } catch (e, stackTrace) {
-      Logger.error('❌ Failed to initialize app', error: e, stackTrace: stackTrace);
+      Logger.error(
+        '❌ Failed to initialize app',
+        error: e,
+        stackTrace: stackTrace,
+      );
       await _cleanup();
       rethrow;
     }
@@ -100,7 +99,7 @@ class AppInitializer {
       LogConfig.logOnlyFailedRequests = true;
       LogConfig.maxStackTraceLines = 1;
     }
-    
+
     // ✅ GIẢM: Bỏ log này (không cần thiết)
     // Logger.info('Logger configured for ${EnvironmentConfig.environment.name}');
   }
@@ -119,7 +118,7 @@ class AppInitializer {
           systemNavigationBarIconBrightness: Brightness.dark,
         ),
       );
-      
+
       // ✅ GIẢM: Bỏ log này (UI config thành công là điều bình thường)
       // Logger.info('UI configured successfully');
     } catch (e) {
@@ -144,7 +143,11 @@ class AppInitializer {
       // Logger.info('Services initialized successfully');
     } catch (e, stackTrace) {
       // ✅ GIỮ: Log error (quan trọng)
-      Logger.error('Failed to initialize services', error: e, stackTrace: stackTrace);
+      Logger.error(
+        'Failed to initialize services',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }

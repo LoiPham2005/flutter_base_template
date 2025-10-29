@@ -1,8 +1,8 @@
 // ════════════════════════════════════════════════════════════════
 // 📁 lib/core/config/environment_config.dart (TỐI ƯU LOGGER)
 // ════════════════════════════════════════════════════════════════
-import 'package:flutter/foundation.dart';
 import 'package:flutter_base_template/core/constants/api_constants.dart';
+import 'package:flutter_base_template/core/utils/logger.dart';
 
 enum Environment { development, staging, production }
 
@@ -110,16 +110,27 @@ class EnvironmentConfig {
     }
   }
 
-  // ✅ TỐI ƯU: Gọn hơn, đẹp hơn
   static void printInfo() {
-    if (!kDebugMode) return; // ✅ CHỈ print ở debug mode
+    const borderWidth = 60;
+    String pad(String text) => text.padRight(borderWidth - 2);
 
-    print('╔═══════════════════════════════════════════════════════════');
-    print('║ 🌍 ${environment.name.toUpperCase()} | $apiBaseUrl');
-    print('╚═══════════════════════════════════════════════════════════');
-    
-    // ✅ CHỈ 3 dòng thay vì 10 dòng!
-  }
+    final buffer = StringBuffer();
+    buffer.writeln('╔${'═' * (borderWidth - 1)}');
+    buffer.writeln('║ ${pad('🌍 ENVIRONMENT INFO')}');
+    buffer.writeln('╠${'═' * (borderWidth - 1)}');
+    buffer.writeln('║ ${pad('Environment: ${environment.name.toUpperCase()}')}');
+    buffer.writeln('║ ${pad('API Base URL: $apiBaseUrl')}');
+    buffer.writeln('║ ${pad('WebSocket URL: $webSocketUrl')}');
+    buffer.writeln('║ ${pad('App Name: $appName')}');
+    buffer.writeln('║ ${pad('Bundle ID: $bundleId')}');
+    buffer.writeln('║ ${pad('Logging: ${enableLogging ? "✅" : "❌"}')}');
+    buffer.writeln('║ ${pad('Debug Tools: ${enableDebugTools ? "✅" : "❌"}')}');
+    buffer.writeln('║ ${pad('Analytics: ${enableAnalytics ? "✅" : "❌"}')}');
+    buffer.writeln('║ ${pad('Crash Reporting: ${enableCrashReporting ? "✅" : "❌"}')}');
+    buffer.writeln('╚${'═' * (borderWidth - 1)}');
+
+  Logger.info('\n${buffer.toString()}', tag: 'ENV'); 
+}
 
   static Map<String, dynamic> toJson() {
     return {

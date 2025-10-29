@@ -1,22 +1,3 @@
-// // lib/core/constants/asset_constants.dart
-// class AssetConstants {
-//   AssetConstants._();
-  
-//   // Images
-//   static const String logo = 'assets/images/logo.png';
-//   static const String placeholder = 'assets/images/placeholder.jpg';
-//   static const String noData = 'assets/images/no_data.png';
-  
-//   // Icons
-//   static const String iconHome = 'assets/icons/home.svg';
-//   static const String iconProfile = 'assets/icons/profile.svg';
-  
-//   // Animations (Lottie)
-//   static const String loadingAnimation = 'assets/animations/loading.json';
-//   static const String successAnimation = 'assets/animations/success.json';
-//   static const String errorAnimation = 'assets/animations/error.json';
-// }
-
 // lib/core/constants/assets.dart
 class Assets {
   Assets._();

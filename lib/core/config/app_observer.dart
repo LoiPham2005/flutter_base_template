@@ -66,28 +66,6 @@ class AppObserver with WidgetsBindingObserver {
     }
 
     switch (state) {
-      // case AppLifecycleState.resumed:
-      //   Logger.info('📱 App resumed (foreground)');
-      //   _executeCallbacks(_onResumeCallbacks, 'resume');
-      //   break;
-
-      // case AppLifecycleState.paused:
-      //   Logger.info('⏸️ App paused (background)');
-      //   _executeCallbacks(_onPauseCallbacks, 'pause');
-      //   break;
-
-      // case AppLifecycleState.detached:
-      //   Logger.info('❌ App detached (closed)');
-      //   break;
-
-      // case AppLifecycleState.inactive:
-      //   Logger.info('⚪ App inactive (temporary)');
-      //   break;
-
-      // case AppLifecycleState.hidden:
-      //   Logger.info('👻 App hidden');
-      //   break;
-      
       case AppLifecycleState.resumed:
         // ✅ GIẢM: Bỏ log này (quá nhiều)
         // Logger.info('📱 App resumed (foreground)');
