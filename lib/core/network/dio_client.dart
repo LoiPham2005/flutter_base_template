@@ -1,6 +1,5 @@
 // lib/core/network/dio_client.dart
 import 'package:dio/dio.dart';
-import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:flutter_base_template/core/config/environment_config.dart';
 import 'package:flutter_base_template/core/constants/app_constants.dart';
 import 'package:injectable/injectable.dart';
