@@ -6,10 +6,6 @@ class AppBlocObserver extends BlocObserver {
   @override
   void onEvent(Bloc bloc, Object? event) {
     super.onEvent(bloc, event);
-    // if (event != null) {
-    //   Logger.blocEvent(bloc.runtimeType.toString(), event);
-    // }
-
     // ✅ CHỈ log nếu enabled
     if (event != null && LogConfig.enableBlocLogs) {
       Logger.blocEvent(bloc.runtimeType.toString(), event);
@@ -19,12 +15,6 @@ class AppBlocObserver extends BlocObserver {
   @override
   void onChange(BlocBase bloc, Change change) {
     super.onChange(bloc, change);
-    // Logger.blocState(
-    //   bloc.runtimeType.toString(),
-    //   change.currentState,
-    //   change.nextState,
-    // );
-
     // ✅ CHỈ log nếu enabled
     if (LogConfig.enableBlocLogs) {
       Logger.blocState(

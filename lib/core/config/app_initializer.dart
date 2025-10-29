@@ -100,8 +100,6 @@ class AppInitializer {
       LogConfig.maxStackTraceLines = 1;
     }
 
-    // ✅ GIẢM: Bỏ log này (không cần thiết)
-    // Logger.info('Logger configured for ${EnvironmentConfig.environment.name}');
   }
 
   static Future<void> _configureUI() async {
@@ -119,10 +117,7 @@ class AppInitializer {
         ),
       );
 
-      // ✅ GIẢM: Bỏ log này (UI config thành công là điều bình thường)
-      // Logger.info('UI configured successfully');
     } catch (e) {
-      // ✅ GIỮ: Log warning nếu có lỗi (quan trọng)
       Logger.warning('⚠️ UI configuration warning: $e');
     }
   }
