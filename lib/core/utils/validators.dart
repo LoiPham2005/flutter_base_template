@@ -249,4 +249,15 @@ class Validators {
     if (!pattern.hasMatch(value)) return message;
     return null;
   }
+
+  // Login validator (email + password)
+  static String? loginValidator(String? email, String? password) {
+    final emailError = Validators.email(email);
+    if (emailError != null) return emailError;
+
+    final passwordError = Validators.password(password);
+    if (passwordError != null) return passwordError;
+
+    return null;
+  }
 }

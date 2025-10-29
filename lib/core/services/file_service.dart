@@ -1,21 +1,27 @@
 // ════════════════════════════════════════════════════════════════
-// 📁 lib/core/services/file_service.dart 
+// 📁 lib/core/services/file_service.dart (CHỈ FILE OPERATIONS)
 // ════════════════════════════════════════════════════════════════
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:open_filex/open_filex.dart';
+import 'package:flutter_base_template/core/utils/logger.dart';
 
+/// File service for general file operations
+/// 
+/// Responsibilities:
+/// - Download files
+/// - Open files
+/// - File utilities (exists, size, delete)
 class FileService {
-  FileService._internal();
-  static final FileService _instance = FileService._internal();
+  FileService._();
+  static final FileService _instance = FileService._();
   factory FileService() => _instance;
 
   final Dio _dio = Dio();
 
   // ═══════════════════════════════════════════════════════════════
-  // FILE OPERATIONS (Download & Open)
+  // DOWNLOAD OPERATIONS
   // ═══════════════════════════════════════════════════════════════
 
   /// Download file from URL
@@ -23,13 +29,16 @@ class FileService {
     String url, {
     String? fileName,
     String? folderName,
-    void Function(int, int)? onProgress,
+    void Function(int received, int total)? onProgress,
   }) async {
     try {
       final dir = await getDownloadsDirectory() ?? 
                    await getApplicationDocumentsDirectory();
       final folder = Directory('${dir.path}/${folderName ?? "MyAppFiles"}');
-      if (!await folder.exists()) await folder.create(recursive: true);
+      
+      if (!await folder.exists()) {
+        await folder.create(recursive: true);
+      }
 
       final filePath = '${folder.path}/${fileName ?? url.split('/').last}';
 
@@ -39,8 +48,10 @@ class FileService {
         onReceiveProgress: onProgress,
       );
 
+      Logger.info('File downloaded: $filePath');
       return File(filePath);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      Logger.error('Failed to download file', error: e, stackTrace: stackTrace);
       return null;
     }
   }
@@ -48,10 +59,15 @@ class FileService {
   /// Open file with system default app
   Future<bool> openFile(File file) async {
     try {
-      if (!await file.exists()) return false;
+      if (!await file.exists()) {
+        Logger.warning('File does not exist: ${file.path}');
+        return false;
+      }
+      
       final result = await OpenFilex.open(file.path);
       return result.type == ResultType.done;
     } catch (e) {
+      Logger.error('Failed to open file', error: e);
       return false;
     }
   }
@@ -61,49 +77,23 @@ class FileService {
     String url, {
     String? fileName,
     String? folderName,
+    void Function(int, int)? onProgress,
   }) async {
-    final file = await downloadFile(url, fileName: fileName, folderName: folderName);
+    final file = await downloadFile(
+      url, 
+      fileName: fileName, 
+      folderName: folderName,
+      onProgress: onProgress,
+    );
     return file != null ? await openFile(file) : false;
   }
 
   // ═══════════════════════════════════════════════════════════════
-  // MEDIA OPERATIONS (Save to Gallery)
-  // ═══════════════════════════════════════════════════════════════
-
-  /// Save image to gallery
-  Future<bool> saveImageToGallery(String filePath, {String? albumName}) async {
-    try {
-      final result = await GallerySaver.saveImage(
-        filePath,
-        albumName: albumName ?? 'MyApp',
-        toDcim: true,
-      );
-      return result == true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  /// Save video to gallery
-  Future<bool> saveVideoToGallery(String filePath, {String? albumName}) async {
-    try {
-      final result = await GallerySaver.saveVideo(
-        filePath,
-        albumName: albumName ?? 'MyApp',
-        toDcim: true,
-      );
-      return result == true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  // ═══════════════════════════════════════════════════════════════
-  // UTILITY METHODS
+  // FILE UTILITIES
   // ═══════════════════════════════════════════════════════════════
 
   /// Check if file exists
-  Future<bool> fileExists(String path) async {
+  Future<bool> exists(String path) async {
     try {
       return await File(path).exists();
     } catch (_) {
@@ -111,8 +101,8 @@ class FileService {
     }
   }
 
-  /// Get file size
-  Future<int?> getFileSize(String path) async {
+  /// Get file size in bytes
+  Future<int?> getSize(String path) async {
     try {
       return await File(path).length();
     } catch (_) {
@@ -120,30 +110,53 @@ class FileService {
     }
   }
 
+  /// Get file size with human-readable format
+  Future<String> getSizeFormatted(String path) async {
+    final bytes = await getSize(path);
+    if (bytes == null) return 'Unknown';
+    
+    if (bytes < 1024) return '$bytes B';
+    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(2)} KB';
+    if (bytes < 1024 * 1024 * 1024) {
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(2)} MB';
+    }
+    return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(2)} GB';
+  }
+
   /// Delete file
-  Future<bool> deleteFile(String path) async {
+  Future<bool> delete(String path) async {
     try {
       await File(path).delete();
+      Logger.info('File deleted: $path');
       return true;
-    } catch (_) {
+    } catch (e) {
+      Logger.error('Failed to delete file', error: e);
       return false;
     }
   }
 
   /// Get file extension
-  String getFileExtension(String path) {
+  String getExtension(String path) {
     return path.split('.').last.toLowerCase();
   }
 
-  /// Check if file is image
-  bool isImageFile(String path) {
-    final ext = getFileExtension(path);
-    return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].contains(ext);
+  /// Check file type
+  bool isImage(String path) {
+    final ext = getExtension(path);
+    return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'heic'].contains(ext);
   }
 
-  /// Check if file is video
-  bool isVideoFile(String path) {
-    final ext = getFileExtension(path);
-    return ['mp4', 'avi', 'mov', 'mkv', 'flv', 'wmv'].contains(ext);
+  bool isVideo(String path) {
+    final ext = getExtension(path);
+    return ['mp4', 'avi', 'mov', 'mkv', 'flv', 'wmv', 'm4v'].contains(ext);
+  }
+
+  bool isPdf(String path) {
+    return getExtension(path) == 'pdf';
+  }
+
+  bool isDocument(String path) {
+    final ext = getExtension(path);
+    return ['doc', 'docx', 'txt', 'pdf', 'xls', 'xlsx', 'ppt', 'pptx'].contains(ext);
   }
 }
