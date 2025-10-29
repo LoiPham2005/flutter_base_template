@@ -1,24 +1,36 @@
+// ════════════════════════════════════════════════════════════════
+// 📁 lib/core/config/environment_config.dart (TỐI ƯU LOGGER)
+// ════════════════════════════════════════════════════════════════
+import 'package:flutter/foundation.dart';
 import 'package:flutter_base_template/core/constants/api_constants.dart';
-import 'package:flutter_base_template/core/constants/app_constants.dart';
 
 enum Environment { development, staging, production }
 
 class EnvironmentConfig {
-  static Environment _environment = Environment.development;
-  
-  static Environment get environment => _environment;
-  
-  static void setEnvironment(Environment env) {
-    _environment = env;
+  static const String _envString = String.fromEnvironment('ENV', defaultValue: 'dev');
+
+  static Environment get environment {
+    switch (_envString.toLowerCase()) {
+      case 'dev':
+      case 'development':
+        return Environment.development;
+      case 'stg':
+      case 'staging':
+        return Environment.staging;
+      case 'prod':
+      case 'production':
+        return Environment.production;
+      default:
+        return Environment.development;
+    }
   }
-  
-  static bool get isDev => _environment == Environment.development;
-  static bool get isStaging => _environment == Environment.staging;
-  static bool get isProduction => _environment == Environment.production;
-  
-  // API URLs
+
+  static bool get isDev => environment == Environment.development;
+  static bool get isStaging => environment == Environment.staging;
+  static bool get isProduction => environment == Environment.production;
+
   static String get apiBaseUrl {
-    switch (_environment) {
+    switch (environment) {
       case Environment.development:
         return ApiConstants.baseUrlDev;
       case Environment.staging:
@@ -27,10 +39,9 @@ class EnvironmentConfig {
         return ApiConstants.baseUrlProd;
     }
   }
-  
-  // WebSocket URLs
+
   static String get webSocketUrl {
-    switch (_environment) {
+    switch (environment) {
       case Environment.development:
         return 'wss://ws-dev.yourapp.com';
       case Environment.staging:
@@ -39,22 +50,20 @@ class EnvironmentConfig {
         return 'wss://ws.yourapp.com';
     }
   }
-  
-  // App Name
+
   static String get appName {
-    switch (_environment) {
+    switch (environment) {
       case Environment.development:
-        return AppConstants.appNameDev;
+        return 'MyApp Dev';
       case Environment.staging:
-        return AppConstants.appNameStg;
+        return 'MyApp Staging';
       case Environment.production:
-        return AppConstants.appNameProd;
+        return 'MyApp';
     }
   }
-  
-  // Bundle ID / Package Name
+
   static String get bundleId {
-    switch (_environment) {
+    switch (environment) {
       case Environment.development:
         return 'com.yourapp.dev';
       case Environment.staging:
@@ -63,22 +72,35 @@ class EnvironmentConfig {
         return 'com.yourapp';
     }
   }
-  
-  // Debug Mode
-  static bool get enableLogging {
-    return _environment == Environment.development || _environment == Environment.staging;
+
+  static bool get enableLogging => !isProduction;
+  static bool get enableDebugTools => isDev;
+  static bool get enableAnalytics => isProduction || isStaging;
+  static bool get enableCrashReporting => isProduction || isStaging;
+
+  static Duration get connectTimeout {
+    return isDev ? const Duration(seconds: 60) : const Duration(seconds: 30);
   }
-  
-  // API Timeout
-  static Duration get apiTimeout {
-    return _environment == Environment.development 
-        ? const Duration(seconds: 60) 
-        : const Duration(seconds: 30);
+
+  static Duration get receiveTimeout {
+    return isDev ? const Duration(seconds: 60) : const Duration(seconds: 30);
   }
-  
-  // Firebase Config (Optional)
+
+  static int get maxRetries => isDev ? 1 : 3;
+
+  static String get storagePrefix {
+    switch (environment) {
+      case Environment.development:
+        return 'dev_';
+      case Environment.staging:
+        return 'stg_';
+      case Environment.production:
+        return '';
+    }
+  }
+
   static String get firebaseOptionsPath {
-    switch (_environment) {
+    switch (environment) {
       case Environment.development:
         return 'lib/firebase_options_dev.dart';
       case Environment.staging:
@@ -86,5 +108,32 @@ class EnvironmentConfig {
       case Environment.production:
         return 'lib/firebase_options.dart';
     }
+  }
+
+  // ✅ TỐI ƯU: Gọn hơn, đẹp hơn
+  static void printInfo() {
+    if (!kDebugMode) return; // ✅ CHỈ print ở debug mode
+
+    print('╔═══════════════════════════════════════════════════════════');
+    print('║ 🌍 ${environment.name.toUpperCase()} | $apiBaseUrl');
+    print('╚═══════════════════════════════════════════════════════════');
+    
+    // ✅ CHỈ 3 dòng thay vì 10 dòng!
+  }
+
+  static Map<String, dynamic> toJson() {
+    return {
+      'environment': environment.name,
+      'apiBaseUrl': apiBaseUrl,
+      'webSocketUrl': webSocketUrl,
+      'appName': appName,
+      'bundleId': bundleId,
+      'enableLogging': enableLogging,
+      'enableDebugTools': enableDebugTools,
+      'enableAnalytics': enableAnalytics,
+      'enableCrashReporting': enableCrashReporting,
+      'connectTimeout': connectTimeout.inSeconds,
+      'receiveTimeout': receiveTimeout.inSeconds,
+    };
   }
 }

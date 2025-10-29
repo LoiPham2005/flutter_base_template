@@ -30,16 +30,16 @@ class DioClient {
     );
 
     // 🧠 Cache setup (chỉ dùng bộ nhớ, không dùng Hive)
-    final cacheOptions = CacheOptions(
-      store: MemCacheStore(), // Lưu tạm trong RAM
-      policy: CachePolicy.request, // Cache khi request
-      hitCacheOnNetworkFailure: true, // Khi mất mạng vẫn lấy cache
-      priority: CachePriority.high,
-      maxStale: const Duration(days: 7), // Cache hợp lệ trong 7 ngày
-    );
+    // final cacheOptions = CacheOptions(
+    //   store: MemCacheStore(), // Lưu tạm trong RAM
+    //   policy: CachePolicy.request, // Cache khi request
+    //   hitCacheOnNetworkFailure: true, // Khi mất mạng vẫn lấy cache
+    //   priority: CachePriority.high,
+    //   maxStale: const Duration(days: 7), // Cache hợp lệ trong 7 ngày
+    // );
 
     // 🧠 Add cache interceptor
-    _dio.interceptors.add(DioCacheInterceptor(options: cacheOptions));
+    // _dio.interceptors.add(DioCacheInterceptor(options: cacheOptions));
 
     _dio.interceptors.addAll([
       authInterceptor,

@@ -1,7 +1,9 @@
-// filepath: lib/main_production.dart
-import 'package:flutter_base_template/core/config/environment_config.dart';
-import 'package:flutter_base_template/main_common.dart';
+import 'package:flutter/material.dart';
+import 'core/config/app_initializer.dart';
+import 'features/my_app.dart';
 
-void main() {
-  mainCommon(Environment.production);
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await AppInitializer.initialize();
+  runApp(const MyApp());
 }

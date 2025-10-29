@@ -10,6 +10,11 @@ final GetIt getIt = GetIt.instance;
 @InjectableInit(asExtension: true)
 Future<void> configureDependencies() async => getIt.init();
 
+/// Reset tất cả dependencies đã đăng ký
+Future<void> resetDependencies() async {
+  await getIt.reset();
+}
+
 @module
 abstract class RegisterModule {
   @preResolve
