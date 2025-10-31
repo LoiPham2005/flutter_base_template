@@ -10,9 +10,9 @@ class StorageService {
 
   StorageService(this._prefs);
 
-  /// ============================
+  /// ════════════════════════════════════════════════════════════════
   /// GENERIC METHODS
-  /// ============================
+  /// ════════════════════════════════════════════════════════════════
   T? get<T>(String key) {
     return _prefs.get(key) as T?;
   }
@@ -29,42 +29,63 @@ class StorageService {
   Future<bool> remove(String key) => _prefs.remove(key);
   Future<bool> clearAll() => _prefs.clear();
 
-  /// ============================
-  /// AUTH METHODS
-  /// ============================
-  Future<bool> saveToken(String token) => set(StorageKeys.accessToken, token);
-  String? getToken() => get<String>(StorageKeys.accessToken);
+  /// ════════════════════════════════════════════════════════════════
+  /// USER PROFILE & LOGIN STATUS (Non-sensitive)
+  /// ════════════════════════════════════════════════════════════════
 
-  Future<bool> saveRefreshToken(String token) =>
-      set(StorageKeys.refreshToken, token);
-  String? getRefreshToken() => get<String>(StorageKeys.refreshToken);
-
+  /// Save user profile
   Future<bool> saveUser(Map<String, dynamic> user) async {
-    return set(StorageKeys.userProfile, json.encode(user));
+    try {
+      return set(StorageKeys.userProfile, json.encode(user));
+    } catch (e) {
+      return false;
+    }
   }
 
+  /// Get user profile
   Map<String, dynamic>? getUser() {
-    final userString = get<String>(StorageKeys.userProfile);
-    if (userString == null) return null;
-    return json.decode(userString) as Map<String, dynamic>;
+    try {
+      final userString = get<String>(StorageKeys.userProfile);
+      if (userString == null) return null;
+      return json.decode(userString) as Map<String, dynamic>;
+    } catch (e) {
+      return null;
+    }
   }
 
+  /// Set login status
   Future<bool> setLoggedIn(bool value) => set(StorageKeys.isLogin, value);
+
+  /// Check if logged in
   bool isLoggedIn() => get<bool>(StorageKeys.isLogin) ?? false;
 
+  /// Clear auth data (user profile + login status)
+  /// NOTE: Tokens are cleared in SecureStorage.clearTokens()
   Future<void> clearAuthData() async {
-    await remove(StorageKeys.accessToken);
-    await remove(StorageKeys.refreshToken);
     await remove(StorageKeys.userProfile);
     await remove(StorageKeys.isLogin);
   }
 
-  /// ============================
+  /// ════════════════════════════════════════════════════════════════
   /// APP SETTINGS
-  /// ============================
+  /// ════════════════════════════════════════════════════════════════
+
+  /// Set first run flag
   Future<bool> setFirstRun(bool value) => set(StorageKeys.isFirstRun, value);
+
+  /// Check if first run
   bool isFirstRun() => get<bool>(StorageKeys.isFirstRun) ?? true;
 
+  /// Save theme mode
   Future<bool> saveThemeMode(String mode) => set(StorageKeys.themeMode, mode);
+
+  /// Get theme mode
   String? getThemeMode() => get<String>(StorageKeys.themeMode);
+
+  /// Save language code
+  Future<bool> saveLanguageCode(String code) =>
+      set(StorageKeys.languageCode, code);
+
+  /// Get language code
+  String? getLanguageCode() => get<String>(StorageKeys.languageCode);
 }

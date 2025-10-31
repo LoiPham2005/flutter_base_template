@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_base_template/core/config/environment_config.dart';
 import 'package:flutter_base_template/core/constants/api_constants.dart';
 import 'package:flutter_base_template/core/di/injection.dart';
+import 'package:flutter_base_template/core/storage/secure_storage.dart';
 import 'package:flutter_base_template/core/storage/storage_service.dart';
 import 'package:flutter_base_template/core/utils/logger.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -13,8 +14,9 @@ import 'package:injectable/injectable.dart';
 @lazySingleton
 class AuthService {
   final StorageService _storageService;
+  final SecureStorage _secureStorage;
 
-  AuthService(this._storageService);
+  AuthService(this._storageService, this._secureStorage);
 
   bool _isRefreshing = false;
 
@@ -26,30 +28,27 @@ class AuthService {
       return false;
     }
 
-    final accessToken = _storageService.getToken();
-    final refreshTokenValue = _storageService.getRefreshToken();
+    // ✅ Lấy từ SecureStorage (encrypted)
+    final accessToken = await _secureStorage.getAccessToken();
+    final refreshTokenValue = await _secureStorage.getRefreshToken();
 
-    // Không có token → user chưa login
     if (accessToken == null || refreshTokenValue == null) {
       Logger.debug('🔑 Không có token, bỏ qua kiểm tra.');
       return false;
     }
 
     try {
-      // Kiểm tra refresh token trước
       if (JwtDecoder.isExpired(refreshTokenValue)) {
         Logger.error('⏰ Refresh token hết hạn → Đăng xuất.');
         await logout();
         return false;
       }
 
-      // Access token còn hạn → OK
       if (!JwtDecoder.isExpired(accessToken)) {
         Logger.debug('🔒 Access token vẫn hợp lệ.');
         return true;
       }
 
-      // Access token hết hạn → Refresh
       Logger.info('♻️ Access token hết hạn → Bắt đầu refresh...');
       return await refreshToken();
     } catch (e, stack) {
@@ -67,7 +66,8 @@ class AuthService {
       return false;
     }
 
-    final currentRefreshToken = _storageService.getRefreshToken();
+    // ✅ Lấy từ SecureStorage
+    final currentRefreshToken = await _secureStorage.getRefreshToken();
     if (currentRefreshToken == null) {
       Logger.error('❌ Không có refresh token để thực hiện refresh.');
       return false;
@@ -94,8 +94,9 @@ class AuthService {
         final newAccessToken = response.data['data']['accessToken'] as String;
         final newRefreshToken = response.data['data']['refreshToken'] as String;
 
-        await _storageService.saveToken(newAccessToken);
-        await _storageService.saveRefreshToken(newRefreshToken);
+        // ✅ Lưu vào SecureStorage
+        await _secureStorage.saveAccessToken(newAccessToken);
+        await _secureStorage.saveRefreshToken(newRefreshToken);
 
         Logger.success('✅ Refresh token thành công.');
         return true;
@@ -116,17 +117,21 @@ class AuthService {
   /// Đăng xuất và xóa dữ liệu xác thực
   Future<void> logout() async {
     try {
-      // 1. Xóa tokens và user data
+      // 1. Clear tokens từ SecureStorage
+      await _secureStorage.clearTokens();
+      Logger.info('📝 Tokens cleared from secure storage');
+
+      // 2. Clear user data từ StorageService
       await _storageService.clearAuthData();
-      Logger.info('📝 Cleared auth data');
+      Logger.info('📝 User data cleared from storage');
 
-      // 2. Reset DI (xóa cached instances)
+      // 3. Reset DI (xóa cached instances)
       await resetDependencies();
-      Logger.info('🔄 Reset dependencies');
+      Logger.info('🔄 Dependencies reset');
 
-      // 3. Re-initialize DI (tạo instances mới)
+      // 4. Re-initialize DI (tạo instances mới)
       await configureDependencies();
-      Logger.info('✅ Re-configured dependencies');
+      Logger.info('✅ Dependencies re-configured');
 
       Logger.success('🚪 Logout successful');
     } catch (e, stackTrace) {
@@ -137,13 +142,13 @@ class AuthService {
 
   /// Kiểm tra xem user đã đăng nhập chưa
   bool get isLoggedIn {
-    final token = _storageService.getToken();
-    return token != null && token.isNotEmpty;
+    return _storageService.isLoggedIn();
   }
 
   /// Lấy thông tin từ token
-  Map<String, dynamic>? getTokenPayload() {
-    final token = _storageService.getToken();
+  Future<Map<String, dynamic>?> getTokenPayload() async {
+    // ✅ Lấy từ SecureStorage
+    final token = await _secureStorage.getAccessToken();
     if (token == null) return null;
 
     try {

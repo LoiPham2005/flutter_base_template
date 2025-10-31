@@ -1,10 +1,30 @@
-// Xóa các phương thức và chỉ giữ lại các hằng số key
+// lib/core/storage/storage_keys.dart
+
+// ═══════════════════════════════════════════════════════════════
+// SENSITIVE DATA KEYS (FlutterSecureStorage)
+// ═══════════════════════════════════════════════════════════════
+class SecureStorageKeys {
+  SecureStorageKeys._(); // Private constructor
+
+  // Tokens (SENSITIVE - phải lưu encrypted)
+  static const String accessToken = 'secure_access_token';
+  static const String refreshToken = 'secure_refresh_token';
+
+  // Credentials (SENSITIVE)
+  static const String password = 'secure_password';
+  static const String pin = 'secure_pin';
+  static const String biometric = 'secure_biometric';
+}
+
+
 class StorageKeys {
   StorageKeys._(); // Private constructor để không ai có thể tạo instance
 
+  // ═══════════════════════════════════════════════════════════════
+  // NON-SENSITIVE DATA (SharedPreferences)
+  // ═══════════════════════════════════════════════════════════════
+  
   // Auth
-  static const String accessToken = 'access_token';
-  static const String refreshToken = 'refresh_token';
   static const String userProfile = 'user_profile';
   static const String isLogin = 'is_login';
 

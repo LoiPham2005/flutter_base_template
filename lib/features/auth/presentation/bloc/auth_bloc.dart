@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/storage/storage_service.dart';
+import 'package:flutter_base_template/core/storage/secure_storage.dart'; // ✅ THÊM
 
 // ═══════════════════════════════════════════════════════════════
 // EVENTS
@@ -74,6 +75,7 @@ class AuthBloc extends Bloc<BaseEvent, BaseState> {
   final RegisterUseCase _registerUseCase;
   final ForgotPasswordUseCase _forgotPasswordUseCase;
   final StorageService _storageService = getIt<StorageService>();
+  final SecureStorage _secureStorage = getIt<SecureStorage>(); // ✅ THÊM
   final AuthService _authService = getIt<AuthService>();
 
   AuthBloc({
@@ -106,11 +108,19 @@ class AuthBloc extends Bloc<BaseEvent, BaseState> {
         error: errorMessage,
       ),
       onSuccess: (data) async {
-        // Lưu token và trạng thái login vào storage
-        await _storageService.saveToken(data.accessToken);
-        await _storageService.saveRefreshToken(data.refreshToken);
-        await _storageService.setLoggedIn(true);
-        await _storageService.saveUser((data.user as dynamic).toJson());
+        try {
+          // ✅ Lưu tokens vào SecureStorage (encrypted)
+          await _secureStorage.saveAccessToken(data.accessToken);
+          await _secureStorage.saveRefreshToken(data.refreshToken);
+
+          // ✅ Lưu user data vào StorageService
+          await _storageService.setLoggedIn(true);
+          await _storageService.saveUser((data.user as dynamic).toJson());
+
+          Logger.success('✅ Login data saved successfully');
+        } catch (e) {
+          Logger.error('❌ Failed to save login data', error: e);
+        }
       },
     );
   }
@@ -134,11 +144,19 @@ class AuthBloc extends Bloc<BaseEvent, BaseState> {
         error: errorMessage,
       ),
       onSuccess: (data) async {
-        // Lưu token sau khi register
-        await _storageService.saveToken(data.accessToken);
-        await _storageService.saveRefreshToken(data.refreshToken);
-        await _storageService.setLoggedIn(true);
-        await _storageService.saveUser((data.user as dynamic).toJson());
+        try {
+          // ✅ Lưu tokens vào SecureStorage (encrypted)
+          await _secureStorage.saveAccessToken(data.accessToken);
+          await _secureStorage.saveRefreshToken(data.refreshToken);
+
+          // ✅ Lưu user data vào StorageService
+          await _storageService.setLoggedIn(true);
+          await _storageService.saveUser((data.user as dynamic).toJson());
+
+          Logger.success('✅ Register data saved successfully');
+        } catch (e) {
+          Logger.error('❌ Failed to save register data', error: e);
+        }
       },
     );
   }
