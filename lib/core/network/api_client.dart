@@ -44,9 +44,7 @@ class ApiClient {
     Future<Result<T>> Function() request,
   ) async {
     if (!await _networkInfo.isConnected) {
-      return const ResultFailure(
-        NetworkFailure(),
-      ); 
+      return const ResultFailure(NetworkFailure());
     }
     return request();
   }
@@ -204,6 +202,58 @@ class ApiClient {
 
         return const ResultSuccess(true); // Sửa Success -> ResultSuccess
       }, maxRetries: maxRetries),
+    );
+  }
+
+  // ===============================
+  // FILE UPLOAD
+  // ===============================
+  Future<Result<T>> uploadFileResult<T>(
+    String path,
+    String filePath, {
+    JsonParser<T>? fromJson,
+    String fieldName = 'file',
+    Map<String, dynamic>? data,
+    void Function(int sent, int total)? onSendProgress,
+  }) async {
+    return _safeRequest(
+      () => _retryRequest(() async {
+        final response = await _dioClient.uploadFile<T>(
+          path,
+          filePath,
+          fieldName: fieldName,
+          data: data,
+          onSendProgress: onSendProgress,
+        );
+
+        // Nếu có parser, dùng nó; nếu không thì return true
+        if (fromJson != null) {
+          final result = _unwrapApiResponse<T>(response.data, fromJson);
+          return ResultSuccess(result);
+        } else {
+          return const ResultSuccess(true) as Result<T>;
+        }
+      }, maxRetries: 1), // Upload không nên retry nhiều
+    );
+  }
+
+  // ===============================
+  // FILE DOWNLOAD
+  // ===============================
+  Future<Result<bool>> downloadFileResult(
+    String urlPath,
+    String savePath, {
+    void Function(int received, int total)? onReceiveProgress,
+  }) async {
+    return _safeRequest(
+      () => _retryRequest(() async {
+        await _dioClient.downloadFile(
+          urlPath,
+          savePath,
+          onReceiveProgress: onReceiveProgress,
+        );
+        return const ResultSuccess(true);
+      }, maxRetries: 1),
     );
   }
 }
