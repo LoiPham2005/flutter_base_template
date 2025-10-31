@@ -47,7 +47,7 @@
       "type": "dart",
       "program": "lib/main.dart",
       "args": [
-        "--flavor", "development",        
+        // "--flavor", "development",        
         "--dart-define=ENV=dev"           
       ],
       "flutterMode": "debug"
@@ -58,7 +58,7 @@
       "type": "dart",
       "program": "lib/main.dart",
       "args": [
-        "--flavor", "staging",
+        // "--flavor", "staging",
         "--dart-define=ENV=staging"
       ],
       "flutterMode": "debug"
@@ -69,7 +69,7 @@
       "type": "dart",
       "program": "lib/main.dart",
       "args": [
-        "--flavor", "production",
+        // "--flavor", "production",
         "--dart-define=ENV=prod"
       ],
       "flutterMode": "debug"
@@ -80,7 +80,7 @@
       "type": "dart",
       "program": "lib/main.dart",
       "args": [
-        "--flavor", "production",
+        // "--flavor", "production",
         "--dart-define=ENV=prod"
       ],
       "flutterMode": "profile"
@@ -95,7 +95,7 @@
       "type": "dart",
       "program": "lib/main.dart",
       "args": [
-        "--flavor", "production",
+        // "--flavor", "production",
         "--dart-define=ENV=prod"
       ],
       "flutterMode": "release"

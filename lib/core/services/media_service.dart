@@ -1,7 +1,6 @@
 // ════════════════════════════════════════════════════════════════
 // 📁 lib/core/services/media_service.dart (CHỈ MEDIA/GALLERY)
 // ════════════════════════════════════════════════════════════════
-import 'dart:io';
 import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:flutter_base_template/core/utils/logger.dart';
 

@@ -1,36 +1,48 @@
-// lib/extensions/string_extensions.dart
-
 extension StringExtensions on String {
-  // Kiểm tra null hoặc empty
+  // ═══════════════════════════════════════════════════════════════
+  // NULL & EMPTY CHECK
+  // ═══════════════════════════════════════════════════════════════
+
   bool get isNullOrEmpty => isEmpty;
-  
   bool get isNotNullOrEmpty => isNotEmpty;
 
-  // Capitalize first letter
+  // ═══════════════════════════════════════════════════════════════
+  // CAPITALIZE
+  // ═══════════════════════════════════════════════════════════════
+
+  /// Capitalize first letter
   String get capitalize {
     if (isEmpty) return this;
     return '${this[0].toUpperCase()}${substring(1).toLowerCase()}';
   }
 
-  // Capitalize mỗi từ
+  /// Capitalize each word
   String get capitalizeWords {
     if (isEmpty) return this;
-    return split(' ')
-        .map((word) => word.isEmpty ? word : word.capitalize)
-        .join(' ');
+    return split(
+      ' ',
+    ).map((word) => word.isEmpty ? word : word.capitalize).join(' ');
   }
 
-  // Kiểm tra email hợp lệ
+  // ═══════════════════════════════════════════════════════════════
+  // VALIDATION
+  // ═══════════════════════════════════════════════════════════════
+
+  /// Check if valid email
   bool get isValidEmail {
     return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(this);
   }
 
-  // Kiểm tra số điện thoại (VN)
+  /// Check if valid Vietnamese phone number
   bool get isValidPhoneVN {
     return RegExp(r'^(0|\+84)[3|5|7|8|9][0-9]{8}$').hasMatch(this);
   }
 
-  // Remove dấu tiếng Việt
+  // ═══════════════════════════════════════════════════════════════
+  // VIETNAMESE
+  // ═══════════════════════════════════════════════════════════════
+
+  /// Remove Vietnamese diacritics
   String get removeDiacritics {
     var str = this;
     str = str.replaceAll(RegExp(r'[àáạảãâầấậẩẫăằắặẳẵ]'), 'a');
@@ -50,18 +62,26 @@ extension StringExtensions on String {
     return str;
   }
 
-  // Truncate với ellipsis
+  // ═══════════════════════════════════════════════════════════════
+  // MANIPULATION
+  // ═══════════════════════════════════════════════════════════════
+
+  /// Truncate with ellipsis
   String truncate(int maxLength, {String ellipsis = '...'}) {
     if (length <= maxLength) return this;
     return '${substring(0, maxLength)}$ellipsis';
   }
 
-  // Parse to int với default value
+  // ═══════════════════════════════════════════════════════════════
+  // PARSING
+  // ═══════════════════════════════════════════════════════════════
+
+  /// Parse to int with default value
   int toIntOrDefault([int defaultValue = 0]) {
     return int.tryParse(this) ?? defaultValue;
   }
 
-  // Parse to double với default value
+  /// Parse to double with default value
   double toDoubleOrDefault([double defaultValue = 0.0]) {
     return double.tryParse(this) ?? defaultValue;
   }

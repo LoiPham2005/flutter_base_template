@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_base_template/core/config/environment_config.dart';
 import 'package:flutter_base_template/core/constants/app_constants.dart';
 import 'package:injectable/injectable.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'interceptors/auth_interceptor.dart';
 import 'interceptors/error_interceptor.dart';
 import 'interceptors/logging_interceptor.dart';
@@ -44,15 +43,6 @@ class DioClient {
       authInterceptor,
       errorInterceptor,
       loggingInterceptor,
-      // PrettyDioLogger(
-      //   requestHeader: true,
-      //   requestBody: true,
-      //   responseBody: true,
-      //   responseHeader: false,
-      //   error: true,
-      //   compact: true,
-      //   maxWidth: 200,
-      // ),
     ]);
   }
   late final Dio _dio;

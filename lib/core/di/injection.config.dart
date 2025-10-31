@@ -23,8 +23,6 @@ import 'package:flutter_base_template/core/network/interceptors/logging_intercep
     as _i261;
 import 'package:flutter_base_template/core/network/network_info.dart' as _i978;
 import 'package:flutter_base_template/core/services/auth_service.dart' as _i694;
-import 'package:flutter_base_template/core/storage/secure_storage.dart'
-    as _i873;
 import 'package:flutter_base_template/core/storage/storage_service.dart'
     as _i223;
 import 'package:flutter_base_template/core/theme/theme_cubit.dart' as _i501;
@@ -77,9 +75,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i223.StorageService>(
       () => _i223.StorageService(gh<_i460.SharedPreferences>()),
-    );
-    gh.lazySingleton<_i873.SecureStorage>(
-      () => _i873.SecureStorage(gh<_i558.FlutterSecureStorage>()),
     );
     gh.lazySingleton<_i978.NetworkInfo>(
       () => _i978.NetworkInfoImpl(gh<_i895.Connectivity>()),

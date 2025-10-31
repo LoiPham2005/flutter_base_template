@@ -1,10 +1,12 @@
-// ════════════════════════════════════════════════════════════════
-// 📁 lib/extensions/number_extensions.dart
-// ════════════════════════════════════════════════════════════════
 import 'dart:math';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 extension IntExtensions on int {
+  // ✅ SizedBox helpers
+  SizedBox get height => SizedBox(height: toDouble());
+  SizedBox get width => SizedBox(width: toDouble());
+
   // Duration helpers
   Duration get milliseconds => Duration(milliseconds: this);
   Duration get seconds => Duration(seconds: this);
@@ -55,6 +57,10 @@ extension IntExtensions on int {
 }
 
 extension DoubleExtensions on double {
+  // ✅ SizedBox helpers
+  SizedBox get height => SizedBox(height: this);
+  SizedBox get width => SizedBox(width: this);
+
   // Round to decimal places
   double roundTo(int decimals) {
     final mod = pow(10, decimals);
@@ -74,6 +80,18 @@ extension DoubleExtensions on double {
 }
 
 extension NumExtensions on num {
+  // ✅ SizedBox helpers
+  SizedBox get height => SizedBox(height: toDouble());
+  SizedBox get width => SizedBox(width: toDouble());
+  SizedBox get square => SizedBox(width: toDouble(), height: toDouble());
+
+  // Padding helpers
+  EdgeInsets get paddingAll => EdgeInsets.all(toDouble());
+  
+  // BorderRadius helpers
+  BorderRadius get radius => BorderRadius.circular(toDouble());
+  Radius get circularRadius => Radius.circular(toDouble());
+
   // Universal currency formatter
   String formatCurrency({String symbol = '₫', int decimals = 0}) {
     return this is int 

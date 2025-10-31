@@ -1,12 +1,11 @@
 // lib/features/auth/presentation/pages/login_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_base_template/core/extensions/context_extensions.dart';
+import 'package:flutter_base_template/core/extensions/number_extensions.dart';
+import 'package:flutter_base_template/core/extensions/widget_extensions.dart';
 import 'package:flutter_base_template/core/state_management/bloc/base_state.dart';
-import 'package:flutter_base_template/core/storage/storage_service.dart';
 import 'package:flutter_base_template/features/home/presentation/pages/home_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_base_template/core/di/injection.dart';
-import 'package:nb_utils/nb_utils.dart';
 import '../bloc/auth_bloc.dart';
 
 class LoginPage extends StatefulWidget {
@@ -28,16 +27,7 @@ class _LoginPageState extends State<LoginPage> {
         listener: (context, state) {
           if (state.isSuccess) {
             context.showSuccessSnackBar('Login successful!');
-
-            final authResponse = state.data;
-            if (authResponse != null) {
-              getIt<StorageService>()
-                ..saveToken(authResponse.accessToken)
-                ..saveRefreshToken(authResponse.refreshToken)
-                ..setLoggedIn(true);
-
-              context.pushReplacement(const HomePage());
-            }
+            context.pushReplacement(const HomePage());
           } else if (state.isFailure) {
             context.showErrorSnackBar(state.error ?? 'Login failed');
           }

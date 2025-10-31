@@ -64,7 +64,7 @@ dependencies:
   toastification: ^3.0.3
 
   # ─────────────────────── OPTIONAL / COMMENTED ──────────────────────────
-  nb_utils: ^7.1.8
+  # nb_utils: 7.0.9
   flutter_local_notifications: ^19.4.2
   cached_network_image: ^3.4.1     # ← Dành cho ảnh mạng
   image_picker: ^1.0.4

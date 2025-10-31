@@ -11,6 +11,7 @@ import 'package:flutter_base_template/core/di/injection.dart';
 import 'package:flutter_base_template/core/theme/theme_cubit.dart';
 import 'package:flutter_base_template/core/l10n/localization_service.dart';
 import 'package:flutter_base_template/core/utils/logger.dart';
+import 'package:flutter_base_template/core/utils/logger_config.dart'; // ✅ Import
 
 class AppInitializer {
   AppInitializer._();
@@ -19,45 +20,29 @@ class AppInitializer {
   static bool get isInitialized => _isInitialized;
 
   static Future<void> initialize() async {
-    if (_isInitialized) {
-      // ✅ GIẢM: Không log nữa (không xảy ra thường xuyên)
-      return;
-    }
+    if (_isInitialized) return;
 
     try {
       final stopwatch = Stopwatch()..start();
 
-      // Step 1: Print environment info
       EnvironmentConfig.printInfo();
-
-      // Step 2: Configure logger
-      _configureLogger();
-
-      // Step 3: Configure UI
+      
+      LoggerConfig.configure();
+      
       await _configureUI();
-
-      // Step 4: Initialize lifecycle observer
       AppObserver().initialize();
-
-      // Step 5: Configure BlocObserver
       _configureBlocObserver();
-
-      // Step 6: Initialize DI
       await configureDependencies();
-
-      // Step 7: Initialize services
       await _initializeServices();
 
       stopwatch.stop();
       _isInitialized = true;
 
-      Logger.success('App initialized successfully');
+      if (EnvironmentConfig.isDev) {
+        Logger.success('✅ App initialized in ${stopwatch.elapsedMilliseconds}ms');
+      }
     } catch (e, stackTrace) {
-      Logger.error(
-        '❌ Failed to initialize app',
-        error: e,
-        stackTrace: stackTrace,
-      );
+      Logger.error('❌ Failed to initialize app', error: e, stackTrace: stackTrace);
       await _cleanup();
       rethrow;
     }
@@ -69,37 +54,10 @@ class AppInitializer {
       await resetDependencies();
       _isInitialized = false;
     } catch (e) {
-      // ✅ GIẢM: Chỉ log nếu có lỗi thật sự
       if (EnvironmentConfig.isDev) {
         Logger.warning('⚠️ Cleanup error: $e');
       }
     }
-  }
-
-  static void _configureLogger() {
-    if (EnvironmentConfig.isDev) {
-      LogConfig.enableHttpLogs = true;
-      LogConfig.enableBlocLogs = true;
-      LogConfig.enableDetailedErrors = true;
-      LogConfig.enableSuccessLogs = true;
-      LogConfig.logOnlyFailedRequests = false;
-      LogConfig.maxStackTraceLines = 5;
-    } else if (EnvironmentConfig.isStaging) {
-      LogConfig.enableHttpLogs = true;
-      LogConfig.enableBlocLogs = true;
-      LogConfig.enableDetailedErrors = false;
-      LogConfig.enableSuccessLogs = false;
-      LogConfig.logOnlyFailedRequests = true;
-      LogConfig.maxStackTraceLines = 3;
-    } else {
-      LogConfig.enableHttpLogs = false;
-      LogConfig.enableBlocLogs = false;
-      LogConfig.enableDetailedErrors = false;
-      LogConfig.enableSuccessLogs = false;
-      LogConfig.logOnlyFailedRequests = true;
-      LogConfig.maxStackTraceLines = 1;
-    }
-
   }
 
   static Future<void> _configureUI() async {
@@ -116,7 +74,6 @@ class AppInitializer {
           systemNavigationBarIconBrightness: Brightness.dark,
         ),
       );
-
     } catch (e) {
       Logger.warning('⚠️ UI configuration warning: $e');
     }
@@ -125,8 +82,6 @@ class AppInitializer {
   static void _configureBlocObserver() {
     if (EnvironmentConfig.isDev || EnvironmentConfig.isStaging) {
       Bloc.observer = AppBlocObserver();
-      // ✅ GIẢM: Bỏ log này (không cần thiết)
-      // Logger.info('BlocObserver initialized');
     }
   }
 
@@ -134,15 +89,8 @@ class AppInitializer {
     try {
       await getIt<ThemeCubit>().initTheme();
       await getIt<LocaleCubit>().initLocale();
-      // ✅ GIẢM: Bỏ log này (thành công là điều bình thường)
-      // Logger.info('Services initialized successfully');
     } catch (e, stackTrace) {
-      // ✅ GIỮ: Log error (quan trọng)
-      Logger.error(
-        'Failed to initialize services',
-        error: e,
-        stackTrace: stackTrace,
-      );
+      Logger.error('Failed to initialize services', error: e, stackTrace: stackTrace);
       rethrow;
     }
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_base_template/core/extensions/context_extensions.dart';
 import 'package:flutter_base_template/core/extensions/localization_x.dart';
-import 'package:nb_utils/nb_utils.dart';
+import 'package:flutter_base_template/core/extensions/number_extensions.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

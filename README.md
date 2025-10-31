@@ -9,7 +9,7 @@
 
 **Production-ready Flutter template với Clean Architecture, DI, và State Management đa dạng**
 
-[Tài liệu](#-documentation) • [Bắt đầu](#-quick-start) • [Tính năng](#-features) • [Cấu trúc](#-project-structure)
+[Tài liệu](#-documentation) • [Bắt đầu](#-quick-start) • [Tính năng](#-features) • [Cấu trúc](#-project-structure) • [Architecture](#-architecture-flow)
 
 </div>
 
@@ -27,7 +27,7 @@
 - 🌍 **i18n** - Multi-language với .arb
 - 📱 **Responsive** - Screen utilities
 - 🧪 **Testing** - Unit, Widget, Integration tests
-- ⚙️ **Flavors** - Development, Staging, Production
+- ⚙️ **Environment Config** - --dart-define (Dev, Staging, Prod)
 - 🔥 **CI/CD** - GitHub Actions
 
 ---
@@ -43,8 +43,10 @@ flutter pub get
 # 2. Generate code
 flutter pub run build_runner build --delete-conflicting-outputs
 
-# 3. Run
-flutter run --flavor development -t lib/main_development.dart
+# 3. Run (chọn environment)
+flutter run --dart-define=ENV=dev              # Development
+flutter run --dart-define=ENV=staging          # Staging
+flutter run --dart-define=ENV=prod             # Production
 ```
 
 **VS Code**: Nhấn `F5` → Chọn flavor → Run

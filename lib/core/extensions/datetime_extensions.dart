@@ -1,9 +1,11 @@
-// lib/extensions/datetime_extensions.dart
-
 import 'package:intl/intl.dart';
 
 extension DateTimeExtensions on DateTime {
-  // Format date
+  // ═══════════════════════════════════════════════════════════════
+  // FORMAT
+  // ═══════════════════════════════════════════════════════════════
+
+  /// Format date with pattern
   String format([String pattern = 'dd/MM/yyyy']) {
     return DateFormat(pattern).format(this);
   }
@@ -13,12 +15,17 @@ extension DateTimeExtensions on DateTime {
   String get toDateTimeString => format('dd/MM/yyyy HH:mm');
   String get toFullDateTimeString => format('dd/MM/yyyy HH:mm:ss');
 
-  // Kiểm tra
+  // ═══════════════════════════════════════════════════════════════
+  // CHECK
+  // ═══════════════════════════════════════════════════════════════
+
+  /// Check if today
   bool get isToday {
     final now = DateTime.now();
     return year == now.year && month == now.month && day == now.day;
   }
 
+  /// Check if yesterday
   bool get isYesterday {
     final yesterday = DateTime.now().subtract(const Duration(days: 1));
     return year == yesterday.year &&
@@ -26,6 +33,7 @@ extension DateTimeExtensions on DateTime {
         day == yesterday.day;
   }
 
+  /// Check if tomorrow
   bool get isTomorrow {
     final tomorrow = DateTime.now().add(const Duration(days: 1));
     return year == tomorrow.year &&
@@ -36,7 +44,10 @@ extension DateTimeExtensions on DateTime {
   bool get isPast => isBefore(DateTime.now());
   bool get isFuture => isAfter(DateTime.now());
 
-  // Tính toán
+  // ═══════════════════════════════════════════════════════════════
+  // CALCULATION
+  // ═══════════════════════════════════════════════════════════════
+
   DateTime get startOfDay => DateTime(year, month, day);
   DateTime get endOfDay => DateTime(year, month, day, 23, 59, 59, 999);
 
@@ -48,7 +59,11 @@ extension DateTimeExtensions on DateTime {
   DateTime addDays(int days) => add(Duration(days: days));
   DateTime subtractDays(int days) => subtract(Duration(days: days));
 
-  // Khoảng cách thời gian
+  // ═══════════════════════════════════════════════════════════════
+  // TIME AGO
+  // ═══════════════════════════════════════════════════════════════
+
+  /// Get relative time (Vietnamese)
   String get timeAgo {
     final difference = DateTime.now().difference(this);
 
