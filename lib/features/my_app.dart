@@ -9,6 +9,7 @@ import 'package:flutter_base_template/core/di/injection.dart';
 import 'package:flutter_base_template/core/theme/app_theme.dart';
 import 'package:flutter_base_template/core/constants/app_constants.dart';
 import 'package:flutter_base_template/core/l10n/generated/app_localizations.dart';
+import '../core/services/navigation_service.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -42,6 +43,8 @@ class MyApp extends StatelessWidget {
                 supportedLocales: AppLocalizations.supportedLocales,
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
 
+                // Navigation
+                navigatorKey: NavigationService().navigatorKey,
 
                 home: const SplashPage(),
               );
