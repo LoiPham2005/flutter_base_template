@@ -1,5 +1,6 @@
 // auth_user_model.dart
 import 'package:flutter_base_template/features/auth/domain/entities/auth_entity.dart';
+import 'dart:developer' as developer;
 
 class AuthUserModel extends AuthUser {
   const AuthUserModel({
@@ -35,8 +36,8 @@ class AuthUserModel extends AuthUser {
       email: json['email'],
       phone: json['phone'],
       gender: json['gender'],
-      birthDate: json['birthDate'] != null 
-          ? DateTime.parse(json['birthDate']) 
+      birthDate: json['birthDate'] != null
+          ? DateTime.parse(json['birthDate'])
           : null,
       avatar: json['avatar'],
       roleId: json['roleId'],
@@ -52,8 +53,8 @@ class AuthUserModel extends AuthUser {
       providerId: json['providerId'],
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
-      deletedAt: json['deletedAt'] != null 
-          ? DateTime.parse(json['deletedAt']) 
+      deletedAt: json['deletedAt'] != null
+          ? DateTime.parse(json['deletedAt'])
           : null,
     );
   }
@@ -85,9 +86,34 @@ class AuthUserModel extends AuthUser {
       deletedAt: deletedAt,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'fullname': fullname,
+      'username': username,
+      'email': email,
+      'phone': phone,
+      'gender': gender,
+      'birthDate': birthDate?.toIso8601String(),
+      'avatar': avatar,
+      'roleId': roleId,
+      'isVerified': isVerified,
+      'address': address,
+      'latitude': latitude,
+      'longitude': longitude,
+      'isActive': isActive,
+      'specialStatus': specialStatus,
+      'emailVerified': emailVerified,
+      'phoneVerified': phoneVerified,
+      'provider': provider,
+      'providerId': providerId,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+      'deletedAt': deletedAt?.toIso8601String(),
+    };
+  }
 }
-
-
 
 class AuthResponseModel extends AuthResponse {
   const AuthResponseModel({
@@ -111,5 +137,13 @@ class AuthResponseModel extends AuthResponse {
       accessToken: accessToken,
       refreshToken: refreshToken,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'user': (user as AuthUserModel).toJson(),
+      'accessToken': accessToken,
+      'refreshToken': refreshToken,
+    };
   }
 }

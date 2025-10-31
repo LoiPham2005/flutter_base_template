@@ -43,6 +43,7 @@ class DioClient {
       authInterceptor,
       errorInterceptor,
       loggingInterceptor,
+
     ]);
   }
   late final Dio _dio;

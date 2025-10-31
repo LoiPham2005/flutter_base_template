@@ -11,7 +11,7 @@ import 'package:flutter_base_template/core/di/injection.dart';
 import 'package:flutter_base_template/core/theme/theme_cubit.dart';
 import 'package:flutter_base_template/core/l10n/localization_service.dart';
 import 'package:flutter_base_template/core/utils/logger.dart';
-import 'package:flutter_base_template/core/utils/logger_config.dart'; // ✅ Import
+import 'package:flutter_base_template/core/utils/logger_config.dart';
 
 class AppInitializer {
   AppInitializer._();
@@ -19,6 +19,7 @@ class AppInitializer {
   static bool _isInitialized = false;
   static bool get isInitialized => _isInitialized;
 
+  /// ✅ Khởi tạo app
   static Future<void> initialize() async {
     if (_isInitialized) return;
 
@@ -26,9 +27,8 @@ class AppInitializer {
       final stopwatch = Stopwatch()..start();
 
       EnvironmentConfig.printInfo();
-      
       LoggerConfig.configure();
-      
+
       await _configureUI();
       AppObserver().initialize();
       _configureBlocObserver();
@@ -38,25 +38,27 @@ class AppInitializer {
       stopwatch.stop();
       _isInitialized = true;
 
-      if (EnvironmentConfig.isDev) {
-        Logger.success('✅ App initialized in ${stopwatch.elapsedMilliseconds}ms');
-      }
+      Logger.success('✅ App initialized in ${stopwatch.elapsedMilliseconds}ms');
     } catch (e, stackTrace) {
-      Logger.error('❌ Failed to initialize app', error: e, stackTrace: stackTrace);
-      await _cleanup();
+      Logger.error(
+        '❌ Failed to initialize app',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      await _handleInitializationError();
       rethrow;
     }
   }
 
-  static Future<void> _cleanup() async {
+  /// ✅ Xử lý khi initialization fail
+  static Future<void> _handleInitializationError() async {
     try {
       AppObserver().dispose();
       await resetDependencies();
       _isInitialized = false;
+      Logger.warning('⚠️ App reinitialization failed, cleaned up');
     } catch (e) {
-      if (EnvironmentConfig.isDev) {
-        Logger.warning('⚠️ Cleanup error: $e');
-      }
+      Logger.error('❌ Cleanup error', error: e);
     }
   }
 
@@ -90,7 +92,11 @@ class AppInitializer {
       await getIt<ThemeCubit>().initTheme();
       await getIt<LocaleCubit>().initLocale();
     } catch (e, stackTrace) {
-      Logger.error('Failed to initialize services', error: e, stackTrace: stackTrace);
+      Logger.error(
+        'Failed to initialize services',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }

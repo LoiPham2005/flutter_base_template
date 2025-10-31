@@ -32,10 +32,16 @@ import 'package:flutter_base_template/features/auth/data/repositories/auth_repos
     as _i229;
 import 'package:flutter_base_template/features/auth/domain/repositories/auth_repository.dart'
     as _i785;
+import 'package:flutter_base_template/features/auth/domain/usecases/forgot_password_use_case.dart'
+    as _i479;
 import 'package:flutter_base_template/features/auth/domain/usecases/login_usecase.dart'
     as _i468;
 import 'package:flutter_base_template/features/auth/domain/usecases/logout_usecase.dart'
     as _i912;
+import 'package:flutter_base_template/features/auth/domain/usecases/register_use_case.dart'
+    as _i791;
+import 'package:flutter_base_template/features/auth/domain/usecases/reset_password_use_case.dart'
+    as _i781;
 import 'package:flutter_base_template/features/auth/presentation/bloc/auth_bloc.dart'
     as _i627;
 import 'package:flutter_base_template/features/category/data/datasources/category_remote_datasource.dart'
@@ -119,6 +125,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i912.LogoutUseCase>(
       () => _i912.LogoutUseCase(gh<_i785.AuthRepository>()),
     );
+    gh.factory<_i479.ForgotPasswordUseCase>(
+      () => _i479.ForgotPasswordUseCase(gh<_i785.AuthRepository>()),
+    );
+    gh.factory<_i791.RegisterUseCase>(
+      () => _i791.RegisterUseCase(gh<_i785.AuthRepository>()),
+    );
+    gh.factory<_i781.ResetPasswordUseCase>(
+      () => _i781.ResetPasswordUseCase(gh<_i785.AuthRepository>()),
+    );
     gh.factory<_i868.GetCategoriesUseCase>(
       () => _i868.GetCategoriesUseCase(gh<_i163.CategoryRepository>()),
     );
@@ -134,6 +149,8 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i627.AuthBloc(
         loginUseCase: gh<_i468.LoginUseCase>(),
         logoutUseCase: gh<_i912.LogoutUseCase>(),
+        registerUseCase: gh<_i791.RegisterUseCase>(),
+        forgotPasswordUseCase: gh<_i479.ForgotPasswordUseCase>(),
       ),
     );
     return this;

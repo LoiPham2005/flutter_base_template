@@ -4,6 +4,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_base_template/core/config/environment_config.dart';
 import 'package:flutter_base_template/core/constants/api_constants.dart';
+import 'package:flutter_base_template/core/di/injection.dart';
 import 'package:flutter_base_template/core/storage/storage_service.dart';
 import 'package:flutter_base_template/core/utils/logger.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -11,8 +12,9 @@ import 'package:injectable/injectable.dart';
 
 @lazySingleton
 class AuthService {
-  AuthService(this._storageService);
   final StorageService _storageService;
+
+  AuthService(this._storageService);
 
   bool _isRefreshing = false;
 
@@ -113,25 +115,30 @@ class AuthService {
 
   /// Đăng xuất và xóa dữ liệu xác thực
   Future<void> logout() async {
-    await _storageService.clearAuthData();
-    _isRefreshing = false;
+    try {
+      // 1. Xóa tokens và user data
+      await _storageService.clearAuthData();
+      Logger.info('📝 Cleared auth data');
 
-    // TODO: Navigate to login screen
-    // getIt<NavigationService>().navigateToLogin();
+      // 2. Reset DI (xóa cached instances)
+      await resetDependencies();
+      Logger.info('🔄 Reset dependencies');
 
-    Logger.info('🚪 Đăng xuất thành công.');
+      // 3. Re-initialize DI (tạo instances mới)
+      await configureDependencies();
+      Logger.info('✅ Re-configured dependencies');
+
+      Logger.success('🚪 Logout successful');
+    } catch (e, stackTrace) {
+      Logger.error('❌ Logout failed', error: e, stackTrace: stackTrace);
+      rethrow;
+    }
   }
 
   /// Kiểm tra xem user đã đăng nhập chưa
   bool get isLoggedIn {
     final token = _storageService.getToken();
-    if (token == null) return false;
-
-    try {
-      return !JwtDecoder.isExpired(token);
-    } catch (e) {
-      return false;
-    }
+    return token != null && token.isNotEmpty;
   }
 
   /// Lấy thông tin từ token

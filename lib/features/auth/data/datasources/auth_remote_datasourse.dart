@@ -9,7 +9,28 @@ abstract class AuthRemoteDataSource {
     required String email,
     required String password,
   });
+
   Future<Result<bool>> logout();
+
+  Future<Result<AuthResponseModel>> register({
+    required String fullname,
+    required String username,
+    required String email,
+    required String password,
+    required String passwordConfirm,
+  });
+
+  Future<Result<bool>> forgotPassword({required String email});
+
+  Future<Result<bool>> resetPassword({
+    required String token,
+    required String password,
+    required String passwordConfirm,
+  });
+
+  Future<Result<bool>> checkLoginStatus();
+
+  Future<Result<AuthUserModel>> getProfile();
 }
 
 @LazySingleton(as: AuthRemoteDataSource)
@@ -22,7 +43,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String email,
     required String password,
   }) async {
-    // Trả về Result nguyên vẹn, không fold
     return _apiClient.postResult(
       ApiConstants.login,
       (json) => AuthResponseModel.fromJson(json),
@@ -32,9 +52,66 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<Result<bool>> logout() async {
+    return _apiClient.postResult(ApiConstants.logout, (json) => true);
+  }
+
+  @override
+  Future<Result<AuthResponseModel>> register({
+    required String fullname,
+    required String username,
+    required String email,
+    required String password,
+    required String passwordConfirm,
+  }) async {
     return _apiClient.postResult(
-      ApiConstants.logout,
+      ApiConstants.register,
+      (json) => AuthResponseModel.fromJson(json),
+      data: {
+        'fullname': fullname,
+        'username': username,
+        'email': email,
+        'password': password,
+        'passwordConfirm': passwordConfirm,
+      },
+    );
+  }
+
+  @override
+  Future<Result<bool>> forgotPassword({required String email}) async {
+    return _apiClient.postResult(
+      ApiConstants.forgotPassword,
       (json) => true,
+      data: {'email': email},
+    );
+  }
+
+  @override
+  Future<Result<bool>> resetPassword({
+    required String token,
+    required String password,
+    required String passwordConfirm,
+  }) async {
+    return _apiClient.postResult(
+      ApiConstants.resetPassword,
+      (json) => true,
+      data: {
+        'token': token,
+        'password': password,
+        'passwordConfirm': passwordConfirm,
+      },
+    );
+  }
+
+  @override
+  Future<Result<bool>> checkLoginStatus() async {
+    return _apiClient.getResult(ApiConstants.profile, (json) => true);
+  }
+
+  @override
+  Future<Result<AuthUserModel>> getProfile() async {
+    return _apiClient.getResult(
+      ApiConstants.profile,
+      (json) => AuthUserModel.fromJson(json),
     );
   }
 }
