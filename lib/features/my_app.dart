@@ -25,30 +25,33 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => themeCubit..initTheme()),
         BlocProvider(create: (_) => getIt<AuthBloc>()),
       ],
-      child: BlocBuilder<LocaleCubit, Locale>(
-        builder: (context, locale) {
-          return BlocBuilder<ThemeCubit, ThemeState>(
-            builder: (context, themeState) {
-              return MaterialApp(
-                title: AppConstants.appName,
-                debugShowCheckedModeBanner: false,
+      // ✅ THAY VÌ lồng BlocBuilder, dùng Builder + context.select()
+      child: Builder(
+        builder: (context) {
+          // ✅ Lấy locale từ LocaleCubit
+          final locale = context.select((LocaleCubit cubit) => cubit.state);
 
-                // Theme
-                theme: AppTheme.lightTheme,
-                darkTheme: AppTheme.darkTheme,
-                themeMode: themeState.themeMode,
+          // ✅ Lấy themeState từ ThemeCubit
+          final themeState = context.select((ThemeCubit cubit) => cubit.state);
 
-                // Localization
-                locale: locale,
-                supportedLocales: AppLocalizations.supportedLocales,
-                localizationsDelegates: AppLocalizations.localizationsDelegates,
+          return MaterialApp(
+            title: AppConstants.appName,
+            debugShowCheckedModeBanner: false,
 
-                // Navigation
-                navigatorKey: NavigationService().navigatorKey,
+            // Theme
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: themeState.themeMode,
 
-                home: const SplashPage(),
-              );
-            },
+            // Localization
+            locale: locale,
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+
+            // Navigation
+            navigatorKey: NavigationService().navigatorKey,
+
+            home: const SplashPage(),
           );
         },
       ),
