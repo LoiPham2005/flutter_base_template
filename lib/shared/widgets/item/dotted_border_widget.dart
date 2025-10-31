@@ -11,7 +11,7 @@ class DottedBorderWidget extends StatefulWidget {
   final Widget child;
   final EdgeInsets? padding;
 
-  DottedBorderWidget({
+  const DottedBorderWidget({
     this.color = Colors.black,
     this.dotsWidth = 5.0,
     this.gap = 3.0,
@@ -38,7 +38,7 @@ class _DottedBorderWidgetState extends State<DottedBorderWidget> {
         radius: widget.radius,
       ),
       child: Container(
-        padding: widget.padding ?? EdgeInsets.all(2),
+        padding: widget.padding ?? const EdgeInsets.all(2),
         child: widget.child,
       ),
     );
@@ -69,7 +69,7 @@ class _DottedCustomPaint extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth!;
 
-    Path path = Path();
+    final Path path = Path();
     path.addRRect(RRect.fromLTRBR(
       0,
       0,
@@ -78,7 +78,7 @@ class _DottedCustomPaint extends CustomPainter {
       Radius.circular(radius!),
     ));
 
-    Path draw = buildDashPath(path, dottedLength!, space!);
+    final Path draw = buildDashPath(path, dottedLength!, space!);
     canvas.drawPath(draw, paint);
   }
 
@@ -87,7 +87,7 @@ class _DottedCustomPaint extends CustomPainter {
     for (PathMetric metric in path.computeMetrics()) {
       double start = 0.0;
       while (start < metric.length) {
-        double end = start + dottedLength;
+        final double end = start + dottedLength;
         r.addPath(metric.extractPath(start, end), Offset.zero);
         start = end + space;
       }

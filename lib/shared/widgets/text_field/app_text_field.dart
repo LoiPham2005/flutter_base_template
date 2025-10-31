@@ -137,7 +137,7 @@ class _AppTextFieldState extends State<AppTextField> {
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(widget.radius ?? 100),
-              borderSide: BorderSide(
+              borderSide: const BorderSide(
                 color: AppColors.error,
               ),
             ),
@@ -146,7 +146,7 @@ class _AppTextFieldState extends State<AppTextField> {
         if (widget.errorText != null)
           Text(
             widget.errorText!,
-            style: TextStyle(
+            style: const TextStyle(
               color: AppColors.error,
             ),
           ).paddingOnly(left:15, top: 5),
@@ -222,7 +222,7 @@ class _AppTextField1State extends State<AppTextField1> {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: widget.controller,
-      scrollPadding: EdgeInsets.only(bottom: 150.0),
+      scrollPadding: const EdgeInsets.only(bottom: 150.0),
       keyboardType: widget.keyboardType,
       obscureText: obscureText,
       initialValue: widget.initialValue,

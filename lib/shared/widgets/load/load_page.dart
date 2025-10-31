@@ -28,11 +28,11 @@ Widget LoadPage({
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(message ?? "Đã xảy ra lỗi, vui lòng thử lại."),
+              Text(message ?? 'Đã xảy ra lỗi, vui lòng thử lại.'),
               const SizedBox(height: 8),
               ElevatedButton(
                 onPressed: reLoad,
-                child: const Text("Thử lại"),
+                child: const Text('Thử lại'),
               ),
             ],
           ),

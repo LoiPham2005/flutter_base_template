@@ -6,20 +6,18 @@ class IconBadges extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: badges.Badge(
-          badgeContent: Text(
-            "0",
-            style: TextStyle(color: Colors.white),
-          ),
-          position: badges.BadgePosition.topStart(
-            top: 2,
-            start: 15,
-          ),
-          badgeStyle: badges.BadgeStyle(
-            badgeColor: Colors.orange,
-          ),
-          child: Icon(Icons.card_travel)),
-    );
+    return badges.Badge(
+        badgeContent: const Text(
+          '0',
+          style: TextStyle(color: Colors.white),
+        ),
+        position: badges.BadgePosition.topStart(
+          top: 2,
+          start: 15,
+        ),
+        badgeStyle: const badges.BadgeStyle(
+          badgeColor: Colors.orange,
+        ),
+        child: const Icon(Icons.card_travel));
   }
 }

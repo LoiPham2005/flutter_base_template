@@ -18,8 +18,8 @@ Widget ItemLoadFaild({
         ),
         OutlinedButton(
           onPressed: onPressed,
-          child: Text(
-            "Tải lại",
+          child: const Text(
+            'Tải lại',
           ),
         ),
       ],

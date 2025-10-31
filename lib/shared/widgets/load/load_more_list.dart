@@ -21,10 +21,10 @@ Widget LoadMoreList({bool isLoad = true, bool isMax = false}) {
         if (isLoad) const SizedBox(width: 10),
         Text(
           isMax
-              ? "Đã tải hết danh sách"
+              ? 'Đã tải hết danh sách'
               : isLoad
-                  ? "Đang tải..."
-                  : "",
+                  ? 'Đang tải...'
+                  : '',
         ),
       ],
     ),

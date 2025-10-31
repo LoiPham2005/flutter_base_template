@@ -1,6 +1,5 @@
 // auth_user_model.dart
 import 'package:flutter_base_template/features/auth/domain/entities/auth_entity.dart';
-import 'dart:developer' as developer;
 
 class AuthUserModel extends AuthUser {
   const AuthUserModel({
