@@ -14,32 +14,45 @@ import 'package:flutter_base_template/core/utils/logger.dart';
 import 'package:flutter_base_template/core/utils/logger_config.dart';
 
 class AppInitializer {
+  // Private constructor to prevent instantiation
   AppInitializer._();
 
+  // Indicates whether the app has been initialized
   static bool _isInitialized = false;
   static bool get isInitialized => _isInitialized;
 
   /// ✅ Khởi tạo app
+  /// Main entry point for initializing the application
   static Future<void> initialize() async {
+    // Prevent re-initialization if already initialized
     if (_isInitialized) return;
 
     try {
+      // Create a Stopwatch instance and start it immediately to measure initialization time
       final stopwatch = Stopwatch()..start();
 
+      // Print environment information
       EnvironmentConfig.printInfo();
+      // Configure the logger
       LoggerConfig.configure();
 
+      // Configure UI settings (orientation, system overlays)
       await _configureUI();
+      // Initialize global app observer
       AppObserver().initialize();
+      // Set up Bloc observer for state management
       _configureBlocObserver();
+      // Set up dependency injection
       await configureDependencies();
+      // Initialize services such as theme and localization
       await _initializeServices();
 
+      // Stop the stopwatch and log the elapsed time
       stopwatch.stop();
       _isInitialized = true;
-
-      Logger.success('✅ App initialized in ${stopwatch.elapsedMilliseconds}ms');
+      Logger.success('✅ App initialized in [32m${stopwatch.elapsedMilliseconds}ms[0m');
     } catch (e, stackTrace) {
+      // Log and handle initialization errors
       Logger.error(
         '❌ Failed to initialize app',
         error: e,
@@ -51,8 +64,10 @@ class AppInitializer {
   }
 
   /// ✅ Xử lý khi initialization fail
+  /// Handles cleanup and reset if initialization fails
   static Future<void> _handleInitializationError() async {
     try {
+      // Dispose global observers and reset dependencies
       AppObserver().dispose();
       await resetDependencies();
       _isInitialized = false;
@@ -62,12 +77,15 @@ class AppInitializer {
     }
   }
 
+  /// Configure UI orientation and system overlays
   static Future<void> _configureUI() async {
     try {
+      // Lock orientation to portrait
       await SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
       ]);
 
+      // Set system UI overlay styles (status bar, navigation bar)
       SystemChrome.setSystemUIOverlayStyle(
         const SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
@@ -81,12 +99,14 @@ class AppInitializer {
     }
   }
 
+  /// Set up Bloc observer for development and staging environments
   static void _configureBlocObserver() {
     if (EnvironmentConfig.isDev || EnvironmentConfig.isStaging) {
       Bloc.observer = AppBlocObserver();
     }
   }
 
+  /// Initialize services such as theme and localization
   static Future<void> _initializeServices() async {
     try {
       await getIt<ThemeCubit>().initTheme();

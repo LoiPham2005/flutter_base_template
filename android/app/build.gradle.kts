@@ -72,16 +72,38 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
         release {
-            isMinifyEnabled = false     // thay false bằng true key khi publish
-            isShrinkResources = false   // thay false bằng true key khi publish
+            isMinifyEnabled = true      // ✅ Minify enabled
+            isShrinkResources = true    // ✅ Shrink resources enabled
             proguardFiles(
-                getDefaultProguardFile("proguard-android.txt"),
+                getDefaultProguardFile("proguard-android-optimize.txt"),
                 file("proguard-rules.pro")
             )
-            signingConfig = signingConfigs.getByName("debug") // thay bằng release key khi publish
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
+    // ✅ FIX: Correct Kotlin DSL syntax for splits
+    splits {
+        abi {
+            isEnable = true             // ✅ Changed from 'enable' to 'isEnable'
+            reset()
+            include("arm64-v8a", "armeabi-v7a")  // ✅ Changed from include to include()
+            isUniversalApk = true       // ✅ Changed from 'universalApk' to 'isUniversalApk'
+        }
+    }
+
+    // ✅ FIX: Correct Kotlin DSL syntax for bundle
+    bundle {
+        language {
+            enableSplit = true
+        }
+        abi {
+            enableSplit = true
+        }
+        density {
+            enableSplit = true
+        }
+    }
 }
 
 dependencies {

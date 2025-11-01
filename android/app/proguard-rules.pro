@@ -92,3 +92,45 @@
 -keepclasseswithmembers interface * {
     @retrofit2.* <methods>;
 }
+
+# ProGuard rules for Flutter app
+
+# Keep Flutter classes
+-keep class io.flutter.** { *; }
+-keep class com.google.flutter.** { *; }
+
+# Keep your app's main classes
+-keep class com.example.flutter_base_template.** { *; }
+
+# Keep model classes (Serializable)
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    !static !transient <fields>;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+}
+
+# Keep Retrofit
+-keep class retrofit2.** { *; }
+-keep interface retrofit2.** { *; }
+-keepattributes Signature
+
+# Keep Gson
+-keep class com.google.gson.** { *; }
+-keepattributes EnclosingMethod
+-keepclasseswithmembers class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+
+# Keep SharedPreferences
+-keep class android.content.SharedPreferences { *; }
+
+# Remove logging
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+    public static *** v(...);
+    public static *** i(...);
+}

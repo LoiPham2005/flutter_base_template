@@ -1,4 +1,4 @@
-# Flutter Build & Code Generation Commands
+<!-- # Flutter Build & Code Generation Commands
 
 ## 1. Tạo các file .g.dart, .freezed.dart, .config.dart
 
@@ -85,4 +85,4 @@ flutter format .
 
 ```bash
 flutter test
-```
+``` -->

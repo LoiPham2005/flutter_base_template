@@ -48,14 +48,3 @@ app.*.map.json
 **/android/key.properties
 **/android/*.jks
 **/android/*.keystore
-
-
-# Thêm vào cuối file .gitignore
-.env
-.env.development
-.env.staging
-.env.production
-.env.local
-
-# Giữ lại example
-!.env.example
