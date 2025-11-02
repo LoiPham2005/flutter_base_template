@@ -7,7 +7,7 @@
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/Platform-Android%20|%20iOS-blue.svg)
 
-**Production-ready Flutter template với Clean Architecture, DI, và State Management đa dạng**
+**Production-ready Flutter template với Clean Architecture, DI, State Management, Flavors, và Environment Config**
 
 [Tài liệu](#-documentation) • [Bắt đầu](#-quick-start) • [Tính năng](#-features) • [Cấu trúc](#-project-structure) • [Architecture](#-architecture-flow)
 
@@ -27,7 +27,7 @@
 - 🌍 **i18n** - Multi-language với .arb
 - 📱 **Responsive** - Screen utilities
 - 🧪 **Testing** - Unit, Widget, Integration tests
-- ⚙️ **Environment Config** - --dart-define (Dev, Staging, Prod)
+- ⚙️ **Environment Config** - Flavors + --dart-define (Dev, Staging, Prod)
 - 🔥 **CI/CD** - GitHub Actions
 
 ---
@@ -43,10 +43,10 @@ flutter pub get
 # 2. Generate code
 flutter pub run build_runner build --delete-conflicting-outputs
 
-# 3. Run (chọn environment)
-flutter run --dart-define=ENV=dev              # Development
-flutter run --dart-define=ENV=staging          # Staging
-flutter run --dart-define=ENV=prod             # Production
+# 3. Run (chọn environment & flavor)
+flutter run --flavor development -t lib/main.dart --dart-define=ENV=dev              # Development
+flutter run --flavor staging -t lib/main.dart --dart-define=ENV=staging              # Staging
+flutter run --flavor production -t lib/main.dart --dart-define=ENV=prod              # Production
 ```
 
 **VS Code**: Nhấn `F5` → Chọn flavor → Run
@@ -108,93 +108,143 @@ lib/
 
 ---
 
-## 🛠️ Tech Stack
+## ⚡ Build & Run Commands (With Flavors)
 
-**Core**: Flutter 3.22+, Dart 3.4+
-
-**Architecture**: get_it, injectable
-
-**State**: flutter_bloc, get, riverpod, provider
-
-**Network**: dio, connectivity_plus
-
-**Storage**: shared_preferences, flutter_secure_storage
-
-**UI**: flutter_screenutil, cached_network_image
-
-**Dev**: build_runner, freezed, json_serializable
-
----
-
-## 🎯 Core Services
-
-```dart
-// Theme
-final themeService = getIt<ThemeService>();
-themeService.toggleTheme();
-
-// Localization
-final localizationService = getIt<LocalizationService>();
-localizationService.changeLocale('en');
-Text(context.tr.hello);
-
-// Storage
-final storage = getIt<StorageService>();
-await storage.set('key', 'value');
-
-// Secure Storage
-final secure = getIt<SecureStorage>();
-await secure.write(key: 'token', value: 'secret');
-```
-
----
-
-## ⚡ Commands
+### 1. Code Generation (Build Runner)
 
 ```bash
-# Run flavors
-flutter run --flavor development -t lib/main_development.dart
-flutter run --flavor staging -t lib/main_staging.dart
-flutter run --flavor production -t lib/main_production.dart
-
-# Build
-flutter build apk --release --flavor production -t lib/main_production.dart
-flutter build appbundle --release --flavor production -t lib/main_production.dart
-flutter build ios --release --flavor production -t lib/main_production.dart
-
-# Code generation
 flutter pub run build_runner build --delete-conflicting-outputs
 flutter pub run build_runner watch --delete-conflicting-outputs
+```
 
-# Assets
-flutter pub run flutter_launcher_icons:main --path=flutter_icons.yaml
-flutter pub run flutter_native_splash:create --path=flutter_splash.yaml
+### 2. Generate Localization (i18n)
 
-# Quality
+```bash
+flutter gen-l10n
+```
+
+### 3. Clean Project
+
+```bash
+flutter clean
+flutter pub get
+```
+
+### 4. Build APK (With Flavors)
+
+```bash
+flutter build apk --flavor development -t lib/main.dart
+flutter build apk --flavor staging -t lib/main.dart
+flutter build apk --flavor production -t lib/main.dart
+```
+
+### 5. Build AAB (App Bundle - For Google Play, With Flavors)
+
+```bash
+flutter build appbundle --flavor development -t lib/main.dart
+flutter build appbundle --flavor staging -t lib/main.dart
+flutter build appbundle --flavor production -t lib/main.dart
+```
+
+### 6. Build iOS (With Flavors)
+
+```bash
+flutter build ios --flavor development -t lib/main.dart
+flutter build ios --flavor staging -t lib/main.dart
+flutter build ios --flavor production -t lib/main.dart
+```
+
+### 7. Run on Device/Emulator (With Flavors)
+
+```bash
+flutter run --flavor development -t lib/main.dart
+flutter run --flavor staging -t lib/main.dart
+flutter run --flavor production -t lib/main.dart
+```
+
+### 8. (Optional) Kết hợp --dart-define nếu cần truyền ENV cho code Dart
+
+```bash
+flutter run --flavor development -t lib/main.dart --dart-define=ENV=dev
+flutter run --flavor staging -t lib/main.dart --dart-define=ENV=staging
+flutter run --flavor production -t lib/main.dart --dart-define=ENV=prod
+```
+
+### 9. Upgrade Dependencies
+
+```bash
+flutter pub upgrade
+flutter pub outdated
+```
+
+### 10. Code Analysis & Formatting
+
+```bash
 flutter analyze
 flutter format .
+```
+
+### 11. Run Tests
+
+```bash
 flutter test
+flutter test test/features/auth/presentation/bloc/auth_bloc_test.dart
+flutter test --coverage
 ```
 
 ---
 
-## 🎨 Customization
+## 📋 Quick Command Reference
 
-### Đổi tên dự án
+| Task                | Command Example |
+|---------------------|----------------|
+| **Build APK Dev**   | `flutter build apk --flavor development -t lib/main.dart` |
+| **Build APK Stg**   | `flutter build apk --flavor staging -t lib/main.dart` |
+| **Build APK Prod**  | `flutter build apk --flavor production -t lib/main.dart` |
+| **Build AAB Prod**  | `flutter build appbundle --flavor production -t lib/main.dart` |
+| **Run Dev**         | `flutter run --flavor development -t lib/main.dart` |
+| **Run Stg**         | `flutter run --flavor staging -t lib/main.dart` |
+| **Run Prod**        | `flutter run --flavor production -t lib/main.dart` |
+| **Code Gen**        | `flutter pub run build_runner build --delete-conflicting-outputs` |
+| **i18n**            | `flutter gen-l10n` |
+| **Clean**           | `flutter clean && flutter pub get` |
+| **Analyze**         | `flutter analyze` |
+| **Format**          | `flutter format .` |
+| **Test**            | `flutter test` |
+
+---
+
+## 🎯 Typical Workflow
 
 ```bash
-# Cài đặt
-dart pub global activate rename
-
-# Đổi tên & bundle ID
-dart run rename setAppName --value "Your App Name"
-dart run rename setBundleId --value "com.yourcompany.yourapp"
-
-# Clean
 flutter clean && flutter pub get
+flutter pub run build_runner build --delete-conflicting-outputs
+flutter gen-l10n
+flutter run --flavor development -t lib/main.dart --dart-define=ENV=dev
+flutter build apk --flavor staging -t lib/main.dart --dart-define=ENV=staging
+flutter build apk --flavor production -t lib/main.dart --dart-define=ENV=prod
 ```
 
-Chi tiết: [RENAME_PROJECT.md](docs/RENAME_PROJECT.md)
+---
+
+## 📝 Notes
+
+- **Flavors**: Đảm bảo đã cấu hình productFlavors trong `android/app/build.gradle.kts` và scheme/target trên iOS.
+- **Entrypoint**: Nếu bạn có file main riêng cho từng flavor, thay `lib/main.dart` bằng file tương ứng.
+- **Kết hợp --dart-define**: Nếu code Dart cần biết ENV, truyền thêm `--dart-define=ENV=...`.
+- **Output**: APK/AAB sẽ nằm trong thư mục `build/app/outputs/`.
+
+---
+
+## 🛠️ Tech Stack
+
+**Core**: Flutter 3.22+, Dart 3.4+  
+**Architecture**: get_it, injectable  
+**State**: flutter_bloc, get, riverpod, provider  
+**Network**: dio, connectivity_plus  
+**Storage**: shared_preferences, flutter_secure_storage  
+**UI**: flutter_screenutil, cached_network_image  
+**Dev**: build_runner, freezed, json_serializable  
 
 ---
 
