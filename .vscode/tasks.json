@@ -1,5 +1,28 @@
 {
   "version": "2.0.0",
+  "inputs": [
+    {
+      "id": "buildEnv",
+      "type": "pickString",
+      "description": "Chọn environment",
+      "options": [
+        "dev",
+        "staging",
+        "prod"
+      ],
+      "default": "dev"
+    },
+    {
+      "id": "buildType",
+      "type": "pickString",
+      "description": "Chọn loại build",
+      "options": [
+        "apk",
+        "appbundle"
+      ],
+      "default": "apk"
+    }
+  ],
   "tasks": [
     // ════════════════════════════════════════════════════════════
     // 🧩 1. Build Runner
@@ -74,12 +97,19 @@
       "problemMatcher": []
     },
     // ════════════════════════════════════════════════════════════
-    // 🏬 5. Build AAB (Play Store)
+    // 🏬 5. Build AAB (Play Store and App Store)
     // ════════════════════════════════════════════════════════════
     {
       "label": "Build AAB (Production)",
       "type": "shell",
       "command": "flutter build appbundle --release --dart-define=ENV=prod --split-debug-info=build/debug-symbols",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build iOS IPA (Production)",
+      "type": "shell",
+      "command": "flutter build ipa --release --dart-define=ENV=prod --export-options-plist=ios/ExportOptions.plist",
       "group": "build",
       "problemMatcher": []
     },
@@ -161,6 +191,17 @@
       "command": "flutter clean",
       "group": "build",
       "problemMatcher": []
+    },
+    {
+      "label": "Universal Build (select env/type)",
+      "type": "shell",
+      "command": "flutter build ${input:buildType} --release --dart-define=ENV=${input:buildEnv} --split-debug-info=build/debug-symbols",
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
     }
   ]
 }
