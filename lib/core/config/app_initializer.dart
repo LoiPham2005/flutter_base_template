@@ -48,9 +48,10 @@ class AppInitializer {
       await _initializeServices();
 
       // Stop the stopwatch and log the elapsed time
+
       stopwatch.stop();
       _isInitialized = true;
-      Logger.success('✅ App initialized in [32m${stopwatch.elapsedMilliseconds}ms[0m');
+      Logger.success('App initialized in ${stopwatch.elapsedMilliseconds}ms');
     } catch (e, stackTrace) {
       // Log and handle initialization errors
       Logger.error(

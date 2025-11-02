@@ -8,6 +8,7 @@ import 'package:flutter_base_template/features/auth/domain/usecases/forgot_passw
 import 'package:flutter_base_template/features/auth/domain/usecases/login_usecase.dart';
 import 'package:flutter_base_template/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:flutter_base_template/features/auth/domain/usecases/register_use_case.dart';
+import 'package:flutter_base_template/features/auth/domain/usecases/delete_account_use_case.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/di/injection.dart';
@@ -64,6 +65,8 @@ class ForgotPasswordEvent extends BaseEvent {
   List<Object?> get props => [email];
 }
 
+class DeleteAccountEvent extends BaseEvent {}
+
 // ═══════════════════════════════════════════════════════════════
 // BLOC
 // ═══════════════════════════════════════════════════════════════
@@ -74,8 +77,9 @@ class AuthBloc extends Bloc<BaseEvent, BaseState> {
   final LogoutUseCase _logoutUseCase;
   final RegisterUseCase _registerUseCase;
   final ForgotPasswordUseCase _forgotPasswordUseCase;
+  final DeleteAccountUseCase _deleteAccountUseCase; // ✅ THÊM
   final StorageService _storageService = getIt<StorageService>();
-  final SecureStorage _secureStorage = getIt<SecureStorage>(); // ✅ THÊM
+  final SecureStorage _secureStorage = getIt<SecureStorage>();
   final AuthService _authService = getIt<AuthService>();
 
   AuthBloc({
@@ -83,15 +87,18 @@ class AuthBloc extends Bloc<BaseEvent, BaseState> {
     required LogoutUseCase logoutUseCase,
     required RegisterUseCase registerUseCase,
     required ForgotPasswordUseCase forgotPasswordUseCase,
+    required DeleteAccountUseCase deleteAccountUseCase, // ✅ THÊM
   }) : _loginUseCase = loginUseCase,
        _logoutUseCase = logoutUseCase,
        _registerUseCase = registerUseCase,
        _forgotPasswordUseCase = forgotPasswordUseCase,
+       _deleteAccountUseCase = deleteAccountUseCase, // ✅ THÊM
        super(BaseState.initial()) {
     on<LoginEvent>(_onLogin);
     on<LogoutEvent>(_onLogout);
     on<RegisterEvent>(_onRegister);
     on<ForgotPasswordEvent>(_onForgotPassword);
+    on<DeleteAccountEvent>(_onDeleteAccount); // ✅ THÊM
   }
 
   // ═══════════════════════════════════════════════════════════════
@@ -187,6 +194,25 @@ class AuthBloc extends Bloc<BaseEvent, BaseState> {
           state.copyWith(status: status, data: null, error: errorMessage),
       onSuccess: (_) async {
         await _authService.logout();
+      },
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // DELETE ACCOUNT
+  // ═══════════════════════════════════════════════════════════════
+  Future<void> _onDeleteAccount(
+    DeleteAccountEvent event,
+    Emitter<BaseState> emit,
+  ) async {
+    await execute<bool, BaseState>(
+      emit: emit,
+      useCaseCall: () => _deleteAccountUseCase(),
+      stateBuilder: ({status, data, errorMessage}) =>
+          state.copyWith(status: status, data: null, error: errorMessage),
+      onSuccess: (_) async {
+        await _authService.logout();
+        Logger.success('✅ Account deleted and logged out');
       },
     );
   }

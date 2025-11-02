@@ -31,6 +31,8 @@ abstract class AuthRemoteDataSource {
   Future<Result<bool>> checkLoginStatus();
 
   Future<Result<AuthUserModel>> getProfile();
+
+  Future<Result<bool>> deleteAccount();
 }
 
 @LazySingleton(as: AuthRemoteDataSource)
@@ -113,5 +115,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       ApiConstants.profile,
       (json) => AuthUserModel.fromJson(json),
     );
+  }
+
+  @override
+  Future<Result<bool>> deleteAccount() async {
+    return _apiClient.deleteResult(ApiConstants.profile);
   }
 }

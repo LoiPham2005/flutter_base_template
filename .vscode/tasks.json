@@ -18,6 +18,17 @@
       "group": "build",
       "problemMatcher": []
     },
+    {
+      "label": "Build Runner (current file)",
+      "type": "shell",
+      "command": "dart run build_runner build --build-filter \"${relativeFile}\" --delete-conflicting-outputs",
+      "problemMatcher": [],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
     // ════════════════════════════════════════════════════════════
     // 🌐 2. Generate Localization
     // ════════════════════════════════════════════════════════════

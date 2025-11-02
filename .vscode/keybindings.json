@@ -38,6 +38,12 @@
     "args": "Clean Project",
     "when": "editorTextFocus"
   },
+  {
+    "key": "ctrl+alt+b",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Build Runner (current file)",
+    "when": "editorLangId == dart"
+  },
   // ════════════════════════════════════════════════════════════
   // ⚡ Flutter Pub Commands
   // ════════════════════════════════════════════════════════════

@@ -32,4 +32,6 @@ abstract class AuthRepository {
 
   /// Get current user profile
   Future<Result<AuthUser>> getProfile();
+
+  Future<Result<bool>> deleteAccount();
 }

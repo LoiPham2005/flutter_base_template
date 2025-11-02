@@ -34,6 +34,8 @@ import 'package:flutter_base_template/features/auth/data/repositories/auth_repos
     as _i229;
 import 'package:flutter_base_template/features/auth/domain/repositories/auth_repository.dart'
     as _i785;
+import 'package:flutter_base_template/features/auth/domain/usecases/delete_account_use_case.dart'
+    as _i377;
 import 'package:flutter_base_template/features/auth/domain/usecases/forgot_password_use_case.dart'
     as _i479;
 import 'package:flutter_base_template/features/auth/domain/usecases/login_usecase.dart'
@@ -127,6 +129,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i163.CategoryRepository>(
       () => _i800.CategoryRepositoryImpl(gh<_i863.CategoryRemoteDataSource>()),
     );
+    gh.factory<_i377.DeleteAccountUseCase>(
+      () => _i377.DeleteAccountUseCase(gh<_i785.AuthRepository>()),
+    );
     gh.factory<_i479.ForgotPasswordUseCase>(
       () => _i479.ForgotPasswordUseCase(gh<_i785.AuthRepository>()),
     );
@@ -142,6 +147,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i781.ResetPasswordUseCase>(
       () => _i781.ResetPasswordUseCase(gh<_i785.AuthRepository>()),
     );
+    gh.factory<_i627.AuthBloc>(
+      () => _i627.AuthBloc(
+        loginUseCase: gh<_i468.LoginUseCase>(),
+        logoutUseCase: gh<_i912.LogoutUseCase>(),
+        registerUseCase: gh<_i791.RegisterUseCase>(),
+        forgotPasswordUseCase: gh<_i479.ForgotPasswordUseCase>(),
+        deleteAccountUseCase: gh<_i377.DeleteAccountUseCase>(),
+      ),
+    );
     gh.factory<_i868.GetCategoriesUseCase>(
       () => _i868.GetCategoriesUseCase(gh<_i163.CategoryRepository>()),
     );
@@ -151,14 +165,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i530.CategoryBloc>(
       () => _i530.CategoryBloc(
         getCategoriesUseCase: gh<_i868.GetCategoriesUseCase>(),
-      ),
-    );
-    gh.factory<_i627.AuthBloc>(
-      () => _i627.AuthBloc(
-        loginUseCase: gh<_i468.LoginUseCase>(),
-        logoutUseCase: gh<_i912.LogoutUseCase>(),
-        registerUseCase: gh<_i791.RegisterUseCase>(),
-        forgotPasswordUseCase: gh<_i479.ForgotPasswordUseCase>(),
       ),
     );
     return this;

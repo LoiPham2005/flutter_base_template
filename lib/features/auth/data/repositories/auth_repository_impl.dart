@@ -73,4 +73,9 @@ class AuthRepositoryImpl implements AuthRepository {
     final result = await _remoteDataSource.getProfile();
     return result.map((model) => model.toEntity());
   }
+
+  @override
+  Future<Result<bool>> deleteAccount() {
+    return _remoteDataSource.deleteAccount();
+  }
 }
