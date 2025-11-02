@@ -1,97 +1,95 @@
+// ════════════════════════════════════════════════════════════════
+// 📁 .vscode/keybindings.json (SIMPLIFIED)
+// ════════════════════════════════════════════════════════════════
 [
-  // ════════════════════════════════════════════════════════════
-  // 🏗️ Build Tasks
-  // ════════════════════════════════════════════════════════════
+  // ═══════════════════════════════════════════════════════════
+  // 🚀 MAIN ACTIONS (Most Used)
+  // ═══════════════════════════════════════════════════════════
   {
     "key": "ctrl+shift+b",
     "command": "workbench.action.tasks.runTask",
-    "args": "Build APK (Production)",
-    "when": "editorTextFocus"
-  },
-  {
-    "key": "ctrl+shift+d",
-    "command": "workbench.action.tasks.runTask",
-    "args": "Build APK (Development)",
-    "when": "editorTextFocus"
-  },
-  {
-    "key": "ctrl+shift+s",
-    "command": "workbench.action.tasks.runTask",
-    "args": "Build APK (Staging)",
+    "args": "🚀 Build (Universal)",
     "when": "editorTextFocus"
   },
   {
     "key": "ctrl+shift+r",
     "command": "workbench.action.tasks.runTask",
-    "args": "Build Runner: One-time build",
+    "args": "⚡ Build Runner (One-time)",
     "when": "editorTextFocus"
   },
   {
-    "key": "ctrl+shift+l",
+    "key": "ctrl+shift+w",
     "command": "workbench.action.tasks.runTask",
-    "args": "Generate Localization (l10n)",
+    "args": "👁️ Build Runner (Watch)",
     "when": "editorTextFocus"
   },
   {
     "key": "ctrl+shift+c",
     "command": "workbench.action.tasks.runTask",
-    "args": "Clean Project",
+    "args": "🧹 Clean & Get",
+    "when": "editorTextFocus"
+  },
+
+  // ═══════════════════════════════════════════════════════════
+  // 🏗️ QUICK BUILDS
+  // ═══════════════════════════════════════════════════════════
+  {
+    "key": "ctrl+shift+d",
+    "command": "workbench.action.tasks.runTask",
+    "args": "📦 Build APK (Dev)",
     "when": "editorTextFocus"
   },
   {
-    "key": "ctrl+alt+b",
+    "key": "ctrl+shift+p",
     "command": "workbench.action.tasks.runTask",
-    "args": "Build Runner (current file)",
-    "when": "editorLangId == dart"
+    "args": "📦 Build APK (Prod)",
+    "when": "editorTextFocus"
   },
-  // ════════════════════════════════════════════════════════════
-  // ⚡ Flutter Pub Commands
-  // ════════════════════════════════════════════════════════════
+  {
+    "key": "ctrl+shift+a",
+    "command": "workbench.action.tasks.runTask",
+    "args": "🏬 Build AAB (Prod)",
+    "when": "editorTextFocus"
+  },
+
+  // ═══════════════════════════════════════════════════════════
+  // 📦 PUB COMMANDS
+  // ═══════════════════════════════════════════════════════════
   {
     "key": "ctrl+alt+g",
     "command": "workbench.action.tasks.runTask",
-    "args": "Flutter Pub Get",
+    "args": "📦 Pub Get",
     "when": "editorTextFocus"
   },
   {
     "key": "ctrl+alt+u",
     "command": "workbench.action.tasks.runTask",
-    "args": "Flutter Pub Upgrade",
+    "args": "⬆️ Pub Upgrade",
     "when": "editorTextFocus"
   },
+
+  // ═══════════════════════════════════════════════════════════
+  // 🎯 CODE GEN
+  // ═══════════════════════════════════════════════════════════
   {
-    "key": "ctrl+alt+o",
+    "key": "ctrl+alt+b",
     "command": "workbench.action.tasks.runTask",
-    "args": "Flutter Pub Outdated",
-    "when": "editorTextFocus"
+    "args": "🎯 Build Runner (Current File)",
+    "when": "editorLangId == dart"
   },
   {
-    "key": "ctrl+alt+c",
+    "key": "ctrl+alt+l",
     "command": "workbench.action.tasks.runTask",
-    "args": "Flutter Clean",
-    "when": "editorTextFocus"
-  },
-  // ════════════════════════════════════════════════════════════
-  // 🟢 Debug & Run
-  // ════════════════════════════════════════════════════════════
-  {
-    "key": "f5",
-    "command": "workbench.action.debug.start",
-    "when": "editorTextFocus"
-  },
-  {
-    "key": "ctrl+shift+f5",
-    "command": "workbench.action.debug.restart",
-    "when": "inDebugMode"
-  },
-  {
-    "key": "shift+f5",
-    "command": "workbench.action.debug.stop",
-    "when": "inDebugMode"
-  },
-  {
-    "key": "ctrl+f5",
-    "command": "workbench.action.debug.run",
+    "args": "🌐 Generate l10n",
     "when": "editorTextFocus"
   }
+
+  // ═══════════════════════════════════════════════════════════
+  // 🐛 DEBUG SHORTCUTS (Keep defaults, just document)
+  // ═══════════════════════════════════════════════════════════
+  // F5:              Start Debugging
+  // Ctrl+Shift+F5:   Hot Restart
+  // Shift+F5:        Stop Debugging
+  // Ctrl+F5:         Run Without Debugging
+  // Ctrl+Shift+D:    Show Debug Panel
 ]

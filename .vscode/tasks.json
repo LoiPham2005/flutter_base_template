@@ -1,3 +1,6 @@
+// ════════════════════════════════════════════════════════════════
+// 📁 .vscode/tasks.json (OPTIMIZED)
+// ════════════════════════════════════════════════════════════════
 {
   "version": "2.0.0",
   "inputs": [
@@ -5,203 +8,158 @@
       "id": "buildEnv",
       "type": "pickString",
       "description": "Chọn environment",
-      "options": [
-        "dev",
-        "staging",
-        "prod"
-      ],
+      "options": ["dev", "staging", "prod"],
       "default": "dev"
     },
     {
-      "id": "buildType",
+      "id": "buildTarget",
       "type": "pickString",
-      "description": "Chọn loại build",
-      "options": [
-        "apk",
-        "appbundle"
-      ],
+      "description": "Chọn target platform",
+      "options": ["apk", "appbundle", "ios", "ipa"],
       "default": "apk"
     }
   ],
   "tasks": [
-    // ════════════════════════════════════════════════════════════
-    // 🧩 1. Build Runner
-    // ════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════
+    // 🎯 UNIVERSAL BUILD (Most Used)
+    // ═══════════════════════════════════════════════════════════
     {
-      "label": "Build Runner: One-time build",
+      "label": "🚀 Build (Universal)",
       "type": "shell",
-      "command": "flutter pub run build_runner build --delete-conflicting-outputs",
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Build Runner: Watch",
-      "type": "shell",
-      "command": "flutter pub run build_runner watch --delete-conflicting-outputs",
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Build Runner (current file)",
-      "type": "shell",
-      "command": "dart run build_runner build --build-filter \"${relativeFile}\" --delete-conflicting-outputs",
+      "command": "flutter build ${input:buildTarget} --release --dart-define=ENV=${input:buildEnv} --split-debug-info=build/debug-symbols",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
       "problemMatcher": [],
-      "group": "build",
       "presentation": {
         "reveal": "always",
-        "panel": "dedicated"
+        "panel": "dedicated",
+        "clear": true
       }
     },
-    // ════════════════════════════════════════════════════════════
-    // 🌐 2. Generate Localization
-    // ════════════════════════════════════════════════════════════
+
+    // ═══════════════════════════════════════════════════════════
+    // 🏗️ QUICK BUILDS (Specific)
+    // ═══════════════════════════════════════════════════════════
     {
-      "label": "Generate Localization (l10n)",
-      "type": "shell",
-      "command": "flutter gen-l10n",
-      "group": "build",
-      "problemMatcher": []
-    },
-    // ════════════════════════════════════════════════════════════
-    // 🧹 3. Clean Project
-    // ════════════════════════════════════════════════════════════
-    {
-      "label": "Clean Project",
-      "type": "shell",
-      "command": "flutter clean && flutter pub get",
-      "group": "build",
-      "problemMatcher": []
-    },
-    // ════════════════════════════════════════════════════════════
-    // 🏗️ 4. Build APK (--dart-define=ENV, NO --flavor)
-    // ════════════════════════════════════════════════════════════
-    {
-      "label": "Build APK (Development)",
+      "label": "📦 Build APK (Dev)",
       "type": "shell",
       "command": "flutter build apk --dart-define=ENV=dev",
       "group": "build",
       "problemMatcher": []
     },
     {
-      "label": "Build APK (Staging)",
+      "label": "📦 Build APK (Prod)",
       "type": "shell",
-      "command": "flutter build apk --release --dart-define=ENV=staging --split-debug-info=build/debug-symbols",
+      "command": "flutter build apk --release --dart-define=ENV=prod --obfuscate --split-debug-info=build/debug-symbols",
       "group": "build",
       "problemMatcher": []
     },
     {
-      "label": "Build APK (Production)",
+      "label": "🏬 Build AAB (Prod)",
       "type": "shell",
-      "command": "flutter build apk --release --dart-define=ENV=prod --split-debug-info=build/debug-symbols",
+      "command": "flutter build appbundle --release --dart-define=ENV=prod --obfuscate --split-debug-info=build/debug-symbols",
       "group": "build",
       "problemMatcher": []
     },
-    // ════════════════════════════════════════════════════════════
-    // 🏬 5. Build AAB (Play Store and App Store)
-    // ════════════════════════════════════════════════════════════
+
+    // ═══════════════════════════════════════════════════════════
+    // 🧩 CODE GENERATION
+    // ═══════════════════════════════════════════════════════════
     {
-      "label": "Build AAB (Production)",
+      "label": "⚡ Build Runner (One-time)",
       "type": "shell",
-      "command": "flutter build appbundle --release --dart-define=ENV=prod --split-debug-info=build/debug-symbols",
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Build iOS IPA (Production)",
-      "type": "shell",
-      "command": "flutter build ipa --release --dart-define=ENV=prod --export-options-plist=ios/ExportOptions.plist",
-      "group": "build",
-      "problemMatcher": []
-    },
-    // ════════════════════════════════════════════════════════════
-    // 🚀 6. Run App (--dart-define=ENV, NO --flavor)
-    // ════════════════════════════════════════════════════════════
-    {
-      "label": "Run App (Development)",
-      "type": "shell",
-      "command": "flutter run --dart-define=ENV=dev",
-      "group": "test",
-      "problemMatcher": []
-    },
-    {
-      "label": "Run App (Staging)",
-      "type": "shell",
-      "command": "flutter run --dart-define=ENV=staging",
-      "group": "test",
-      "problemMatcher": []
-    },
-    {
-      "label": "Run App (Production)",
-      "type": "shell",
-      "command": "flutter run --dart-define=ENV=prod",
-      "group": "test",
-      "problemMatcher": []
-    },
-    // ════════════════════════════════════════════════════════════
-    // 🍏 7. Build iOS (--dart-define=ENV, NO --flavor)
-    // ════════════════════════════════════════════════════════════
-    {
-      "label": "Build iOS (Development)",
-      "type": "shell",
-      "command": "flutter build ios --dart-define=ENV=dev",
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Build iOS (Staging)",
-      "type": "shell",
-      "command": "flutter build ios --release --dart-define=ENV=staging",
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Build iOS (Production)",
-      "type": "shell",
-      "command": "flutter build ios --release --dart-define=ENV=prod",
-      "group": "build",
-      "problemMatcher": []
-    },
-    // ════════════════════════════════════════════════════════════
-    // ⚡ 8. Flutter Pub Commands
-    // ════════════════════════════════════════════════════════════
-    {
-      "label": "Flutter Pub Get",
-      "type": "shell",
-      "command": "flutter pub get",
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Flutter Pub Upgrade",
-      "type": "shell",
-      "command": "flutter pub upgrade",
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Flutter Pub Outdated",
-      "type": "shell",
-      "command": "flutter pub outdated",
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Flutter Clean",
-      "type": "shell",
-      "command": "flutter clean",
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Universal Build (select env/type)",
-      "type": "shell",
-      "command": "flutter build ${input:buildType} --release --dart-define=ENV=${input:buildEnv} --split-debug-info=build/debug-symbols",
+      "command": "dart run build_runner build --delete-conflicting-outputs",
       "group": "build",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
         "panel": "shared"
       }
+    },
+    {
+      "label": "👁️ Build Runner (Watch)",
+      "type": "shell",
+      "command": "dart run build_runner watch --delete-conflicting-outputs",
+      "group": "build",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "🎯 Build Runner (Current File)",
+      "type": "shell",
+      "command": "dart run build_runner build --build-filter \"${relativeFile}\" --delete-conflicting-outputs",
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "🌐 Generate l10n",
+      "type": "shell",
+      "command": "flutter gen-l10n",
+      "group": "build",
+      "problemMatcher": []
+    },
+
+    // ═══════════════════════════════════════════════════════════
+    // 🧹 MAINTENANCE
+    // ═══════════════════════════════════════════════════════════
+    {
+      "label": "🧹 Clean & Get",
+      "type": "shell",
+      "command": "flutter clean && flutter pub get",
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "📦 Pub Get",
+      "type": "shell",
+      "command": "flutter pub get",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "⬆️ Pub Upgrade",
+      "type": "shell",
+      "command": "flutter pub upgrade",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "🔍 Pub Outdated",
+      "type": "shell",
+      "command": "flutter pub outdated",
+      "group": "build",
+      "problemMatcher": []
+    },
+
+    // ═══════════════════════════════════════════════════════════
+    // 🔧 FLUTTER COMMANDS
+    // ═══════════════════════════════════════════════════════════
+    {
+      "label": "🔧 Flutter Doctor",
+      "type": "shell",
+      "command": "flutter doctor -v",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "📊 Flutter Analyze",
+      "type": "shell",
+      "command": "flutter analyze",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "✨ Dart Format",
+      "type": "shell",
+      "command": "dart format .",
+      "group": "build",
+      "problemMatcher": []
     }
   ]
 }
