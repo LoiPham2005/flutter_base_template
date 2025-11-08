@@ -1,6 +1,7 @@
-# ════════════════════════════════════════════════════════════════
-# FLAVORIZR CONFIGURATION
-# ════════════════════════════════════════════════════════════════
+app:
+  android:
+    flavorDimensions: "environment"
+  ios: {}
 
 flavors:
   # ════════════════════════════════════════════════════════════
@@ -53,12 +54,6 @@ flavors:
     #   icon: "assets/icons/placeholder2.jpg"
       # firebase:
       #   config: "firebase/prod/GoogleService-Info.plist"
-
-# ✅ app config nằm dưới flavors
-app:
-  android:
-    flavorDimensions: "environment"
-  ios: {}
 
 # Instructions
 instructions:

@@ -1,104 +1,104 @@
-// {
-//   "version": "0.2.0",
-//   "configurations": [
-//     {
-//       "name": "🧑‍💻 Development (Debug)",
-//       "request": "launch",
-//       "type": "dart",
-//       "program": "lib/main_development.dart",
-//       "args": ["--flavor", "development"],
-//       "flutterMode": "debug"
-//     },
-//     {
-//       "name": "🧪 Staging (Debug)",
-//       "request": "launch",
-//       "type": "dart",
-//       "program": "lib/main_staging.dart",
-//       "args": ["--flavor", "staging"],
-//       "flutterMode": "debug"
-//     },
-//     {
-//       "name": "🚀 Production (Debug)",
-//       "request": "launch",
-//       "type": "dart",
-//       "program": "lib/main_production.dart",
-//       "args": ["--flavor", "production"],
-//       "flutterMode": "debug"
-//     },
-//     {
-//       "name": "📦 Production (Release)",
-//       "request": "launch",
-//       "type": "dart",
-//       "program": "lib/main_production.dart",
-//       "args": ["--flavor", "production", "--release"],
-//       "flutterMode": "release"
-//     }
-//   ]
-// }
-
-
-
 {
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "🧑‍💻 Development",
+      "name": "🧑‍💻 Development (Debug)",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main.dart",
-      "args": [
-        // "--flavor", "development",        
-        "--dart-define=ENV=dev"           
-      ],
+      "program": "lib/main_dev.dart",
+      "args": ["--flavor", "development"],
       "flutterMode": "debug"
     },
     {
-      "name": "🧪 Staging",
+      "name": "🧪 Staging (Debug)",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main.dart",
-      "args": [
-        // "--flavor", "staging",
-        "--dart-define=ENV=staging"
-      ],
+      "program": "lib/main_stg.dart",
+      "args": ["--flavor", "staging"],
       "flutterMode": "debug"
     },
     {
       "name": "🚀 Production (Debug)",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main.dart",
-      "args": [
-        // "--flavor", "production",
-        "--dart-define=ENV=prod"
-      ],
+      "program": "lib/main_prod.dart",
+      "args": ["--flavor", "production"],
       "flutterMode": "debug"
     },
-    {
-      "name": "📊 Production (Profile)",
-      "request": "launch",
-      "type": "dart",
-      "program": "lib/main.dart",
-      "args": [
-        // "--flavor", "production",
-        "--dart-define=ENV=prod"
-      ],
-      "flutterMode": "profile"
-    },
-    
-    // ════════════════════════════════════════════════════════════
-    // 📦 PRODUCTION (Release) - Build APK/IPA cuối cùng
-    // ════════════════════════════════════════════════════════════
     {
       "name": "📦 Production (Release)",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main.dart",
-      "args": [
-        // "--flavor", "production",
-        "--dart-define=ENV=prod"
-      ],
+      "program": "lib/main_prod.dart",
+      "args": ["--flavor", "production", "--release"],
       "flutterMode": "release"
     }
   ]
 }
+
+
+
+// {
+//   "version": "0.2.0",
+//   "configurations": [
+//     {
+//       "name": "🧑‍💻 Development",
+//       "request": "launch",
+//       "type": "dart",
+//       "program": "lib/main.dart",
+//       "args": [
+//         // "--flavor", "development",
+//         "--dart-define=ENV=dev"
+//       ],
+//       "flutterMode": "debug"
+//     },
+//     {
+//       "name": "🧪 Staging",
+//       "request": "launch",
+//       "type": "dart",
+//       "program": "lib/main.dart",
+//       "args": [
+//         // "--flavor", "staging",
+//         "--dart-define=ENV=staging"
+//       ],
+//       "flutterMode": "debug"
+//     },
+//     {
+//       "name": "🚀 Production (Debug)",
+//       "request": "launch",
+//       "type": "dart",
+//       "program": "lib/main.dart",
+//       "args": [
+//         // "--flavor", "production",
+//         "--dart-define=ENV=prod"
+//       ],
+//       "flutterMode": "debug"
+//     },
+//     {
+//       "name": "📊 Production (Profile)",
+//       "request": "launch",
+//       "type": "dart",
+//       "program": "lib/main.dart",
+//       "args": [
+//         // "--flavor", "production",
+//         "--dart-define=ENV=prod"
+//       ],
+//       "flutterMode": "profile"
+//     },
+
+//     // ════════════════════════════════════════════════════════════
+//     // 📦 PRODUCTION (Release) - Build APK/IPA cuối cùng
+//     // ════════════════════════════════════════════════════════════
+//     {
+//       "name": "📦 Production (Release)",
+//       "request": "launch",
+//       "type": "dart",
+//       "program": "lib/main.dart",
+//       "args": [
+//         // "--flavor", "production",
+//         "--dart-define=ENV=prod"
+//       ],
+//       "flutterMode": "release"
+//     }
+//   ]
+// }
