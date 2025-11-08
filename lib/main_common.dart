@@ -6,10 +6,9 @@ import 'core/config/app_initializer.dart';
 void mainCommon(Environment env) async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await AppInitializer.initialize();
-
-  // Set environment
   EnvironmentConfig.setEnvironment(env);
+
+  await AppInitializer.initialize();
 
   runApp(const MyApp());
 }
