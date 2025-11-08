@@ -1,4 +1,4 @@
-# 🚀 Flutter Build & Code Generation Commands
+<!-- # 🚀 Flutter Build & Code Generation Commands
 
 ## 1. Code Generation (Build Runner)
 
@@ -222,4 +222,4 @@ flutter build apk --release --dart-define=ENV=prod --split-debug-info=build/debu
 - 📖 [Environment Setup](ENVIRONMENT_SETUP.md)
 - 🏗️ [Architecture](architecture.md)
 - 📱 [Setup Keystore](setup_keystore.md)
-- 🚀 [CI/CD](cicd.md)
+- 🚀 [CI/CD](cicd.md) -->

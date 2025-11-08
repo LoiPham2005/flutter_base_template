@@ -220,7 +220,7 @@ jobs:
 | CI/CD         | �               | ✅                   | ✅             |
 | Đa nền tảng   | ❌ (native only) | ✅                   | ✅             |
 
-**Khuyến nghị:**  
+**Khuyến nghị:**
 - Dùng **Flavors** cho native (appId, icon, tên app, Firebase, cài song song).
 - Dùng **--dart-define=ENV** cho config trong code Dart.
 - **Kết hợp cả 2** để tối ưu cho dự án production chuyên nghiệp.
@@ -232,9 +232,9 @@ jobs:
 - **Luôn truyền đúng cả flavor và ENV khi build/run.**
 - **Nếu chỉ cần đổi API/config, có thể chỉ dùng --dart-define.**
 - **Nếu cần đổi appId, icon, tên app, Firebase, phải dùng Flavors.**
-- **Tham khảo thêm:**  
-  - [docs/build_flavor.md](build_flavor.md)  
-  - [docs/architecture.md](architecture.md)  
+- **Tham khảo thêm:**
+  - [docs/build_flavor.md](build_flavor.md)
+  - [docs/architecture.md](architecture.md)
   - [docs/rename_project.md](rename_project.md)
 
 ---

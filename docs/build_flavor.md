@@ -42,19 +42,19 @@ Build APK for each environment using flavors:
 ### Development
 
 ```bash
-flutter build apk --flavor development -t lib/main.dart
+flutter build apk --flavor development -t lib/main_dev.dart
 ```
 
 ### Staging
 
 ```bash
-flutter build apk --flavor staging -t lib/main.dart
+flutter build apk --flavor staging -t lib/main_stg.dart
 ```
 
 ### Production
 
 ```bash
-flutter build apk --flavor production -t lib/main.dart
+flutter build apk --flavor production -t lib/main_prod.dart
 ```
 
 **Output location:** `build/app/outputs/flutter-apk/`

@@ -3,90 +3,79 @@
 // ════════════════════════════════════════════════════════════════
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_base_template/core/config/environment_config.dart';
-import 'package:flutter_base_template/core/config/app_observer.dart';
 import 'package:flutter_base_template/core/config/app_bloc_observer.dart';
+import 'package:flutter_base_template/core/config/app_observer.dart';
+import 'package:flutter_base_template/core/config/environment_config.dart';
 import 'package:flutter_base_template/core/di/injection.dart';
-import 'package:flutter_base_template/core/theme/theme_cubit.dart';
 import 'package:flutter_base_template/core/l10n/localization_service.dart';
+import 'package:flutter_base_template/core/theme/theme_cubit.dart';
 import 'package:flutter_base_template/core/utils/logger.dart';
 import 'package:flutter_base_template/core/utils/logger_config.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+/// 🎯 Quản lý toàn bộ quá trình khởi tạo app
 class AppInitializer {
-  // Private constructor to prevent instantiation
   AppInitializer._();
 
-  // Indicates whether the app has been initialized
   static bool _isInitialized = false;
   static bool get isInitialized => _isInitialized;
 
-  /// ✅ Khởi tạo app
-  /// Main entry point for initializing the application
+  /// ✅ Entry point: Khởi tạo app
   static Future<void> initialize() async {
-    // Prevent re-initialization if already initialized
     if (_isInitialized) return;
 
     try {
-      // Create a Stopwatch instance and start it immediately to measure initialization time
       final stopwatch = Stopwatch()..start();
 
-      // Print environment information
+      // 1️⃣ In thông tin môi trường
       EnvironmentConfig.printInfo();
-      // Configure the logger
+
+      // 2️⃣ Cấu hình logger
       LoggerConfig.configure();
 
-      // Configure UI settings (orientation, system overlays)
+      // 3️⃣ Cấu hình UI
       await _configureUI();
-      // Initialize global app observer
-      AppObserver().initialize();
-      // Set up Bloc observer for state management
-      _configureBlocObserver();
-      // Set up dependency injection
-      await configureDependencies();
-      // Initialize services such as theme and localization
-      await _initializeServices();
 
-      // Stop the stopwatch and log the elapsed time
+      // 4️⃣ Khởi tạo observers
+      AppObserver().initialize();
+      _configureBlocObserver();
+
+      // 5️⃣ Setup DI
+      await configureDependencies();
+
+      // 6️⃣ Khởi tạo services
+      await _initializeServices();
 
       stopwatch.stop();
       _isInitialized = true;
-      Logger.success('App initialized in ${stopwatch.elapsedMilliseconds}ms');
+
+      Logger.success('App initialized in ${stopwatch.elapsedMilliseconds}ms', tag: 'INIT');
     } catch (e, stackTrace) {
-      // Log and handle initialization errors
-      Logger.error(
-        '❌ Failed to initialize app',
-        error: e,
-        stackTrace: stackTrace,
-      );
+      Logger.error('Failed to initialize app', error: e, stackTrace: stackTrace, tag: 'INIT');
       await _handleInitializationError();
       rethrow;
     }
   }
 
-  /// ✅ Xử lý khi initialization fail
-  /// Handles cleanup and reset if initialization fails
+  /// 🧹 Xử lý cleanup khi initialization fail
   static Future<void> _handleInitializationError() async {
     try {
-      // Dispose global observers and reset dependencies
       AppObserver().dispose();
       await resetDependencies();
       _isInitialized = false;
-      Logger.warning('⚠️ App reinitialization failed, cleaned up');
+      Logger.warning('Cleaned up after initialization failure', tag: 'INIT');
     } catch (e) {
-      Logger.error('❌ Cleanup error', error: e);
+      Logger.error('Cleanup error', error: e, tag: 'INIT');
     }
   }
 
-  /// Configure UI orientation and system overlays
+  /// 📱 Cấu hình UI (orientation, status bar)
   static Future<void> _configureUI() async {
     try {
       // Lock orientation to portrait
-      await SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-      ]);
+      await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-      // Set system UI overlay styles (status bar, navigation bar)
+      // Configure system UI overlays
       SystemChrome.setSystemUIOverlayStyle(
         const SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
@@ -96,28 +85,23 @@ class AppInitializer {
         ),
       );
     } catch (e) {
-      Logger.warning('⚠️ UI configuration warning: $e');
+      Logger.warning('UI configuration warning: $e', tag: 'INIT');
     }
   }
 
-  /// Set up Bloc observer for development and staging environments
+  /// 🔍 Setup BLoC observer (chỉ cho Dev/Staging)
   static void _configureBlocObserver() {
     if (EnvironmentConfig.isDev || EnvironmentConfig.isStaging) {
       Bloc.observer = AppBlocObserver();
     }
   }
 
-  /// Initialize services such as theme and localization
+  /// ⚙️ Khởi tạo services (theme, localization)
   static Future<void> _initializeServices() async {
     try {
-      await getIt<ThemeCubit>().initTheme();
-      await getIt<LocaleCubit>().initLocale();
+      await Future.wait([getIt<ThemeCubit>().initTheme(), getIt<LocaleCubit>().initLocale()]);
     } catch (e, stackTrace) {
-      Logger.error(
-        'Failed to initialize services',
-        error: e,
-        stackTrace: stackTrace,
-      );
+      Logger.error('Failed to initialize services', error: e, stackTrace: stackTrace, tag: 'INIT');
       rethrow;
     }
   }

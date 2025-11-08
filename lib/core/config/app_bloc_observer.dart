@@ -1,13 +1,12 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_base_template/core/utils/logger.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-// lib/core/bloc/app_bloc_observer.dart
+/// 🔍 Monitor BLoC state changes (Dev/Staging only)
 class AppBlocObserver extends BlocObserver {
   @override
   void onEvent(Bloc bloc, Object? event) {
     super.onEvent(bloc, event);
-    // ✅ CHỈ log nếu enabled
-    if (event != null && LogConfig.enableBlocLogs) {
+    if (LogConfig.enableBlocLogs && event != null) {
       Logger.blocEvent(bloc.runtimeType.toString(), event);
     }
   }
@@ -15,13 +14,8 @@ class AppBlocObserver extends BlocObserver {
   @override
   void onChange(BlocBase bloc, Change change) {
     super.onChange(bloc, change);
-    // ✅ CHỈ log nếu enabled
     if (LogConfig.enableBlocLogs) {
-      Logger.blocState(
-        bloc.runtimeType.toString(),
-        change.currentState,
-        change.nextState,
-      );
+      Logger.blocState(bloc.runtimeType.toString(), change.currentState, change.nextState);
     }
   }
 

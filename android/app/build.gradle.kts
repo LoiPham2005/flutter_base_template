@@ -49,19 +49,19 @@ android {
 
     flavorDimensions += "environment"
     productFlavors {
-        create("development") {
+        create("dev") {
             dimension = "environment"
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
             resValue("string", "app_name", "Base App Dev")
         }
-        create("staging") {
+        create("stg") {
             dimension = "environment"
             applicationIdSuffix = ".stg"
             versionNameSuffix = "-stg"
             resValue("string", "app_name", "Base App Stg")
         }
-        create("production") {
+        create("prod") {
             dimension = "environment"
             resValue("string", "app_name", "Base App")
         }
