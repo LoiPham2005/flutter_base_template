@@ -4,11 +4,11 @@ import 'package:flutter_base_template/core/theme/theme_cubit.dart';
 import 'package:flutter_base_template/core/theme/theme_state.dart';
 import 'package:flutter_base_template/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter_base_template/features/splash/presentation/pages/splash_page.dart';
+import 'package:flutter_base_template/gen/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_base_template/core/di/injection.dart';
 import 'package:flutter_base_template/core/theme/app_theme.dart';
 import 'package:flutter_base_template/core/constants/app_constants.dart';
-import 'package:flutter_base_template/core/l10n/generated/app_localizations.dart';
 import '../core/services/navigation_service.dart';
 
 class MyApp extends StatelessWidget {

@@ -48,3 +48,20 @@ app.*.map.json
 **/android/key.properties
 **/android/*.jks
 **/android/*.keystore
+
+
+
+# Environment files (BẮT BUỘC)
+.env*
+!.env.example
+
+# Generated files
+*.g.dart
+*.freezed.dart
+
+# Build
+build/
+
+# Firebase
+**/google-services.json
+**/GoogleService-Info.plist

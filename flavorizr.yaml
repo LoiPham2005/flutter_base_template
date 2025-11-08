@@ -1,0 +1,74 @@
+# ════════════════════════════════════════════════════════════════
+# FLAVORIZR CONFIGURATION
+# ════════════════════════════════════════════════════════════════
+
+flavors:
+  # ════════════════════════════════════════════════════════════
+  # DEVELOPMENT
+  # ════════════════════════════════════════════════════════════
+  dev:
+    app:
+      name: "MyApp Dev"
+    android:
+      applicationId: "com.example.flutter_base_template.dev"
+      icon: "assets/icons/placeholder2.jpg"
+      # firebase:
+      #   config: "firebase/dev/google-services.json"
+    # ios:
+    #   bundleId: "com.example.flutter_base_template.dev"
+    #   icon: "assets/icons/placeholder2.jpg"
+      # firebase:
+      #   config: "firebase/dev/GoogleService-Info.plist"
+
+  # ════════════════════════════════════════════════════════════
+  # STAGING
+  # ════════════════════════════════════════════════════════════
+  staging:
+    app:
+      name: "MyApp Staging"
+    android:
+      applicationId: "com.example.flutter_base_template.staging"
+      icon: "assets/icons/placeholder2.jpg"
+      # firebase:
+      #   config: "firebase/staging/google-services.json"
+    # ios:
+    #   bundleId: "com.example.flutter_base_template.staging"
+    #   icon: "assets/icons/placeholder2.jpg"
+      # firebase:
+      #   config: "firebase/staging/GoogleService-Info.plist"
+
+  # ════════════════════════════════════════════════════════════
+  # PRODUCTION
+  # ════════════════════════════════════════════════════════════
+  prod:
+    app:
+      name: "MyApp"
+    android:
+      applicationId: "com.example.flutter_base_template"
+      icon: "assets/icons/placeholder2.jpg"
+      # firebase:
+      #   config: "firebase/prod/google-services.json"
+    # ios:
+    #   bundleId: "com.example.flutter_base_template"
+    #   icon: "assets/icons/placeholder2.jpg"
+      # firebase:
+      #   config: "firebase/prod/GoogleService-Info.plist"
+
+# ✅ app config nằm dưới flavors
+app:
+  android:
+    flavorDimensions: "environment"
+  ios: {}
+
+# Instructions
+instructions:
+  - android:androidManifest
+  - android:buildGradle
+  - android:icons
+  # - ios:xcconfig
+  # - ios:buildTargets
+  # - ios:schema
+  # - ios:icons
+  # - ios:plist
+  - assets:download
+  - ide:config

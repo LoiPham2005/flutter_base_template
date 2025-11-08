@@ -14,6 +14,7 @@ class HomePage extends StatelessWidget {
         children: [
           Center(child: Text(context.l10n.appTitle)),
           10.height,
+        //  Assets.icons.placeholder2.svg(),
           ElevatedButton(
             onPressed: () {
               context.push(const Page2());

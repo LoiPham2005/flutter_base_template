@@ -3,3 +3,15 @@ flutter pub run flutter_launcher_icons:main --path=flutter_icons.yaml
 
 # câu lệnh tạo splash screen
 flutter pub run flutter_native_splash:create --path=flutter_splash.yaml
+
+
+
+
+# Dev
+flutter pub run flutter_native_splash:create --flavor dev
+
+# Staging
+flutter pub run flutter_native_splash:create --flavor staging
+
+# Prod
+flutter pub run flutter_native_splash:create --flavor prod
