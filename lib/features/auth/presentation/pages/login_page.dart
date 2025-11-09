@@ -31,8 +31,8 @@ class _LoginPageState extends State<LoginPage> {
         listener: (context, state) {
           if (state.isSuccess) {
             context.showSuccessSnackBar('Login successful!');
-            // context.pushReplacement(const HomePage());
-            context.router.replaceAll([const BottomMenuRoute()]);
+            context.pushReplacement(const HomePage());
+            // context.router.replaceAll([const BottomMenuRoute()]);
           } else if (state.isFailure) {
             context.showErrorSnackBar(state.error ?? 'Login failed');
           }

@@ -1,6 +1,3 @@
-// 📁 lib/features/splash/presentation/pages/splash_page.dart
-// chuẩn và tối ưu nhất ✅
-// ════════════════════════════════════════════════════════════════
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_base_template/core/storage/storage_keys.dart';
@@ -11,7 +8,7 @@ import '../../../../core/services/app_version_service.dart';
 import '../../../../core/storage/storage_service.dart';
 import '../../../../core/utils/logger.dart';
 
-@RoutePage()
+
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
 

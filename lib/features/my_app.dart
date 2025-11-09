@@ -5,6 +5,7 @@ import 'package:flutter_base_template/core/l10n/localization_service.dart';
 import 'package:flutter_base_template/core/theme/app_theme.dart';
 import 'package:flutter_base_template/core/theme/theme_cubit.dart';
 import 'package:flutter_base_template/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:flutter_base_template/features/splash/presentation/pages/splash_page.dart';
 import 'package:flutter_base_template/gen/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,7 +18,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final localeCubit = getIt<LocaleCubit>();
     final themeCubit = getIt<ThemeCubit>();
-    final appRouter = getIt<AppRouter>();
 
     return MultiBlocProvider(
       providers: [
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
           // ✅ Lấy themeState từ ThemeCubit
           final themeState = context.select((ThemeCubit cubit) => cubit.state);
 
-          return MaterialApp.router(
+          return MaterialApp(
             title: AppConstants.appName,
             debugShowCheckedModeBanner: false,
 
@@ -51,9 +51,8 @@ class MyApp extends StatelessWidget {
             // Navigation
             // navigatorKey: NavigationService().navigatorKey,
 
-            // home: const SplashPage(),
-            
-            routerConfig: appRouter.config()
+            home: const SplashPage(),
+
           );
         },
       ),

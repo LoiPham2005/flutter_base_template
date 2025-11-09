@@ -1,43 +1,46 @@
-// ════════════════════════════════════════════════════════════════
-// 📁 lib/core/routes/app_routes.dart - BEST FOR YOUR PROJECT ✅
-// ════════════════════════════════════════════════════════════════
-import 'dart:ui';
-
-import 'package:auto_route/auto_route.dart';
-import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter_base_template/features/splash/presentation/pages/splash_page.dart';
+import 'package:flutter_base_template/features/auth/presentation/pages/login_page.dart';
+import 'package:flutter_base_template/features/home/presentation/pages/home_page.dart';
+import 'package:flutter_base_template/features/category/presentation/pages/category_page.dart';
 import 'package:injectable/injectable.dart';
 
-// Import pages
-import '../../features/splash/presentation/pages/splash_page.dart';
-import '../../features/splash/presentation/pages/onboarding_page.dart';
-import '../../features/auth/presentation/pages/login_page.dart';
-import '../../features/bottom_menu/presentation/pages/bottom_menu_page.dart';
-import '../../features/home/presentation/pages/home_page.dart';
+@LazySingleton()
+class AppRoutes {
+  static const String splash = '/';
+  static const String login = '/login';
+  static const String home = '/home';
+  static const String category = '/category';
+  static const String categoryDetail = '/category/:id';
 
-part 'app_routes.gr.dart';
-
-@singleton
-@AutoRouterConfig(replaceInRouteName: 'Page,Route')
-class AppRouter extends RootStackRouter {
-  AppRouter();
-
-  @override
-  List<AutoRoute> get routes => <AutoRoute>[
-    // Splash - Entry point, handle all routing logic here
-    AutoRoute(page: SplashRoute.page, initial: true),
-
-    // Onboarding
-    AutoRoute(page: OnboardingRoute.page),
-
-    // Auth
-    AutoRoute(page: LoginRoute.page),
-
-    // Main app with tabs
-    AutoRoute(
-      page: BottomMenuRoute.page,
-      children: <AutoRoute>[
-        AutoRoute(page: HomeRoute.page, initial: true),
-      ],
-    ),
-  ];
+  final GoRouter router = GoRouter(
+    initialLocation: splash,
+    routes: [
+      GoRoute(
+        path: splash,
+        builder: (context, state) => const SplashPage(),
+      ),
+      GoRoute(
+        path: login,
+        builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: home,
+        builder: (context, state) => const HomePage(),
+      ),
+      // GoRoute(
+      //   path: category,
+      //   builder: (context, state) => const CategoryPage(),
+      //   routes: [
+      //     GoRoute(
+      //       path: ':id',
+      //       builder: (context, state) {
+      //         final id = state.pathParameters['id'];
+      //         return CategoryDetailPage(categoryId: id ?? '');
+      //       },
+      //     ),
+      //   ],
+      // ),
+    ],
+  );
 }
