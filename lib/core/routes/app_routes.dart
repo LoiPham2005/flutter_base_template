@@ -1,64 +1,42 @@
 // ════════════════════════════════════════════════════════════════
-// 📁 lib/core/routes/app_routes.dart (ĐÃ SỬA)
+// 📁 lib/core/routes/app_routes.dart - BEST FOR YOUR PROJECT ✅
 // ════════════════════════════════════════════════════════════════
+import 'dart:ui';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_base_template/features/bottom_menu/presentation/pages/bottom_menu_page.dart';
-import 'package:flutter_base_template/features/splash/presentation/pages/onboarding_page.dart';
 import 'package:injectable/injectable.dart';
 
+// Import pages
+import '../../features/splash/presentation/pages/splash_page.dart';
+import '../../features/splash/presentation/pages/onboarding_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
+import '../../features/bottom_menu/presentation/pages/bottom_menu_page.dart';
 import '../../features/home/presentation/pages/home_page.dart';
-import 'guards/auth_guard.dart';
-import 'guards/onboarding_guard.dart';
 
 part 'app_routes.gr.dart';
 
-@lazySingleton
-@AutoRouterConfig()
-class AppRouter extends RootStackRouter {  // ✅ Đổi từ $_AppRouter
-  final AuthGuard _authGuard;
-  final OnboardingGuard _onboardingGuard;
-
-  AppRouter(this._authGuard, this._onboardingGuard);
+@singleton
+@AutoRouterConfig(replaceInRouteName: 'Page,Route')
+class AppRouter extends RootStackRouter {
+  AppRouter();
 
   @override
-  List<AutoRoute> get routes => [
-    // ════════════════════════════════════════════════════════════
-    // PUBLIC ROUTES
-    // ════════════════════════════════════════════════════════════
-    AutoRoute(
-      page: LoginRoute.page,
-      path: '/login',
-      initial: true,  // ✅ Login là initial nếu chưa auth
-    ),
+  List<AutoRoute> get routes => <AutoRoute>[
+    // Splash - Entry point, handle all routing logic here
+    AutoRoute(page: SplashRoute.page, initial: true),
 
-    AutoRoute(
-      page: OnboardingRoute.page,
-      path: '/onboarding',
-    ),
+    // Onboarding
+    AutoRoute(page: OnboardingRoute.page),
 
-    // ════════════════════════════════════════════════════════════
-    // PROTECTED ROUTES (require auth)
-    // ════════════════════════════════════════════════════════════
+    // Auth
+    AutoRoute(page: LoginRoute.page),
+
+    // Main app with tabs
     AutoRoute(
-      page: BottomMenuRoute.page,  // ✅ Sửa tên route
-      path: '/',
-      guards: [_onboardingGuard, _authGuard],
-      children: [
-        AutoRoute(
-          page: HomeRoute.page,
-          path: 'home',
-          initial: true,
-        ),
-        // AutoRoute(
-        //   page: ProfileRoute.page,
-        //   path: 'profile',
-        // ),
-        // AutoRoute(
-        //   page: SettingsRoute.page,
-        //   path: 'settings',
-        // ),
+      page: BottomMenuRoute.page,
+      children: <AutoRoute>[
+        AutoRoute(page: HomeRoute.page, initial: true),
       ],
     ),
   ];

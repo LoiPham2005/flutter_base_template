@@ -16,14 +16,13 @@ class SecureStorageKeys {
   static const String biometric = 'secure_biometric';
 }
 
-
 class StorageKeys {
   StorageKeys._(); // Private constructor để không ai có thể tạo instance
 
   // ═══════════════════════════════════════════════════════════════
   // NON-SENSITIVE DATA (SharedPreferences)
   // ═══════════════════════════════════════════════════════════════
-  
+
   // Auth
   static const String userProfile = 'user_profile';
   static const String isLogin = 'is_login';
@@ -32,4 +31,6 @@ class StorageKeys {
   static const String isFirstRun = 'is_first_run';
   static const String themeMode = 'theme_mode';
   static const String languageCode = 'language_code';
+
+  static const String hasSeenOnboarding = 'has_seen_onboarding';
 }
