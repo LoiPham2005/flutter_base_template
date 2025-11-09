@@ -2,7 +2,6 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_base_template/features/splash/presentation/pages/splash_page.dart';
 import 'package:flutter_base_template/features/auth/presentation/pages/login_page.dart';
 import 'package:flutter_base_template/features/home/presentation/pages/home_page.dart';
-import 'package:flutter_base_template/features/category/presentation/pages/category_page.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton()

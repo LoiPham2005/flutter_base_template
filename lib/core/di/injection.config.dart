@@ -76,7 +76,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => registerModule.prefs,
       preResolve: true,
     );
-    gh.singleton<_i231.AppRouter>(() => _i231.AppRouter());
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => registerModule.secureStorage,
     );
@@ -85,6 +84,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i261.LoggingInterceptor>(
       () => _i261.LoggingInterceptor(),
     );
+    gh.lazySingleton<_i231.AppRoutes>(() => _i231.AppRoutes());
     gh.lazySingleton<_i223.StorageService>(
       () => _i223.StorageService(gh<_i460.SharedPreferences>()),
     );
