@@ -1,10 +1,8 @@
-import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_base_template/core/extensions/context_extensions.dart';
 import 'package:flutter_base_template/core/extensions/localization_x.dart';
 import 'package:flutter_base_template/core/extensions/number_extensions.dart';
 
-@RoutePage()
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:auto_route/annotations.dart';
 
-@RoutePage()
 class BottomMenuPage extends StatelessWidget {
   const BottomMenuPage({super.key});
 
