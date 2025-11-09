@@ -1,5 +1,6 @@
-import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_base_template/core/routes/app_routes.dart';
 
 @RoutePage()
 class OnboardingPage extends StatelessWidget {
@@ -19,8 +20,10 @@ class OnboardingPage extends StatelessWidget {
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () {
-                onComplete?.call();
-                Navigator.of(context).pop();
+                // onComplete?.call();
+                // Navigator.of(context).pop();
+                print("click Onboarding");
+                context.router.replaceAll([const BottomMenuRoute()]);
               },
               child: const Text('Get Started'),
             ),

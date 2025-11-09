@@ -4,7 +4,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_base_template/features/bottom_menu/presentation/pages/bottom_menu_page.dart';
-import 'package:flutter_base_template/features/splash/presentation/pages/Onboarding_page.dart';
+import 'package:flutter_base_template/features/splash/presentation/pages/onboarding_page.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../features/auth/presentation/pages/login_page.dart';

@@ -15,22 +15,14 @@ class OnboardingGuard extends AutoRouteGuard {
 
   @override
   void onNavigation(NavigationResolver resolver, StackRouter router) async {
-    final hasSeenOnboarding =
-        _storageService.get<bool>('has_seen_onboarding') ?? false;
+    final hasSeenOnboarding = _storageService.get<bool>('has_seen_onboarding') ?? false;
 
     if (hasSeenOnboarding) {
-      // ✅ User completed onboarding
       resolver.next(true);
     } else {
-      // ❌ First time user
-      resolver.redirect(
-        OnboardingRoute(
-          onComplete: () async {
-            await _storageService.set('has_seen_onboarding', true);
-            resolver.next(true);
-          },
-        ),
-      );
+      // Chỉ redirect, KHÔNG gọi next trong callback!
+      resolver.redirect( OnboardingRoute());
+      // Khi hoàn thành onboarding, hãy set 'has_seen_onboarding' và chuyển màn trong OnboardingPage.
     }
   }
 }
