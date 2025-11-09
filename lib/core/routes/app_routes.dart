@@ -1,44 +1,65 @@
-// import 'package:go_router/go_router.dart';
-// import 'package:flutter_base_template/features/splash/presentation/pages/splash_page.dart';
-// import 'package:flutter_base_template/features/auth/presentation/pages/login_page.dart';
-// import 'package:flutter_base_template/features/home/presentation/pages/home_page.dart';
-// import 'package:flutter_base_template/features/category/presentation/pages/category_page.dart';
+// ════════════════════════════════════════════════════════════════
+// 📁 lib/core/routes/app_routes.dart (ĐÃ SỬA)
+// ════════════════════════════════════════════════════════════════
+import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_base_template/features/bottom_menu/presentation/pages/bottom_menu_page.dart';
+import 'package:flutter_base_template/features/splash/presentation/pages/Onboarding_page.dart';
+import 'package:injectable/injectable.dart';
 
-// class AppRoutes {
-//   static const String splash = '/';
-//   static const String login = '/login';
-//   static const String home = '/home';
-//   static const String category = '/category';
-//   static const String categoryDetail = '/category/:id';
+import '../../features/auth/presentation/pages/login_page.dart';
+import '../../features/home/presentation/pages/home_page.dart';
+import 'guards/auth_guard.dart';
+import 'guards/onboarding_guard.dart';
 
-//   static final GoRouter router = GoRouter(
-//     initialLocation: splash,
-//     routes: [
-//       GoRoute(
-//         path: splash,
-//         builder: (context, state) => const SplashPage(),
-//       ),
-//       GoRoute(
-//         path: login,
-//         builder: (context, state) => const LoginPage(),
-//       ),
-//       GoRoute(
-//         path: home,
-//         builder: (context, state) => const HomePage(),
-//       ),
-//       GoRoute(
-//         path: category,
-//         builder: (context, state) => const CategoryPage(),
-//         routes: [
-//           GoRoute(
-//             path: ':id',
-//             builder: (context, state) {
-//               final id = state.pathParameters['id'];
-//               return CategoryDetailPage(categoryId: id ?? '');
-//             },
-//           ),
-//         ],
-//       ),
-//     ],
-//   );
-// }
+part 'app_routes.gr.dart';
+
+@lazySingleton
+@AutoRouterConfig()
+class AppRouter extends RootStackRouter {  // ✅ Đổi từ $_AppRouter
+  final AuthGuard _authGuard;
+  final OnboardingGuard _onboardingGuard;
+
+  AppRouter(this._authGuard, this._onboardingGuard);
+
+  @override
+  List<AutoRoute> get routes => [
+    // ════════════════════════════════════════════════════════════
+    // PUBLIC ROUTES
+    // ════════════════════════════════════════════════════════════
+    AutoRoute(
+      page: LoginRoute.page,
+      path: '/login',
+      initial: true,  // ✅ Login là initial nếu chưa auth
+    ),
+
+    AutoRoute(
+      page: OnboardingRoute.page,
+      path: '/onboarding',
+    ),
+
+    // ════════════════════════════════════════════════════════════
+    // PROTECTED ROUTES (require auth)
+    // ════════════════════════════════════════════════════════════
+    AutoRoute(
+      page: BottomMenuRoute.page,  // ✅ Sửa tên route
+      path: '/',
+      guards: [_onboardingGuard, _authGuard],
+      children: [
+        AutoRoute(
+          page: HomeRoute.page,
+          path: 'home',
+          initial: true,
+        ),
+        // AutoRoute(
+        //   page: ProfileRoute.page,
+        //   path: 'profile',
+        // ),
+        // AutoRoute(
+        //   page: SettingsRoute.page,
+        //   path: 'settings',
+        // ),
+      ],
+    ),
+  ];
+}

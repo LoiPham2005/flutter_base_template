@@ -22,6 +22,11 @@ import 'package:flutter_base_template/core/network/interceptors/error_intercepto
 import 'package:flutter_base_template/core/network/interceptors/logging_interceptor.dart'
     as _i261;
 import 'package:flutter_base_template/core/network/network_info.dart' as _i978;
+import 'package:flutter_base_template/core/routes/app_routes.dart' as _i231;
+import 'package:flutter_base_template/core/routes/guards/auth_guard.dart'
+    as _i859;
+import 'package:flutter_base_template/core/routes/guards/onboarding_guard.dart'
+    as _i676;
 import 'package:flutter_base_template/core/services/auth_service.dart' as _i694;
 import 'package:flutter_base_template/core/storage/secure_storage.dart'
     as _i873;
@@ -95,6 +100,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i238.LocaleCubit>(
       () => _i238.LocaleCubit(gh<_i223.StorageService>()),
     );
+    gh.lazySingleton<_i676.OnboardingGuard>(
+      () => _i676.OnboardingGuard(gh<_i223.StorageService>()),
+    );
     gh.factory<_i501.ThemeCubit>(
       () => _i501.ThemeCubit(gh<_i223.StorageService>()),
     );
@@ -129,6 +137,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i163.CategoryRepository>(
       () => _i800.CategoryRepositoryImpl(gh<_i863.CategoryRemoteDataSource>()),
     );
+    gh.lazySingleton<_i859.AuthGuard>(
+      () => _i859.AuthGuard(gh<_i785.AuthRepository>()),
+    );
     gh.factory<_i377.DeleteAccountUseCase>(
       () => _i377.DeleteAccountUseCase(gh<_i785.AuthRepository>()),
     );
@@ -146,6 +157,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i781.ResetPasswordUseCase>(
       () => _i781.ResetPasswordUseCase(gh<_i785.AuthRepository>()),
+    );
+    gh.lazySingleton<_i231.AppRouter>(
+      () => _i231.AppRouter(gh<_i859.AuthGuard>(), gh<_i676.OnboardingGuard>()),
     );
     gh.factory<_i627.AuthBloc>(
       () => _i627.AuthBloc(

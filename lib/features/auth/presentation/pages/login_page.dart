@@ -1,4 +1,5 @@
 // lib/features/auth/presentation/pages/login_page.dart
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_base_template/core/extensions/context_extensions.dart';
 import 'package:flutter_base_template/core/extensions/number_extensions.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_base_template/features/home/presentation/pages/home_page
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/auth_bloc.dart';
 
+@RoutePage()
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
