@@ -37,7 +37,7 @@ flutter pub get
 
 ## 4. Build APK (With Flavors)
 
-Build APK for each environment using flavors:
+Build APK for each environment using flavors **và entrypoint riêng**:
 
 ### Development
 
@@ -63,24 +63,24 @@ flutter build apk --flavor production -t lib/main_prod.dart
 
 ## 5. Build AAB (App Bundle - For Google Play, With Flavors)
 
-Build Android App Bundle for each environment:
+Build Android App Bundle cho từng môi trường:
 
 ### Development
 
 ```bash
-flutter build appbundle --flavor development -t lib/main.dart
+flutter build appbundle --flavor development -t lib/main_dev.dart
 ```
 
 ### Staging
 
 ```bash
-flutter build appbundle --flavor staging -t lib/main.dart
+flutter build appbundle --flavor staging -t lib/main_stg.dart
 ```
 
 ### Production
 
 ```bash
-flutter build appbundle --flavor production -t lib/main.dart
+flutter build appbundle --flavor production -t lib/main_prod.dart
 ```
 
 **Output location:** `build/app/outputs/bundle/<flavor>/`
@@ -92,19 +92,19 @@ flutter build appbundle --flavor production -t lib/main.dart
 ### Development
 
 ```bash
-flutter build ios --flavor development -t lib/main.dart
+flutter build ios --flavor development -t lib/main_dev.dart
 ```
 
 ### Staging
 
 ```bash
-flutter build ios --flavor staging -t lib/main.dart
+flutter build ios --flavor staging -t lib/main_stg.dart
 ```
 
 ### Production
 
 ```bash
-flutter build ios --flavor production -t lib/main.dart
+flutter build ios --flavor production -t lib/main_prod.dart
 ```
 
 ---
@@ -114,19 +114,19 @@ flutter build ios --flavor production -t lib/main.dart
 ### Development
 
 ```bash
-flutter run --flavor development -t lib/main.dart
+flutter run --flavor development -t lib/main_dev.dart
 ```
 
 ### Staging
 
 ```bash
-flutter run --flavor staging -t lib/main.dart
+flutter run --flavor staging -t lib/main_stg.dart
 ```
 
 ### Production
 
 ```bash
-flutter run --flavor production -t lib/main.dart
+flutter run --flavor production -t lib/main_prod.dart
 ```
 
 ---
@@ -134,9 +134,9 @@ flutter run --flavor production -t lib/main.dart
 ## 8. (Optional) Kết hợp --dart-define nếu cần truyền ENV cho code Dart
 
 ```bash
-flutter run --flavor development -t lib/main.dart --dart-define=ENV=dev
-flutter run --flavor staging -t lib/main.dart --dart-define=ENV=staging
-flutter run --flavor production -t lib/main.dart --dart-define=ENV=prod
+flutter run --flavor development -t lib/main_dev.dart --dart-define=ENV=dev
+flutter run --flavor staging -t lib/main_stg.dart --dart-define=ENV=staging
+flutter run --flavor production -t lib/main_prod.dart --dart-define=ENV=prod
 ```
 
 ---
@@ -194,13 +194,15 @@ flutter test --coverage
 
 | Task                | Command Example |
 |---------------------|----------------|
-| **Build APK Dev**   | `flutter build apk --flavor development -t lib/main.dart` |
-| **Build APK Stg**   | `flutter build apk --flavor staging -t lib/main.dart` |
-| **Build APK Prod**  | `flutter build apk --flavor production -t lib/main.dart` |
-| **Build AAB Prod**  | `flutter build appbundle --flavor production -t lib/main.dart` |
-| **Run Dev**         | `flutter run --flavor development -t lib/main.dart` |
-| **Run Stg**         | `flutter run --flavor staging -t lib/main.dart` |
-| **Run Prod**        | `flutter run --flavor production -t lib/main.dart` |
+| **Build APK Dev**   | `flutter build apk --flavor development -t lib/main_dev.dart` |
+| **Build APK Stg**   | `flutter build apk --flavor staging -t lib/main_stg.dart` |
+| **Build APK Prod**  | `flutter build apk --flavor production -t lib/main_prod.dart` |
+| **Build AAB Dev**   | `flutter build appbundle --flavor development -t lib/main_dev.dart` |
+| **Build AAB Stg**   | `flutter build appbundle --flavor staging -t lib/main_stg.dart` |
+| **Build AAB Prod**  | `flutter build appbundle --flavor production -t lib/main_prod.dart` |
+| **Run Dev**         | `flutter run --flavor development -t lib/main_dev.dart` |
+| **Run Stg**         | `flutter run --flavor staging -t lib/main_stg.dart` |
+| **Run Prod**        | `flutter run --flavor production -t lib/main_prod.dart` |
 | **Code Gen**        | `flutter pub run build_runner build --delete-conflicting-outputs` |
 | **i18n**            | `flutter gen-l10n` |
 | **Clean**           | `flutter clean && flutter pub get` |
@@ -223,13 +225,13 @@ flutter pub run build_runner build --delete-conflicting-outputs
 flutter gen-l10n
 
 # 4. Run development
-flutter run --flavor development -t lib/main.dart
+flutter run --flavor development -t lib/main_dev.dart
 
 # 5. Build for staging (test)
-flutter build apk --flavor staging -t lib/main.dart
+flutter build apk --flavor staging -t lib/main_stg.dart
 
 # 6. Build for production
-flutter build apk --flavor production -t lib/main.dart
+flutter build apk --flavor production -t lib/main_prod.dart
 ```
 
 ---
@@ -237,7 +239,7 @@ flutter build apk --flavor production -t lib/main.dart
 ## 📝 Notes
 
 - **Flavors**: Đảm bảo đã cấu hình productFlavors trong `android/app/build.gradle.kts` và scheme/target trên iOS.
-- **Entrypoint**: Nếu bạn có file main riêng cho từng flavor, thay `lib/main.dart` bằng file tương ứng.
+- **Entrypoint**: Sử dụng file main riêng cho từng flavor: `main_dev.dart`, `main_stg.dart`, `main_prod.dart`.
 - **Kết hợp --dart-define**: Nếu code Dart cần biết ENV, truyền thêm `--dart-define=ENV=...`.
 - **Output**: APK/AAB sẽ nằm trong thư mục `build/app/outputs/`.
 

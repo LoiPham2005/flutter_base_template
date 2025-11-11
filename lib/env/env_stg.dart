@@ -1,9 +1,9 @@
 import 'package:envied/envied.dart';
 
-part 'env_staging.g.dart';
+part 'env_stg.g.dart';
 
-@Envied(path: '.env.staging')
-abstract class EnvStaging {
+@Envied(path: '.env.stg')
+abstract class EnvStg {
   @EnviedField(varName: 'API_BASE_URL')
   static const String apiBaseUrl = _EnvStaging.apiBaseUrl;
 
