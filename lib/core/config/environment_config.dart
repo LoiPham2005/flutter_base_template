@@ -122,7 +122,7 @@
 //   }
 // }
 
-
+// lib/core/config/environment_config.dart
 import 'package:flutter_base_template/core/utils/logger.dart';
 import 'package:flutter_base_template/env/env_dev.dart';
 import 'package:flutter_base_template/env/env_prod.dart';
@@ -135,7 +135,9 @@ class EnvironmentConfig {
 
   static Environment _current = Environment.development;
 
+  // ✅ Fix: Thêm lại method setEnvironment
   static void setEnvironment(Environment env) => _current = env;
+
   static Environment get environment => _current;
 
   // ════════════════════════════════════════════════════════════════
@@ -147,41 +149,76 @@ class EnvironmentConfig {
   static bool get enableCrashReporting => isProduction || isStaging;
 
   // ════════════════════════════════════════════════════════════════
-  // PRIVATE GETTER FOR ENV CLASS (REDUCE SWITCH STATEMENTS)
+  // API CONFIGURATION - ✅ FIX: Dùng switch thay vì dynamic
   // ════════════════════════════════════════════════════════════════
-  static dynamic get _env => switch (_current) {
-    Environment.development => EnvDev,
-    Environment.staging => EnvStg,
-    Environment.production => EnvProd,
-  };
+  static String get apiBaseUrl => switch (_current) {
+        Environment.development => EnvDev.apiBaseUrl,
+        Environment.staging => EnvStg.apiBaseUrl,
+        Environment.production => EnvProd.apiBaseUrl,
+      };
 
-  // ════════════════════════════════════════════════════════════════
-  // API CONFIGURATION
-  // ════════════════════════════════════════════════════════════════
-  static String get apiBaseUrl => _env.apiBaseUrl ;
-  static String get webSocketUrl => _env.wsUrl;
+  static String get webSocketUrl => switch (_current) {
+        Environment.development => EnvDev.wsUrl,
+        Environment.staging => EnvStg.wsUrl,
+        Environment.production => EnvProd.wsUrl,
+      };
 
   // ════════════════════════════════════════════════════════════════
   // FEATURE FLAGS
   // ════════════════════════════════════════════════════════════════
-  static bool get enableLogging => _env.enableLogging;
-  static bool get enableDebugTools => _env.enableDebugTools;
-  static bool get enableAnalytics => _env.enableAnalytics;
+  static bool get enableLogging => switch (_current) {
+        Environment.development => EnvDev.enableLogging,
+        Environment.staging => EnvStg.enableLogging,
+        Environment.production => EnvProd.enableLogging,
+      };
+
+  static bool get enableDebugTools => switch (_current) {
+        Environment.development => EnvDev.enableDebugTools,
+        Environment.staging => EnvStg.enableDebugTools,
+        Environment.production => EnvProd.enableDebugTools,
+      };
+
+  static bool get enableAnalytics => switch (_current) {
+        Environment.development => EnvDev.enableAnalytics,
+        Environment.staging => EnvStg.enableAnalytics,
+        Environment.production => EnvProd.enableAnalytics,
+      };
 
   // ════════════════════════════════════════════════════════════════
   // TIMEOUTS
   // ════════════════════════════════════════════════════════════════
-  static Duration get connectTimeout =>
-    Duration(seconds: (_env.connectTimeout));
+  static Duration get connectTimeout {
+    final seconds = switch (_current) {
+      Environment.development => EnvDev.connectTimeout,
+      Environment.staging => EnvStg.connectTimeout,
+      Environment.production => EnvProd.connectTimeout,
+    };
+    return Duration(seconds: seconds);
+  }
 
-  static Duration get receiveTimeout =>
-    Duration(seconds: (_env.receiveTimeout));
+  static Duration get receiveTimeout {
+    final seconds = switch (_current) {
+      Environment.development => EnvDev.receiveTimeout,
+      Environment.staging => EnvStg.receiveTimeout,
+      Environment.production => EnvProd.receiveTimeout,
+    };
+    return Duration(seconds: seconds);
+  }
 
   // ════════════════════════════════════════════════════════════════
   // API KEYS
   // ════════════════════════════════════════════════════════════════
-  static String get googleMapsApiKey => _env.googleMapsApiKey;
-  static String get stripePublicKey => _env.stripePublicKey;
+  static String get googleMapsApiKey => switch (_current) {
+        Environment.development => EnvDev.googleMapsApiKey,
+        Environment.staging => EnvStg.googleMapsApiKey,
+        Environment.production => EnvProd.googleMapsApiKey,
+      };
+
+  static String get stripePublicKey => switch (_current) {
+        Environment.development => EnvDev.stripePublicKey,
+        Environment.staging => EnvStg.stripePublicKey,
+        Environment.production => EnvProd.stripePublicKey,
+      };
 
   // ════════════════════════════════════════════════════════════════
   // DEBUG INFO

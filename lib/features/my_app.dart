@@ -8,7 +8,7 @@ import 'package:flutter_base_template/features/auth/presentation/bloc/auth_bloc.
 import 'package:flutter_base_template/gen/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../core/routes/app_routes.dart';
+import '../core/routes/app_router.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final localeCubit = getIt<LocaleCubit>();
     final themeCubit = getIt<ThemeCubit>();
-    final appRoutes = getIt<AppRoutes>();
+    final appRoutes = getIt<AppRouter>();
 
     return MultiBlocProvider(
       providers: [

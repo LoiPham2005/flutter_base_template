@@ -1,4 +1,5 @@
 // lib/core/network/api_client.dart
+import 'package:dio/dio.dart';
 import 'package:flutter_base_template/core/network/api_response.dart';
 import 'package:injectable/injectable.dart';
 import '../errors/exceptions.dart';
@@ -40,9 +41,7 @@ class ApiClient {
   // ===============================
   // Safe + Retry
   // ===============================
-  Future<Result<T>> _safeRequest<T>(
-    Future<Result<T>> Function() request,
-  ) async {
+  Future<Result<T>> _safeRequest<T>(Future<Result<T>> Function() request) async {
     if (!await _networkInfo.isConnected) {
       return const ResultFailure(NetworkFailure());
     }
@@ -73,13 +72,12 @@ class ApiClient {
     }
   }
 
-  // ===============================
-  // GET
-  // ===============================
+  // ✅ GET - Đã có options rồi, giữ nguyên
   Future<Result<T>> getResult<T>(
     String path,
     JsonParser<T> fromJson, {
     Map<String, dynamic>? queryParameters,
+    Options? options, // ✅ Có rồi
     int maxRetries = 1,
     bool unwrap = true,
   }) async {
@@ -88,23 +86,23 @@ class ApiClient {
         final response = await _dioClient.get(
           path,
           queryParameters: queryParameters,
+          options: options,
         );
         final data = unwrap
             ? _unwrapApiResponse<T>(response.data, fromJson)
             : fromJson(response.data);
-        return ResultSuccess(data); // Sửa Success -> ResultSuccess
+        return ResultSuccess(data);
       }, maxRetries: maxRetries),
     );
   }
 
-  // ===============================
-  // POST
-  // ===============================
+  // ✅ POST - Thêm options
   Future<Result<T>> postResult<T>(
     String path,
     JsonParser<T> fromJson, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
+    Options? options, // ✅ THÊM MỚI
     int maxRetries = 1,
     bool unwrap = true,
   }) async {
@@ -114,51 +112,25 @@ class ApiClient {
           path,
           data: data,
           queryParameters: queryParameters,
+          options: options, // ✅ Pass options
         );
         final result = unwrap
             ? _unwrapApiResponse<T>(response.data, fromJson)
             : fromJson(response.data);
-        return ResultSuccess(result); // Sửa Success -> ResultSuccess
+        return ResultSuccess(result);
       }, maxRetries: maxRetries),
     );
   }
 
-  // ===============================
-  // PATCH
-  // ===============================
-  Future<Result<T>> patchResult<T>(
-    String path,
-    JsonParser<T> fromJson, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    int maxRetries = 1,
-    bool unwrap = true, // Thêm option unwrap
-  }) async {
-    return _safeRequest(
-      () => _retryRequest(() async {
-        final response = await _dioClient.patch(
-          path,
-          data: data,
-          queryParameters: queryParameters,
-        );
-        final result = unwrap
-            ? _unwrapApiResponse<T>(response.data, fromJson)
-            : fromJson(response.data);
-        return ResultSuccess(result); // Sửa Success -> ResultSuccess
-      }, maxRetries: maxRetries),
-    );
-  }
-
-  // ===============================
-  // PUT
-  // ===============================
+  // ✅ PUT - Thêm options
   Future<Result<T>> putResult<T>(
     String path,
     JsonParser<T> fromJson, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
+    Options? options, // ✅ THÊM MỚI
     int maxRetries = 1,
-    bool unwrap = true, // Thêm option unwrap
+    bool unwrap = true,
   }) async {
     return _safeRequest(
       () => _retryRequest(() async {
@@ -166,21 +138,47 @@ class ApiClient {
           path,
           data: data,
           queryParameters: queryParameters,
+          options: options, // ✅ Pass options
         );
         final result = unwrap
             ? _unwrapApiResponse<T>(response.data, fromJson)
             : fromJson(response.data);
-        return ResultSuccess(result); // Sửa Success -> ResultSuccess
+        return ResultSuccess(result);
       }, maxRetries: maxRetries),
     );
   }
 
-  // ===============================
-  // DELETE
-  // ===============================
+  // ✅ PATCH - Thêm options
+  Future<Result<T>> patchResult<T>(
+    String path,
+    JsonParser<T> fromJson, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Options? options, // ✅ THÊM MỚI
+    int maxRetries = 1,
+    bool unwrap = true,
+  }) async {
+    return _safeRequest(
+      () => _retryRequest(() async {
+        final response = await _dioClient.patch(
+          path,
+          data: data,
+          queryParameters: queryParameters,
+          options: options, // ✅ Pass options
+        );
+        final result = unwrap
+            ? _unwrapApiResponse<T>(response.data, fromJson)
+            : fromJson(response.data);
+        return ResultSuccess(result);
+      }, maxRetries: maxRetries),
+    );
+  }
+
+  // ✅ DELETE - Thêm options
   Future<Result<bool>> deleteResult(
     String path, {
     Map<String, dynamic>? queryParameters,
+    Options? options, // ✅ THÊM MỚI
     int maxRetries = 1,
   }) async {
     return _safeRequest(
@@ -188,32 +186,29 @@ class ApiClient {
         final response = await _dioClient.delete(
           path,
           queryParameters: queryParameters,
+          options: options, // ✅ Pass options
         );
 
         if (response.data is Map<String, dynamic>) {
-          final success =
-              response.data['success'] ?? response.data['result'] ?? true;
+          final success = response.data['success'] ?? response.data['result'] ?? true;
           if (!success) {
-            throw ServerException(
-              message: response.data['message'] ?? 'Delete failed',
-            );
+            throw ServerException(message: response.data['message'] ?? 'Delete failed');
           }
         }
 
-        return const ResultSuccess(true); // Sửa Success -> ResultSuccess
+        return const ResultSuccess(true);
       }, maxRetries: maxRetries),
     );
   }
 
-  // ===============================
-  // FILE UPLOAD
-  // ===============================
+  // ✅ UPLOAD FILE - Thêm options
   Future<Result<T>> uploadFileResult<T>(
     String path,
     String filePath, {
     JsonParser<T>? fromJson,
     String fieldName = 'file',
     Map<String, dynamic>? data,
+    Options? options, // ✅ THÊM MỚI
     void Function(int sent, int total)? onSendProgress,
   }) async {
     return _safeRequest(
@@ -223,26 +218,25 @@ class ApiClient {
           filePath,
           fieldName: fieldName,
           data: data,
+          options: options, // ✅ Pass options (cần update uploadFile method)
           onSendProgress: onSendProgress,
         );
 
-        // Nếu có parser, dùng nó; nếu không thì return true
         if (fromJson != null) {
           final result = _unwrapApiResponse<T>(response.data, fromJson);
           return ResultSuccess(result);
         } else {
           return const ResultSuccess(true) as Result<T>;
         }
-      }, maxRetries: 1), // Upload không nên retry nhiều
+      }, maxRetries: 1),
     );
   }
 
-  // ===============================
-  // FILE DOWNLOAD
-  // ===============================
+  // ✅ DOWNLOAD FILE - Thêm options
   Future<Result<bool>> downloadFileResult(
     String urlPath,
     String savePath, {
+    Options? options, // ✅ THÊM MỚI
     void Function(int received, int total)? onReceiveProgress,
   }) async {
     return _safeRequest(
@@ -250,6 +244,7 @@ class ApiClient {
         await _dioClient.downloadFile(
           urlPath,
           savePath,
+          options: options, // ✅ Pass options (cần update downloadFile method)
           onReceiveProgress: onReceiveProgress,
         );
         return const ResultSuccess(true);

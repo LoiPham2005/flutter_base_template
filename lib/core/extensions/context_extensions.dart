@@ -2,16 +2,17 @@
 // 📁 lib/extensions/context_extensions.dart (SỬ DỤNG CHÍNH)
 // ════════════════════════════════════════════════════════════════
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 extension ContextExtensions on BuildContext {
   // ═══════════════════════════════════════════════════════════════
   // THEME & COLORS (giữ nguyên)
   // ═══════════════════════════════════════════════════════════════
-  
+
   ThemeData get theme => Theme.of(this);
   TextTheme get textTheme => Theme.of(this).textTheme;
   ColorScheme get colorScheme => Theme.of(this).colorScheme;
-  
+
   Color get primaryColor => Theme.of(this).primaryColor;
   Color get accentColor => Theme.of(this).colorScheme.secondary;
   Color get scaffoldBackgroundColor => Theme.of(this).scaffoldBackgroundColor;
@@ -20,7 +21,7 @@ extension ContextExtensions on BuildContext {
   // ═══════════════════════════════════════════════════════════════
   // TEXT STYLES (giữ nguyên)
   // ═══════════════════════════════════════════════════════════════
-  
+
   TextStyle? get displayLarge => textTheme.displayLarge;
   TextStyle? get displayMedium => textTheme.displayMedium;
   TextStyle? get displaySmall => textTheme.displaySmall;
@@ -40,7 +41,7 @@ extension ContextExtensions on BuildContext {
   // ═══════════════════════════════════════════════════════════════
   // MEDIAQUERY & RESPONSIVE (giữ nguyên)
   // ═══════════════════════════════════════════════════════════════
-  
+
   MediaQueryData get mediaQuery => MediaQuery.of(this);
   Size get screenSize => mediaQuery.size;
   double get screenWidth => screenSize.width;
@@ -50,7 +51,7 @@ extension ContextExtensions on BuildContext {
   Orientation get orientation => mediaQuery.orientation;
   bool get isLandscape => orientation == Orientation.landscape;
   bool get isPortrait => orientation == Orientation.portrait;
-  
+
   bool get isMobile => screenWidth < 600;
   bool get isTablet => screenWidth >= 600 && screenWidth < 900;
   bool get isDesktop => screenWidth >= 900;
@@ -58,60 +59,101 @@ extension ContextExtensions on BuildContext {
   // ═══════════════════════════════════════════════════════════════
   // NAVIGATION (⭐ SỬ DỤNG CHÍNH - 95% cases)
   // ═══════════════════════════════════════════════════════════════
-  
-  NavigatorState get navigator => Navigator.of(this);
-  
-  /// Pop current route
-  void pop<T>([T? result]) => Navigator.of(this).pop(result);
 
-  /// Push new page
-  Future<T?> push<T>(Widget page) {
-    return Navigator.of(this).push<T>(
-      MaterialPageRoute(builder: (_) => page),
-    );
-  }
+  // NavigatorState get navigator => Navigator.of(this);
 
-  /// Push named route
-  Future<T?> pushNamed<T>(String routeName, {Object? arguments}) {
-    return Navigator.of(this).pushNamed<T>(routeName, arguments: arguments);
-  }
+  // /// Pop current route
+  // void pop<T>([T? result]) => Navigator.of(this).pop(result);
 
-  /// Push and replace current
-  Future<T?> pushReplacement<T, TO>(Widget page, {TO? result}) {
-    return Navigator.of(this).pushReplacement<T, TO>(
-      MaterialPageRoute(builder: (_) => page),
-      result: result,
-    );
-  }
+  // /// Push new page
+  // Future<T?> push<T>(Widget page) {
+  //   return Navigator.of(this).push<T>(
+  //     MaterialPageRoute(builder: (_) => page),
+  //   );
+  // }
 
-  /// Push and remove all until predicate
-  Future<T?> pushAndRemoveUntil<T>(
-    Widget page,
-    bool Function(Route<dynamic>) predicate,
-  ) {
-    return Navigator.of(this).pushAndRemoveUntil<T>(
-      MaterialPageRoute(builder: (_) => page),
-      predicate,
-    );
-  }
+  // /// Push named route
+  // Future<T?> pushNamed<T>(String routeName, {Object? arguments}) {
+  //   return Navigator.of(this).pushNamed<T>(routeName, arguments: arguments);
+  // }
 
-  /// Pop until predicate
-  void popUntil(bool Function(Route<dynamic>) predicate) {
-    Navigator.of(this).popUntil(predicate);
-  }
+  // /// Push and replace current
+  // Future<T?> pushReplacement<T, TO>(Widget page, {TO? result}) {
+  //   return Navigator.of(this).pushReplacement<T, TO>(
+  //     MaterialPageRoute(builder: (_) => page),
+  //     result: result,
+  //   );
+  // }
 
-  /// Pop to root
-  void popToRoot() {
-    Navigator.of(this).popUntil((route) => route.isFirst);
-  }
+  // /// Push and remove all until predicate
+  // Future<T?> pushAndRemoveUntil<T>(
+  //   Widget page,
+  //   bool Function(Route<dynamic>) predicate,
+  // ) {
+  //   return Navigator.of(this).pushAndRemoveUntil<T>(
+  //     MaterialPageRoute(builder: (_) => page),
+  //     predicate,
+  //   );
+  // }
 
-  /// Check if can pop
-  bool canPop() => Navigator.of(this).canPop();
+  // /// Pop until predicate
+  // void popUntil(bool Function(Route<dynamic>) predicate) {
+  //   Navigator.of(this).popUntil(predicate);
+  // }
+
+  // /// Pop to root
+  // void popToRoot() {
+  //   Navigator.of(this).popUntil((route) => route.isFirst);
+  // }
+
+  // /// Check if can pop
+  // bool canPop() => Navigator.of(this).canPop();
+
+
+
+
+
+  // ═══════════════════════════════════════════════════════════════
+  // GoRouter Methods (95% use cases)
+  // ═══════════════════════════════════════════════════════════════
+
+  // /// Navigate to a route by path
+  // void goTo(String path, {Object? extra}) => go(path, extra: extra);
+
+  // /// Navigate to a route by name
+  // void goToNamed(String name, {Map<String, String>? pathParameters, Map<String, dynamic>? queryParameters, Object? extra}) {
+  //   goNamed(name, pathParameters: pathParameters ?? {}, queryParameters: queryParameters ?? {}, extra: extra);
+  // }
+
+  // /// Push a new route
+  // void pushTo(String path, {Object? extra}) => push(path, extra: extra);
+
+  // /// Push by name
+  // void pushToNamed(String name, {Map<String, String>? pathParameters, Map<String, dynamic>? queryParameters, Object? extra}) {
+  //   pushNamed(name, pathParameters: pathParameters ?? {}, queryParameters: queryParameters ?? {}, extra: extra);
+  // }
+
+  // /// Replace current route
+  // void replaceTo(String path, {Object? extra}) => replace(path, extra: extra);
+
+  // /// Pop current route
+  // void goBack<T>([T? result]) => pop(result);
+
+  // /// Check if can pop
+  // bool canGoBack() => canPop();
+
+  // /// Pop to root
+  // void popToRoot() {
+  //   while (canPop()) {
+  //     pop();
+  //   }
+  // }
+
 
   // ═══════════════════════════════════════════════════════════════
   // DIALOGS
   // ═══════════════════════════════════════════════════════════════
-  
+
   Future<T?> showCustomDialog<T>({
     required Widget child,
     bool barrierDismissible = true,
@@ -211,7 +253,7 @@ extension ContextExtensions on BuildContext {
   // ═══════════════════════════════════════════════════════════════
   // BOTTOM SHEET
   // ═══════════════════════════════════════════════════════════════
-  
+
   Future<T?> showBottomSheet<T>({
     required Widget child,
     bool isDismissible = true,
@@ -230,7 +272,7 @@ extension ContextExtensions on BuildContext {
   // ═══════════════════════════════════════════════════════════════
   // SNACKBAR
   // ═══════════════════════════════════════════════════════════════
-  
+
   void showSnackBar(
     String message, {
     Duration duration = const Duration(seconds: 2),
@@ -295,7 +337,7 @@ extension ContextExtensions on BuildContext {
   // ═══════════════════════════════════════════════════════════════
   // FOCUS & KEYBOARD
   // ═══════════════════════════════════════════════════════════════
-  
+
   void unfocus() => FocusScope.of(this).unfocus();
   void requestFocus(FocusNode node) => FocusScope.of(this).requestFocus(node);
   void hideKeyboard() => FocusScope.of(this).unfocus();

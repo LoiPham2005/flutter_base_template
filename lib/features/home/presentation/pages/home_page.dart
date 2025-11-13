@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_base_template/core/extensions/context_extensions.dart';
 import 'package:flutter_base_template/core/extensions/localization_x.dart';
 import 'package:flutter_base_template/core/extensions/number_extensions.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -17,7 +18,7 @@ class HomePage extends StatelessWidget {
         //  Assets.icons.placeholder2.svg(),
           ElevatedButton(
             onPressed: () {
-              context.push(const Page2());
+              context.push('/page2');
             },
             child: const Text('chuyển màn '),
           ),

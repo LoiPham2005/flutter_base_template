@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_base_template/core/extensions/context_extensions.dart';
 import 'package:flutter_base_template/features/auth/presentation/pages/login_page.dart';
+import 'package:go_router/go_router.dart';
 
 class WelcomPage extends StatelessWidget {
   const WelcomPage({super.key});
@@ -22,7 +23,8 @@ class WelcomPage extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                context.push(const LoginPage());
+                // context.push(LoginPage());
+                context.go('/login');
               },
               child: const Text('Get Started'),
             ),

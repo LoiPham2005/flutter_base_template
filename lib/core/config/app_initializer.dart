@@ -1,6 +1,7 @@
 // ════════════════════════════════════════════════════════════════
 // 📁 lib/core/config/app_initializer.dart (TỐI ƯU LOGGER)
 // ════════════════════════════════════════════════════════════════
+import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_base_template/core/config/app_bloc_observer.dart';
@@ -8,10 +9,14 @@ import 'package:flutter_base_template/core/config/app_observer.dart';
 import 'package:flutter_base_template/core/config/environment_config.dart';
 import 'package:flutter_base_template/core/di/injection.dart';
 import 'package:flutter_base_template/core/l10n/localization_service.dart';
+import 'package:flutter_base_template/core/network/cache/cache_config.dart';
 import 'package:flutter_base_template/core/theme/theme_cubit.dart';
 import 'package:flutter_base_template/core/utils/logger.dart';
 import 'package:flutter_base_template/core/utils/logger_config.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:path_provider/path_provider.dart';
 
 /// 🎯 Quản lý toàn bộ quá trình khởi tạo app
 class AppInitializer {
@@ -25,25 +30,28 @@ class AppInitializer {
     if (_isInitialized) return;
 
     try {
-      final stopwatch = Stopwatch()..start();
+            final stopwatch = Stopwatch()..start();
 
-      // 1️⃣ In thông tin môi trường
+      // 1️⃣ Environment info
       EnvironmentConfig.printInfo();
 
-      // 2️⃣ Cấu hình logger
+      // 2️⃣ Logger config
       LoggerConfig.configure();
 
-      // 3️⃣ Cấu hình UI
+      // 3️⃣ UI config
       await _configureUI();
 
-      // 4️⃣ Khởi tạo observers
+      // 4️⃣ Observers
       AppObserver().initialize();
       _configureBlocObserver();
 
-      // 5️⃣ Setup DI
+      // 5️⃣ Hive & Cache (BEFORE DI)
+      await _configureHiveAndCache();
+
+      // 6️⃣ DI
       await configureDependencies();
 
-      // 6️⃣ Khởi tạo services
+      // 7️⃣ Services
       await _initializeServices();
 
       stopwatch.stop();
@@ -102,6 +110,36 @@ class AppInitializer {
       await Future.wait([getIt<ThemeCubit>().initTheme(), getIt<LocaleCubit>().initLocale()]);
     } catch (e, stackTrace) {
       Logger.error('Failed to initialize services', error: e, stackTrace: stackTrace, tag: 'INIT');
+      rethrow;
+    }
+  }
+
+ // ✅ Fixed: Hive & Cache initialization
+  static Future<void> _configureHiveAndCache() async {
+    try {
+      // Init Hive
+      await Hive.initFlutter();
+
+      // Get cache directory
+      final cacheDir = await getTemporaryDirectory();
+
+      // Create Hive cache store
+      final cacheStore = HiveCacheStore(
+        cacheDir.path,
+        hiveBoxName: 'dio_cache',
+      );
+
+      // Initialize cache config
+      CacheConfig.initialize(cacheStore);
+
+      Logger.success('Hive & Cache initialized', tag: 'INIT');
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Failed to initialize Hive & Cache',
+        error: e,
+        stackTrace: stackTrace,
+        tag: 'INIT',
+      );
       rethrow;
     }
   }

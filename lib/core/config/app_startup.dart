@@ -58,14 +58,14 @@ class AppStartup {
     // 🔹 Điều hướng
     if (!context.mounted) return;
 
-    if (firstRun) {
-      context.pushReplacement(const WelcomPage());
-    } else {
-      if (loggedIn) {
-        context.pushReplacement(const BottomMenuPage());
-      } else {
-        context.pushReplacement(const LoginPage());
-      }
-    }
+    // if (firstRun) {
+    //   context.pushReplacement(const WelcomPage());
+    // } else {
+    //   if (loggedIn) {
+    //     context.pushReplacement(const BottomMenuPage());
+    //   } else {
+    //     context.pushReplacement(const LoginPage());
+    //   }
+    // }
   }
 }

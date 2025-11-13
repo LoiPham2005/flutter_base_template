@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_base_template/core/extensions/context_extensions.dart';
 import 'package:flutter_base_template/core/extensions/number_extensions.dart';
 import 'package:flutter_base_template/core/extensions/widget_extensions.dart';
+import 'package:flutter_base_template/core/routes/route_names.dart';
 import 'package:flutter_base_template/core/state_management/bloc/base_state.dart';
 import 'package:flutter_base_template/features/home/presentation/pages/home_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/routes/app_router.dart';
 import '../bloc/auth_bloc.dart';
 
 class LoginPage extends StatefulWidget {
@@ -28,7 +30,8 @@ class _LoginPageState extends State<LoginPage> {
         listener: (context, state) {
           if (state.isSuccess) {
             context.showSuccessSnackBar('Login successful!');
-            context.pushReplacement(const HomePage());
+            // context.pushReplacement(const HomePage());
+            context.push(RouteNames.home);
             // context.router.replaceAll([const BottomMenuRoute()]);
           } else if (state.isFailure) {
             context.showErrorSnackBar(state.error ?? 'Login failed');

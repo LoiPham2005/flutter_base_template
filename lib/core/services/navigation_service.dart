@@ -4,9 +4,9 @@
 import 'package:flutter/material.dart';
 
 /// Global navigation service - CHỈ dùng khi KHÔNG CÓ BuildContext
-/// 
+///
 /// ⚠️ LƯU Ý: Ưu tiên dùng context.push() thay vì service này!
-/// 
+///
 /// Use cases cho NavigationService:
 /// - Từ background services (FCM, notifications)
 /// - Từ business logic layer (không có context)
@@ -135,3 +135,70 @@ class NavigationService {
     return route?.settings.name;
   }
 }
+
+
+
+
+// // ════════════════════════════════════════════════════════════════
+// // 🔧 3. Navigation Service (Only for no-context cases)
+// // ════════════════════════════════════════════════════════════════
+// // lib/core/services/navigation_service.dart
+
+// import 'package:flutter/material.dart';
+// import 'package:flutter_base_template/core/routes/app_router.dart';
+// import 'package:flutter_base_template/core/routes/route_names.dart';
+// import 'package:go_router/go_router.dart';
+// import 'package:injectable/injectable.dart';
+
+// /// ⚠️ CHỈ DÙNG KHI KHÔNG CÓ CONTEXT
+// /// Use cases:
+// /// - Background notifications (FCM)
+// /// - Business logic callbacks
+// /// - Static utility methods
+// @LazySingleton()
+// class NavigationService {
+//   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+//   BuildContext? get context => navigatorKey.currentContext;
+
+//   // ═══════════════════════════════════════════════════════════════
+//   // GoRouter Methods (via context)
+//   // ═══════════════════════════════════════════════════════════════
+
+//   void goTo(String path, {Object? extra}) {
+//     if (context != null) context!.go(path, extra: extra);
+//   }
+
+//   void pushTo(String path, {Object? extra}) {
+//     if (context != null) context!.push(path, extra: extra);
+//   }
+
+//   void goBack<T>([T? result]) {
+//     if (context != null) context!.pop(result);
+//   }
+
+//   void popToRoot() {
+//     if (context != null) {
+//       while (context!.canPop()) {
+//         context!.pop();
+//       }
+//     }
+//   }
+
+//   // ═══════════════════════════════════════════════════════════════
+//   // Convenience shortcuts
+//   // ═══════════════════════════════════════════════════════════════
+
+//   // void goToHome() => goTo(RouteNames.home);
+//   // void goToLogin() => goTo(RouteNames.login);
+
+//   // ═══════════════════════════════════════════════════════════════
+//   // Utility
+//   // ═══════════════════════════════════════════════════════════════
+
+//   bool get hasContext => context != null;
+
+//   void unfocus() {
+//     if (context != null) FocusScope.of(context!).unfocus();
+//   }
+// }

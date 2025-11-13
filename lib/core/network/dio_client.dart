@@ -2,6 +2,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_base_template/core/config/environment_config.dart';
 import 'package:flutter_base_template/core/constants/app_constants.dart';
+import 'package:flutter_base_template/core/network/interceptors/smart_cache_interceptor.dart';
 import 'package:injectable/injectable.dart';
 import 'interceptors/auth_interceptor.dart';
 import 'interceptors/error_interceptor.dart';
@@ -14,6 +15,7 @@ class DioClient {
     AuthInterceptor authInterceptor,
     ErrorInterceptor errorInterceptor,
     LoggingInterceptor loggingInterceptor,
+    SmartCacheInterceptor smartCacheInterceptor,
   ) {
     _dio = Dio(
       BaseOptions(
@@ -40,6 +42,7 @@ class DioClient {
     // _dio.interceptors.add(DioCacheInterceptor(options: cacheOptions));
 
     _dio.interceptors.addAll([
+      smartCacheInterceptor,
       authInterceptor,
       errorInterceptor,
       loggingInterceptor,
@@ -145,6 +148,7 @@ class DioClient {
     String filePath, {
     String fieldName = 'file',
     Map<String, dynamic>? data,
+    Options? options,
     ProgressCallback? onSendProgress,
   }) async {
     final formData = FormData.fromMap({
@@ -162,6 +166,7 @@ class DioClient {
   Future<Response> downloadFile(
     String urlPath,
     String savePath, {
+    Options? options,
     ProgressCallback? onReceiveProgress,
     CancelToken? cancelToken,
   }) async {
