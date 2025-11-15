@@ -28,8 +28,6 @@ import 'package:flutter_base_template/core/routes/app_router.dart' as _i749;
 import 'package:flutter_base_template/core/services/auth_service.dart' as _i694;
 import 'package:flutter_base_template/core/services/cache_service.dart'
     as _i760;
-import 'package:flutter_base_template/core/services/navigation_service.dart'
-    as _i33;
 import 'package:flutter_base_template/core/storage/secure_storage.dart'
     as _i873;
 import 'package:flutter_base_template/core/storage/storage_service.dart'
@@ -95,7 +93,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i749.AppRouter>(() => _i749.AppRouter());
     gh.lazySingleton<_i760.CacheService>(() => _i760.CacheService());
-    gh.lazySingleton<_i33.NavigationService>(() => _i33.NavigationService());
     gh.lazySingleton<_i223.StorageService>(
       () => _i223.StorageService(gh<_i460.SharedPreferences>()),
     );

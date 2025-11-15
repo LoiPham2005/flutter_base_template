@@ -42,19 +42,19 @@ extension ContextExtensions on BuildContext {
   // MEDIAQUERY & RESPONSIVE (giữ nguyên)
   // ═══════════════════════════════════════════════════════════════
 
-  MediaQueryData get mediaQuery => MediaQuery.of(this);
-  Size get screenSize => mediaQuery.size;
-  double get screenWidth => screenSize.width;
-  double get screenHeight => screenSize.height;
-  double get statusBarHeight => mediaQuery.padding.top;
-  double get bottomBarHeight => mediaQuery.padding.bottom;
-  Orientation get orientation => mediaQuery.orientation;
-  bool get isLandscape => orientation == Orientation.landscape;
-  bool get isPortrait => orientation == Orientation.portrait;
+  // MediaQueryData get mediaQuery => MediaQuery.of(this);
+  // Size get screenSize => mediaQuery.size;
+  // double get screenWidth => screenSize.width;
+  // double get screenHeight => screenSize.height;
+  // double get statusBarHeight => mediaQuery.padding.top;
+  // double get bottomBarHeight => mediaQuery.padding.bottom;
+  // Orientation get orientation => mediaQuery.orientation;
+  // bool get isLandscape => orientation == Orientation.landscape;
+  // bool get isPortrait => orientation == Orientation.portrait;
 
-  bool get isMobile => screenWidth < 600;
-  bool get isTablet => screenWidth >= 600 && screenWidth < 900;
-  bool get isDesktop => screenWidth >= 900;
+  // bool get isMobile => screenWidth < 600;
+  // bool get isTablet => screenWidth >= 600 && screenWidth < 900;
+  // bool get isDesktop => screenWidth >= 900;
 
   // ═══════════════════════════════════════════════════════════════
   // NAVIGATION (⭐ SỬ DỤNG CHÍNH - 95% cases)

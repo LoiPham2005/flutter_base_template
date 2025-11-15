@@ -3,7 +3,6 @@
 // ════════════════════════════════════════════════════════════════
 // lib/core/routes/app_router.dart
 
-import 'package:flutter/material.dart';
 import 'package:flutter_base_template/core/di/injection.dart';
 import 'package:flutter_base_template/core/routes/pages/not_found_page.dart';
 import 'package:flutter_base_template/core/routes/route_names.dart';
